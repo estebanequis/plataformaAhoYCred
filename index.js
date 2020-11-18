@@ -7,8 +7,7 @@ app.get('/', function(req, res){
     res.send('Hello world');
 });
 
-const ganacheProvider = new Web3.providers.HttpProvider('http://127.0.0.1:8545');
-
+const ganacheProvider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
 web3 = new Web3(ganacheProvider);
 
 const contractRoute = require('./routes/contract.route');
