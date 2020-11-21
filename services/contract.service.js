@@ -4,14 +4,14 @@ const solc = require('solc');
 const { default: Web3 } = require('web3');
 
 const configPath = path.resolve(process.cwd(), 'config.json');
-const contractFileName = 'UseMyLibrary.sol';
+const contractFileName = 'SavingAccount.sol';
 const contractName = contractFileName.replace('.sol','');
 const contractPath = path.resolve(process.cwd(), 'contracts', contractFileName);
 const abiPath = path.resolve(process.cwd(), 'build', contractName + '_abi.json');
 const bytecodePath = path.resolve(process.cwd(), 'build', contractName + '_bytecode.json');
 
-const libraryName = 'MyLibrary.sol';
-const libraryAddress = '0x3a079c32Cba415DD340446Da01B65a695C7b3A2b';
+// const libraryName = 'MyLibrary.sol';
+// const libraryAddress = '0x3a079c32Cba415DD340446Da01B65a695C7b3A2b';
 
 const methods = {
 
@@ -19,16 +19,16 @@ const methods = {
         const sourceContent = {};
         sourceContent[contractName] =  { content: fs.readFileSync(contractPath, 'utf8') }
 
-        const libraryContent = {};
-        libraryContent[contractName] = {};
-        libraryContent[contractName][libraryName] = libraryAddress;
+        // const libraryContent = {};
+        // libraryContent[contractName] = {};
+        // libraryContent[contractName][libraryName] = libraryAddress;
 
         const compilerInputs = {
             language: "Solidity",
             sources: sourceContent,
             settings: {
                 optimizer: { "enabled": true, "runs": 200 },
-                libraries: libraryContent,
+                // libraries: libraryContent,
                 outputSelection: { "*": { "*": ["abi", "evm.bytecode"] } }
             }
         };
@@ -82,8 +82,8 @@ module.exports = { ...methods }
 
 function getImports(dependency){
     switch(dependency){
-        case 'Padre.sol':
-            return { contents: fs.readFileSync(path.resolve(process.cwd(), 'contracts', 'Padre.sol'), 'utf8') }
+        case 'GeneralConfiguration.sol':
+            return { contents: fs.readFileSync(path.resolve(process.cwd(), 'contracts', 'GeneralConfiguration.sol'), 'utf8') }
         case libraryName:
             return { contents: fs.readFileSync(path.resolve(process.cwd(), 'contracts', libraryName), 'utf8') }
         default:

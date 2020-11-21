@@ -95,4 +95,15 @@ router.get('/getBalnce', async function(req, res){
     }
 });
 
+router.get('/probarRetorno', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        let result = await contract.methods.probarRetorno(6).call();
+        res.status(200).send('Retorno:' + result);
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
 module.exports = router;
