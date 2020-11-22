@@ -1,6 +1,7 @@
 //SPDX-License-Identifier:MIT;
 pragma solidity ^0.6.1;
 
+pragma experimental ABIEncoderV2;
 import './GeneralConfiguration.sol';
 
 contract SavingAccount {
@@ -15,18 +16,28 @@ contract SavingAccount {
         address cuentaBeneficenciaEth;
         uint montoAhorro;   //si isActive == false -> seria el dinero que no se suma al ahorro total del contrato
         uint montoAdeudado;
+        Banderas banderas;
+    }
+    
+    struct Banderas {
         bool isGestor;
         bool isAuditor;
         bool isActive;
         bool isAproved;
+        bool ahorristaHaVotado;
+        bool auditorCierraVotacion;
+        bool gestorVotaEjecucion;
     }
     
-    enum Estado {EnProcesoDeVotacion, Aprobado, Ejecutado}
+    enum Estado {EnProcesoDeVotacion, Aprobado, PendienteEjecucion ,Ejecutado}
+    bool votacionActiva;   //bandera para indicar periodo de votacion activo
     
     struct SubObjetivo {
         string descripcion;
         uint monto;
         Estado estado;
+        address payable ctaDestino;
+        uint cantVotos;
     }
     
     uint cantAhorristas;        //incluye todos 
@@ -53,25 +64,28 @@ contract SavingAccount {
     
     uint totalRecibidoDeposito;  //no me queda claro para que sirve
     
-    
-    
     modifier onlyAdmin() {
         require(msg.sender == administrador, 'Not the Admin');
         _;
     }
     
+    modifier onlyAhorristas() {
+        require(isInMapping(msg.sender) == true, 'Not an Ahorrista');
+        _;
+    }
+    
     modifier onlyAuditor() {
-        require(ahorristas[msg.sender].isAuditor == true, 'Not an Auditor');
+        require(ahorristas[msg.sender].banderas.isAuditor == true, 'Not an Auditor');
         _;
     }
     
     modifier onlyAdminOrAuditor() {
-        require(msg.sender == administrador || ahorristas[msg.sender].isAuditor == true, 'Not an Admin or an Auditor');
+        require(msg.sender == administrador || ahorristas[msg.sender].banderas.isAuditor == true, 'Not an Admin or an Auditor');
         _;
     }
     
     modifier onlyGestor() {
-        require(ahorristas[msg.sender].isGestor == true, 'Not an Gestor');
+        require(ahorristas[msg.sender].banderas.isGestor == true, 'Not an Gestor');
         _;
     }
     
@@ -122,6 +136,8 @@ contract SavingAccount {
         ahorroActualVisiblePorGestores = true;
     }
     
+    
+    
     function setConfigAddress( GeneralConfiguration _address ) public {
         generalConf = _address;
     }
@@ -130,51 +146,31 @@ contract SavingAccount {
         return ahorroActual;
     }
     
-    function addSubObjetivo(string memory desc, uint monto, Estado estado) public onlyAdmin {
-        subObjetivos.push(SubObjetivo(desc,monto,estado));
-    }
-    
     //item 10 
     function sendDepositWithRegistration(string memory cedula, string memory fullName, address addressBeneficiario) public payable savingContractIsActive receiveMinDepositAmount {
-        uint elTime = block.timestamp;
-        uint monto = msg.value;
-        address addAux = msg.sender;
-        address addAux2 = addressBeneficiario;
-        
-        /*
-        string cedula;
-        string nombreCompleto;
-        uint fechaIngreso;
-        address cuentaEth;
-        address cuentaBeneficenciaEth;
-        uint montoAhorro;   //si isActive == false -> seria el dinero que no se suma al ahorro total del contrato
-        uint montoAdeudado;
-        bool isGestor;
-        bool isAuditor;
-        bool isActive;
-        bool isAproved;
-        */
-        
-        if (!isInMapping(msg.sender))
+        address addressUser = msg.sender;
+        if (!isInMapping(addressUser))
         {
-            //ahorristas[msg.sender] = Ahorrista(cedula, fullName, block.timestamp, msg.sender, addressBeneficiario, msg.value, 0, false, false, false, false);
-            //Ahorrista memory ahoAux = Ahorrista(cedula, fullName, elTime, addAux, addAux2, monto, 0, false, false, false, false);
-            ahorristas[addAux].cedula = cedula;
-            ahorristas[addAux].nombreCompleto = fullName;
-            ahorristas[addAux].fechaIngreso = elTime;
-            ahorristas[addAux].cuentaEth = addAux;
-            ahorristas[addAux].cuentaBeneficenciaEth = addAux2;
-            ahorristas[addAux].montoAhorro = monto;
-            ahorristas[addAux].montoAdeudado = 0;
-            ahorristas[addAux].isGestor = false;
-            ahorristas[addAux].isAuditor = false;
-            ahorristas[addAux].isActive = false;
-            ahorristas[addAux].isAproved = false;
+            ahorristas[addressUser].cedula = cedula;
+            ahorristas[addressUser].nombreCompleto = fullName;
+            ahorristas[addressUser].fechaIngreso = block.timestamp;
+            ahorristas[addressUser].cuentaEth = addressUser;
+            ahorristas[addressUser].cuentaBeneficenciaEth = addressBeneficiario;
+            ahorristas[addressUser].montoAhorro = msg.value;
+            ahorristas[addressUser].montoAdeudado = 0;
+            ahorristas[addressUser].banderas = Banderas(false,false,false,false,false,false, false);
+            // ahorristas[addressUser].isGestor = false;
+            // ahorristas[addressUser].isAuditor = false;
+            // ahorristas[addressUser].isActive = false;
+            // ahorristas[addressUser].isAproved = false;
+            // ahorristas[addressUser].ahorristaHaVotado = false;
+            // ahorristas[addressUser].auditorCierraVotacion = false;
+            // ahorristas[addressUser].gestorVotaEjecucion = false;
             
-            ahorristasIndex[cantAhorristas] = msg.sender;
+            ahorristasIndex[cantAhorristas] = addressUser;
             cantAhorristas++;
             if(msg.value >= minAporteActivarCta){
-                ahorristas[msg.sender].isActive = true;
+                ahorristas[addressUser].banderas.isActive = true;
                 cantAhorristasActivos++;
             }
         }
@@ -184,10 +180,10 @@ contract SavingAccount {
         if (isInMapping(msg.sender))
         {
             ahorristas[msg.sender].montoAhorro += msg.value;
-            if (ahorristas[msg.sender].isAproved) {
+            if (ahorristas[msg.sender].banderas.isAproved) {
                 ahorroActual += msg.value;
-            }else if(!ahorristas[msg.sender].isActive && ahorristas[msg.sender].montoAhorro >= minAporteActivarCta){
-                ahorristas[msg.sender].isActive = true;
+            }else if(!ahorristas[msg.sender].banderas.isActive && ahorristas[msg.sender].montoAhorro >= minAporteActivarCta){
+                ahorristas[msg.sender].banderas.isActive = true;
                 cantAhorristasActivos++;
             }
         }
@@ -201,18 +197,18 @@ contract SavingAccount {
     function aproveAhorrista(address unAddress) public onlyAuditor returns (bool) {
         bool retorno = false;
         
-        if (isInMapping(unAddress) && ahorristas[unAddress].isActive == true) 
+        if (isInMapping(unAddress) && ahorristas[unAddress].banderas.isActive == true) 
         {
             if (isActive == false) 
             {
-                ahorristas[unAddress].isAproved = true;
+                ahorristas[unAddress].banderas.isAproved = true;
                 cantAhorristasAproved++;
                 ahorroActual += ahorristas[unAddress].montoAhorro;
                 retorno = true; 
             }
             else if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, cantAuditores)) 
             {
-                ahorristas[unAddress].isAproved = true;
+                ahorristas[unAddress].banderas.isAproved = true;
                 cantAhorristasAproved++;
                 ahorroActual += ahorristas[unAddress].montoAhorro;
                 retorno = true;
@@ -227,7 +223,7 @@ contract SavingAccount {
         if (cantAhorristasActivos - cantAhorristasAproved > 0) 
         {
             for(uint i=0; i<cantAhorristas; i++) {
-                if(ahorristas[ahorristasIndex[i]].isActive && !ahorristas[ahorristasIndex[i]].isAproved)
+                if(ahorristas[ahorristasIndex[i]].banderas.isActive && !ahorristas[ahorristasIndex[i]].banderas.isAproved)
                     {
                         losActivosSinAprobar[j] = ahorristas[ahorristasIndex[i]].cuentaEth;    
                         j++;
@@ -237,15 +233,209 @@ contract SavingAccount {
         return losActivosSinAprobar;
     }
     
+    //inicio item 11 al 16 -- Votacion de Subobjetivos
+    
+    function habilitarPeriodoDeVotacion() public onlyAdmin {
+        for(uint i=0; i<cantAhorristas; i++) {
+            ahorristas[ahorristasIndex[i]].banderas.ahorristaHaVotado = false;
+            ahorristas[ahorristasIndex[i]].banderas.auditorCierraVotacion = false;
+        }
+        
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
+                votacionActiva = true;
+                break;
+            }
+        }
+    }
+    
+    function votarCerrarPeriodoDeVotacion() public onlyAuditor returns(string memory){
+        if(votacionActiva == false) { return "No existe periodo de votacion abierto"; }
+        ahorristas[msg.sender].banderas.auditorCierraVotacion = true;
+        
+        for(uint i=0; i<cantAhorristas; i++) {
+            if (ahorristas[ahorristasIndex[i]].banderas.auditorCierraVotacion == false && ahorristas[ahorristasIndex[i]].banderas.isAuditor == true){
+                return "Se ha agregado su voto pero faltan Auditores por votar";
+            }
+        }
+        
+        votacionActiva = false;
+        
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion && subObjetivos[i].cantVotos > 0){
+               subObjetivos[i].estado = Estado.Aprobado;
+            }
+        }
+        
+        return "El periodo de votacion ha quedado cerrado";
+    }
+    
+    function ejecutarProxSubObjetivo() public onlyGestor returns (string memory) {
+        uint maxVotos = 0;
+        uint subObjIndex = 0;
+        bool existePendiente = false;
+        
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.Aprobado){
+               if(subObjetivos[i].cantVotos > maxVotos) {
+                   maxVotos = subObjetivos[i].cantVotos;
+                   subObjIndex = i;
+               }
+            }
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
+                existePendiente = true;
+            }
+        }
+        
+        //caso feliz tienen plata el subobj number one
+        if(maxVotos > 0 && subObjetivos[subObjIndex].monto <= ahorroActual) {
+            subObjetivos[subObjIndex].estado = Estado.Ejecutado;
+            ahorroActual =- subObjetivos[subObjIndex].monto;
+            subObjetivos[subObjIndex].ctaDestino.transfer(subObjetivos[subObjIndex].monto);
+            return subObjetivos[subObjIndex].descripcion;
+        }
+        
+        if(existePendiente == true) { return "Ya existe un SubObjetivo pendiente de ejecucion"; }
+        
+        maxVotos = 0;
+        subObjIndex = 0;
+        
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.Aprobado && subObjetivos[i].monto <= ahorroActual){
+              if(subObjetivos[i].cantVotos > maxVotos) {
+                  maxVotos = subObjetivos[i].cantVotos;
+                  subObjIndex = i;
+              }
+            }
+        }
+        
+        if(maxVotos > 0) {
+            subObjetivos[subObjIndex].estado = Estado.PendienteEjecucion;
+            return string(abi.encodePacked(subObjetivos[subObjIndex].descripcion, " (pendiente de ejecucion)"));
+        }
+    
+    }
+    
+    function votarSubObjetivoPendienteDeEjecucion(string memory descripcion) public onlyGestor returns(string memory){ 
+        //limpiar la bandera esta
+        if(ahorristas[msg.sender].banderas.gestorVotaEjecucion == true) { return "Ya habias votado"; }    
+            
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
+                if(keccak256(abi.encodePacked(subObjetivos[i].descripcion)) == keccak256(abi.encodePacked(descripcion))){
+                    ahorristas[msg.sender].banderas.gestorVotaEjecucion = true;
+                    
+                    uint cantGestoresAprobaron = 0;
+                    for(uint j=0; j<cantAhorristas; j++) {
+                        if (ahorristas[ahorristasIndex[j]].banderas.isGestor == true && ahorristas[ahorristasIndex[j]].banderas.gestorVotaEjecucion == true){
+                            cantGestoresAprobaron++;
+                        }
+                    }
+                    if(cantGestoresAprobaron >= 2) {
+                        subObjetivos[i].estado = Estado.Ejecutado;
+                        ahorroActual =- subObjetivos[i].monto;
+                        subObjetivos[i].ctaDestino.transfer(subObjetivos[i].monto);
+                        
+                        //se resetean las banderas de votos de los gestores
+                        for(uint k=0; k<cantAhorristas; k++) {
+                            ahorristas[ahorristasIndex[k]].banderas.gestorVotaEjecucion = false;
+                        }
+                        
+                        return string(abi.encodePacked("Se ejecuto el subobjetivo ", subObjetivos[i].descripcion));
+                    }
+                    return "Se ha agregado su voto pero todavia falta un Gestor por votar";
+                }         
+            }
+        }
+        return "No se encontro el subobjetivo";
+    }
+    
+    function getSubObjetivosPendientesDeEjecucion() public onlyGestor view returns(string[] memory) { 
+        uint cantSubObj=0;
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
+                cantSubObj++;     
+            }
+        }
+        string[] memory losSubObjetivos = new string[](cantSubObj);
+        uint j = 0;
+        
+        
+        for(uint i=0; i<subObjetivos.length; i++) {
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion)
+                {
+                    losSubObjetivos[j] = subObjetivos[i].descripcion;    
+                    j++;
+                }
+        }
+        
+        return losSubObjetivos;
+    }
+    
+    function votarSubObjetivoEnProesoDeVotacion(string memory descripcion) public returns(string memory){ //onlyAhorristas
+        if(votacionActiva == false) { return "No existe periodo de votacion abierto"; }
+        if(tieneCtaActiva() == false){ return "Su cuenta no esta activa, no puede votar"; }
+            
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
+                if(keccak256(abi.encodePacked(subObjetivos[i].descripcion)) == keccak256(abi.encodePacked(descripcion))){
+                    subObjetivos[i].cantVotos++;
+                    ahorristas[msg.sender].banderas.ahorristaHaVotado = true;
+                    return "OK";
+                }         
+            }
+        }
+        return "No se encontro el subobjetivo";
+    }
+    
+    function addSubObjetivo(string memory desc, uint monto, Estado estado, address payable ctaDestino) public onlyAdmin {
+        //el estado debe setterarse de una en el 0
+        subObjetivos.push(SubObjetivo(desc,monto,estado,ctaDestino,0));
+    }
+    
+    function tieneCtaActiva() public view returns (bool) {  //onlyAhorristas
+        return ahorristas[msg.sender].banderas.isActive;
+    }
+    
+    function getSubObjetivosEnProcesoDeVotacion() public view returns(string[] memory) {  //onlyAhorristas
+        uint cantSubObj=0;
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
+                cantSubObj++;     
+            }
+        }
+        string[] memory losSubObjetivos = new string[](cantSubObj);
+        uint j = 0;
+        
+        if (votacionActiva == true && tieneCtaActiva()) 
+        {
+            for(uint i=0; i<subObjetivos.length; i++) {
+                
+                if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion)
+                    {
+                        losSubObjetivos[j] = subObjetivos[i].descripcion;    
+                        j++;
+                    }
+                    
+            }
+        }
+        return losSubObjetivos;
+    }
+    
+    //fin item 11 al 16 -- Votacion de Subobjetivos
+    
+    
     
     //////////////////////////////////////////
     ////////// METODOS DE PRUEBA /////////////
     //////////////////////////////////////////
     
     
+    
+    
     function setRol(bool auditor, bool gestor) public {
-        ahorristas[msg.sender].isAuditor = auditor;
-        ahorristas[msg.sender].isGestor = gestor;
+        ahorristas[msg.sender].banderas.isAuditor = auditor;
+        ahorristas[msg.sender].banderas.isGestor = gestor;
     }
     
     function getOneField() public view returns (address){
