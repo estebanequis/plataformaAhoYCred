@@ -136,8 +136,6 @@ contract SavingAccount {
         ahorroActualVisiblePorGestores = true;
     }
     
-    
-    
     function setConfigAddress( GeneralConfiguration _address ) public {
         generalConf = _address;
     }
@@ -235,18 +233,19 @@ contract SavingAccount {
     
     //inicio item 11 al 16 -- Votacion de Subobjetivos
     
-    function habilitarPeriodoDeVotacion() public onlyAdmin {
+    // Endpoint
+    function habilitarPeriodoDeVotacion() public onlyAdmin returns(bool) {
         for(uint i=0; i<cantAhorristas; i++) {
             ahorristas[ahorristasIndex[i]].banderas.ahorristaHaVotado = false;
             ahorristas[ahorristasIndex[i]].banderas.auditorCierraVotacion = false;
         }
-        
         for(uint i=0; i<subObjetivos.length; i++) { 
             if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
                 votacionActiva = true;
-                break;
+                return true;
             }
         }
+        return false;
     }
     
     function votarCerrarPeriodoDeVotacion() public onlyAuditor returns(string memory){
@@ -388,15 +387,19 @@ contract SavingAccount {
         return "No se encontro el subobjetivo";
     }
     
-    function addSubObjetivo(string memory desc, uint monto, Estado estado, address payable ctaDestino) public onlyAdmin {
-        //el estado debe setterarse de una en el 0
+    // Endpoint
+    function addSubObjetivo(string memory desc, uint monto, Estado estado, address payable ctaDestino) public onlyAdmin returns(bool) {
+        // CantidadDeVotos = 0
         subObjetivos.push(SubObjetivo(desc,monto,estado,ctaDestino,0));
+        return true;
     }
     
+    // Endpoint
     function tieneCtaActiva() public view returns (bool) {  //onlyAhorristas
         return ahorristas[msg.sender].banderas.isActive;
     }
     
+    // Endpoint
     function getSubObjetivosEnProcesoDeVotacion() public view returns(string[] memory) {  //onlyAhorristas
         uint cantSubObj=0;
         for(uint i=0; i<subObjetivos.length; i++) { 
@@ -424,20 +427,17 @@ contract SavingAccount {
     
     //fin item 11 al 16 -- Votacion de Subobjetivos
     
-    
-    
     //////////////////////////////////////////
     ////////// METODOS DE PRUEBA /////////////
     //////////////////////////////////////////
     
-    
-    
-    
+    // Endpoint
     function setRol(bool auditor, bool gestor) public {
         ahorristas[msg.sender].banderas.isAuditor = auditor;
         ahorristas[msg.sender].banderas.isGestor = gestor;
     }
     
+    // Endpoint
     function getOneField() public view returns (address){
         return ahorristas[msg.sender].cuentaEth;
     }

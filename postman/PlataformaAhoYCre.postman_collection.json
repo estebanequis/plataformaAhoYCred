@@ -1,0 +1,225 @@
+{
+	"info": {
+		"_postman_id": "b38e37b3-8b4a-460a-a7e9-d96155d7b26f",
+		"name": "PlataformaAhoYCre",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Votación de SubObjetivos",
+			"item": [
+				{
+					"name": "habilitarPeriodoDeVotacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/habilitarPeriodoDeVotacion",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"habilitarPeriodoDeVotacion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addSubObjetivo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"desc\": \"Comprar una tele\",\n    \"monto\": 500,\n    \"estado\": 0,\n    \"ctaDestino\": \"0xe84399A9A0533915f73f7096fA7276AE48AB2328\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/addSubObjetivo",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"addSubObjetivo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tieneCtaActiva",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/tieneCtaActiva",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"tieneCtaActiva"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSubObjetivosEnProcesoDeVotacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getSubObjetivosEnProcesoDeVotacion",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivosEnProcesoDeVotacion"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Base",
+			"item": [
+				{
+					"name": "Hello World",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								""
+							]
+						},
+						"description": "Hello World"
+					},
+					"response": []
+				},
+				{
+					"name": "Compile contract",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/compile",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"compile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deploy contract",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/deploy",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"deploy"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Test",
+			"item": [
+				{
+					"name": "[TEST] getOneField",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getOneField",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getOneField"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] setRol (Auditor y Gestor)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"auditor\": true,\n\t\"gestor\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/setRol",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setRol"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

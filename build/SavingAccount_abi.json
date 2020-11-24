@@ -7,25 +7,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "unAddress",
-        "type": "address"
-      }
-    ],
-    "name": "activateAhorrista",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "string",
         "name": "desc",
         "type": "string"
@@ -39,10 +20,21 @@
         "internalType": "enum SavingAccount.Estado",
         "name": "estado",
         "type": "uint8"
+      },
+      {
+        "internalType": "address payable",
+        "name": "ctaDestino",
+        "type": "address"
       }
     ],
     "name": "addSubObjetivo",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -105,24 +97,46 @@
         "type": "uint256"
       },
       {
-        "internalType": "bool",
-        "name": "isGestor",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isAuditor",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isActive",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isAproved",
-        "type": "bool"
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "isGestor",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isAuditor",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isAproved",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "ahorristaHaVotado",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "auditorCierraVotacion",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "gestorVotaEjecucion",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct SavingAccount.Banderas",
+        "name": "banderas",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -145,6 +159,38 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "unAddress",
+        "type": "address"
+      }
+    ],
+    "name": "aproveAhorrista",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ejecutarProxSubObjetivo",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -187,45 +233,54 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "getOneField",
+    "outputs": [
       {
-        "internalType": "uint256",
-        "name": "maxAhorristas",
-        "type": "uint256"
-      },
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSubObjetivosEnProcesoDeVotacion",
+    "outputs": [
       {
-        "internalType": "uint256",
-        "name": "ahorroObj",
-        "type": "uint256"
-      },
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSubObjetivosPendientesDeEjecucion",
+    "outputs": [
       {
-        "internalType": "string",
-        "name": "elObjetivo",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "minAporteDep",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "minAporteActivar",
-        "type": "uint256"
-      },
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "habilitarPeriodoDeVotacion",
+    "outputs": [
       {
         "internalType": "bool",
-        "name": "ahorristaVeAhorroActual",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "gestorVeAhorroActual",
+        "name": "",
         "type": "bool"
       }
     ],
-    "name": "init",
-    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -240,44 +295,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "valor",
-        "type": "uint256"
-      }
-    ],
-    "name": "probarRetorno",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "valor",
-        "type": "uint256"
-      }
-    ],
-    "name": "retornaBoolean",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -326,6 +343,24 @@
   {
     "inputs": [
       {
+        "internalType": "bool",
+        "name": "auditor",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "gestor",
+        "type": "bool"
+      }
+    ],
+    "name": "setRol",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
@@ -347,9 +382,83 @@
         "internalType": "enum SavingAccount.Estado",
         "name": "estado",
         "type": "uint8"
+      },
+      {
+        "internalType": "address payable",
+        "name": "ctaDestino",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "cantVotos",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tieneCtaActiva",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "votarCerrarPeriodoDeVotacion",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "descripcion",
+        "type": "string"
+      }
+    ],
+    "name": "votarSubObjetivoEnProesoDeVotacion",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "descripcion",
+        "type": "string"
+      }
+    ],
+    "name": "votarSubObjetivoPendienteDeEjecucion",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

@@ -106,4 +106,155 @@ router.get('/probarRetorno', async function(req, res){
     }
 });
 
+router.get('/', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        let result = await contract.methods.probarRetorno(6).call();
+        res.status(200).send('Retorno:' + result);
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+// Nuestros end points
+
+router.post('/setRol', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        await contract.methods.setRol(
+            req.body.auditor,
+            req.body.gestor
+        ).send({
+            from:accounts[0]
+        });
+        res.status(200).send('Retorno: Ok');
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/getOneField', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.getOneField().call({
+            from:accounts[0]
+        });
+        res.status(200).send('Address:' + result);
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+
+// Votacion de SubObjetivos
+
+router.post('/addSubObjetivo', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.addSubObjetivo(
+            req.body.desc,
+            req.body.monto,
+            req.body.estado,
+            req.body.ctaDestino
+        ).send({
+            from: accounts[0],
+            gas: 300000
+        })
+        .then('receipt', function(receipt){
+            console.log('receipt: ' + receipt)
+        })
+        res.status(200).send('Ok');
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/habilitarPeriodoDeVotacion', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.habilitarPeriodoDeVotacion().call({
+            from:accounts[0]
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/tieneCtaActiva', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.tieneCtaActiva().call({
+            from:accounts[0]
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/getSubObjetivosEnProcesoDeVotacion', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.getSubObjetivosEnProcesoDeVotacion().call({
+            from:accounts[0]
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
 module.exports = router;
+
+/*
+router.post('/addSubObjetivo', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.addSubObjetivo(
+            req.body.desc,
+            req.body.monto,
+            req.body.estado,
+            req.body.ctaDestino
+        ).send({
+            from: accounts[0],
+            gas: 300000
+        }, function(error, transactionHash){
+            console.log('error: ' + error, 'transactionHash: ' + transactionHash);
+        })
+        .on('error', function(error){
+            console.log('error: ' + error);
+        })
+        .on('transactionHash', function(transactionHash){
+            console.log('transactionHash: ' + transactionHash);
+        })
+        .on('receipt', function(receipt){
+            console.log('receipt: ' + receipt.contractAddress) // contains the new contract address
+        })
+        .on('confirmation', function(confirmationNumber, receipt){ 
+            console.log('confirmationNumber: ' + confirmationNumber + ", receipt: " + receipt); 
+        })
+        .then(function(newContractInstance){
+            console.log('newContractInstance: ' + newContractInstance.options.address) // instance with the new contract address
+        });
+        res.status(200).send('Ok');
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+*/
