@@ -17,9 +17,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "enum SavingAccount.Estado",
-        "name": "estado",
-        "type": "uint8"
+        "internalType": "uint256",
+        "name": "estadoKey",
+        "type": "uint256"
       },
       {
         "internalType": "address payable",
@@ -30,9 +30,9 @@
     "name": "addSubObjetivo",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "bool",
         "name": "",
-        "type": "string"
+        "type": "bool"
       }
     ],
     "stateMutability": "nonpayable",
@@ -299,6 +299,19 @@
   },
   {
     "inputs": [],
+    "name": "pruebaDeBytes",
+    "outputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "",
+        "type": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "sendDeposit",
     "outputs": [],
     "stateMutability": "payable",
@@ -330,6 +343,25 @@
   {
     "inputs": [
       {
+        "internalType": "bool",
+        "name": "activeStatus",
+        "type": "bool"
+      }
+    ],
+    "name": "setActive",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "contract GeneralConfiguration",
         "name": "_address",
         "type": "address"
@@ -356,6 +388,25 @@
     "name": "setRol",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "source",
+        "type": "string"
+      }
+    ],
+    "name": "stringToBytes32",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "result",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
     "type": "function"
   },
   {

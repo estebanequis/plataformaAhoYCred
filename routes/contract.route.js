@@ -136,6 +136,22 @@ router.post('/setRol', async function(req, res){
     }
 });
 
+router.post('/setActive', async function(req, res){
+    try{
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        await contract.methods.setActive(
+            req.body.activeStatus
+        ).send({
+            from:accounts[0]
+        });
+        res.status(200).send('Retorno: Ok');
+    } catch(error){
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
 router.get('/getOneField', async function(req, res){
     try{
         const contract = contractService.getContract();
@@ -165,10 +181,10 @@ router.post('/addSubObjetivo', async function(req, res){
         ).send({
             from: accounts[0],
             gas: 300000
-        })
-        .then('receipt', function(receipt){
-            console.log('receipt: ' + receipt)
-        })
+        });
+        //.then('receipt', function(receipt) {
+        //    console.log('receipt: ' + receipt)
+        //})
         res.status(200).send('Ok');
     } catch(error){
         console.log(error);
@@ -211,6 +227,7 @@ router.get('/getSubObjetivosEnProcesoDeVotacion', async function(req, res){
         let result = await contract.methods.getSubObjetivosEnProcesoDeVotacion().call({
             from:accounts[0]
         });
+        console.log(result);
         res.status(200).send('Resultado:' + result);
     } catch(error){
         console.log(error);
