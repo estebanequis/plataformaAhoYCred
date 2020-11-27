@@ -30,7 +30,6 @@ contract SavingAccount {
     }
     
     enum Estado {EnProcesoDeVotacion, Aprobado, PendienteEjecucion ,Ejecutado}
-    bool private votacionActiva;   //bandera para indicar periodo de votacion activo
     
     struct SubObjetivo {
         string descripcion;
@@ -61,6 +60,8 @@ contract SavingAccount {
     uint minAporteActivarCta;
     bool ahorroActualVisiblePorAhorristas;
     bool ahorroActualVisiblePorGestores;
+
+    bool votacionActiva;   //bandera para indicar periodo de votacion activo
     
     uint totalRecibidoDeposito;  //no me queda claro para que sirve
     
@@ -243,9 +244,10 @@ contract SavingAccount {
         for(uint i=0; i<subObjetivos.length; i++) { 
             if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
                 votacionActiva = true;
+                return true;
             }
         }
-        return votacionActiva;
+        return false;
     }
     
     function votarCerrarPeriodoDeVotacion() public onlyAuditor returns(string memory){
@@ -393,103 +395,31 @@ contract SavingAccount {
         subObjetivos.push(SubObjetivo(desc, monto, estado, ctaDestino, 0));
         return true;
     }
-    
+
+    // Endpoint
+    function getSubObjetivosEnProcesoDeVotacion() public view returns(string[] memory) {  //onlyAhorristas
+        uint cantSubObj=0;
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
+                cantSubObj++;     
+            }
+        }
+        string[] memory losSubObjetivos = new string[](cantSubObj);
+        uint j = 0;
+        if (votacionActiva == true && tieneCtaActiva() == true) {
+            for(uint i=0; i<subObjetivos.length; i++) {
+                if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion) {
+                    losSubObjetivos[j] = subObjetivos[i].descripcion;
+                    j++;
+                }
+            }
+        }
+        return losSubObjetivos;
+    }
+
     // Endpoint
     function tieneCtaActiva() public view returns (bool) {  //onlyAhorristas
-        return ahorristas[msg.sender].banderas.isActive;
-    }
-    
-    /*
-    // Endpoint
-    function getSubObjetivosEnProcesoDeVotacion() public view returns(string[] memory) {  //onlyAhorristas
-        uint cantSubObj=0;
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
-                cantSubObj++;     
-            }
-        }
-        string[] memory losSubObjetivos = new string[](cantSubObj);
-        
-        uint j = 0;
-        if (votacionActiva == true && tieneCtaActiva()) {
-            for(uint i=0; i<subObjetivos.length; i++) {
-                if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion) {
-                    string memory descripcion = subObjetivos[i].descripcion;
-                    losSubObjetivos[j] = descripcion;
-                    j++;
-                }
-            }
-        }
-
-        return losSubObjetivos;
-    }
-    */
-
-    // Endpoint
-    function getSubObjetivosEnProcesoDeVotacion() public view returns(string[] memory) {  //onlyAhorristas
-        uint cantSubObj=1;
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
-                cantSubObj++;     
-            }
-        }
-        string[] memory losSubObjetivos = new string[](cantSubObj);
-        //string memory descripcion0 = subObjetivos[0].descripcion;
-        //string memory descripcion1 = subObjetivos[1].descripcion;
-        //losSubObjetivos[0] = descripcion0;
-        //losSubObjetivos[1] = descripcion1;
-        uint j = 0;
-        //for(uint i=0; i<subObjetivos.length; i++) {
-        //    losSubObjetivos[j] = subObjetivos[i].descripcion;
-        //    j++;
-        //}
-        if (votacionActiva == true) {
-            for(uint i=0; i<subObjetivos.length; i++) {
-                if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion) {
-                    losSubObjetivos[j] = subObjetivos[i].descripcion;
-                    j++;
-                }
-            }
-            losSubObjetivos[j] = "votacionActiva = true";
-        }
-
-        if (votacionActiva == false) {
-            for(uint i=0; i<subObjetivos.length; i++) {
-                if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion) {
-                    losSubObjetivos[j] = subObjetivos[i].descripcion;
-                    j++;
-                }
-            }
-            losSubObjetivos[j] = "votacionActiva = false";
-        }
-
-        return losSubObjetivos;
-    }
-
-    // Endpoint BORRAR BORRAR BORRAR BORRAR BORRAR BORRAR BORRAR BORRAR BORRAR BORRAR BORRAR BORRAR BORRAR
-    function pruebaDeBytes() public view returns(bytes32[] memory) {  //onlyAhorristas
-        uint cantSubObj=0;
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
-                cantSubObj++;     
-            }
-        }
-        string memory descripcion0 = subObjetivos[0].descripcion;
-        string memory descripcion1 = subObjetivos[1].descripcion;
-        bytes32[] memory retornos = new bytes32[](2);
-        retornos[0] = stringToBytes32(descripcion0);
-        retornos[1] = stringToBytes32(descripcion1);
-        return retornos;
-    }
-
-    function stringToBytes32(string memory source) public pure returns (bytes32 result) {
-        bytes memory tempEmptyStringTest = bytes(source);
-        if (tempEmptyStringTest.length == 0) {
-            return 0x0;
-        }
-        assembly {
-            result := mload(add(source, 32))
-        }
+        return ahorristas[msg.sender].banderas.isActive == true;
     }
     
     //fin item 11 al 16 -- Votacion de Subobjetivos
@@ -514,6 +444,16 @@ contract SavingAccount {
         address ads = msg.sender;
         ahorristas[ads].banderas.isActive = activeStatus;
         return true;
+    }
+
+    // Endpoint
+    function getVotacionActiva() public view returns(bool) {
+        return votacionActiva;
+    }
+
+    // Endpoint
+    function setVotacionActiva(bool state) public {
+        votacionActiva = state;
     }
     
     // function retornaBoolean(uint valor) public pure returns(bool) {

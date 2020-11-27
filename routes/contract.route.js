@@ -2,68 +2,68 @@ const express = require('express');
 const router = express.Router();
 const contractService = require('../services/contract.service');
 
-router.get('/compile', function(req, res){
-    try{
+router.get('/compile', function (req, res) {
+    try {
         contractService.compile();
         res.status(200).send('Contract compiled');
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
 });
 
-router.get('/deploy', function(req, res){
-    try{
+router.get('/deploy', function (req, res) {
+    try {
         contractService.deploy();
         res.status(200).send('Contract deployed');
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
 });
 
-router.get('/sum', async function(req, res){
-    try{
+router.get('/sum', async function (req, res) {
+    try {
         const contract = contractService.getContract();
-        
-        let result = await contract.methods.sum(1, 3).call()
-        .then(function(result){
-            res.status(200).send('Result:' + result);
-        });
 
-    } catch(error){
+        let result = await contract.methods.sum(1, 3).call()
+            .then(function (result) {
+                res.status(200).send('Result:' + result);
+            });
+
+    } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
 });
 
-router.get('/getIndex', async function(req, res){
-    try{
+router.get('/getIndex', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         let result = await contract.methods.index().call();
         res.status(200).send('Event index:' + result);
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
 });
 
-router.get('/publishEvent', async function(req, res){
-    try{
+router.get('/publishEvent', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.publishEvent('My first event').send({
-            from:accounts[0]
+            from: accounts[0]
         });
         res.status(200).send('Event published.');
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
 });
 
-router.get('/getPublishedEvent', async function(req, res){
-    try{
+router.get('/getPublishedEvent', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         let eventMethodName = 'messageEvent(uint,string)';
         let filterEventMethod = web3.utils.sha3(eventMethodName);
@@ -78,40 +78,40 @@ router.get('/getPublishedEvent', async function(req, res){
 
         let result = await web3.eth.getPastLogs(filters);
         res.status(200).send('Event message:' + web3.eth.util.hexToUtf8(result[0].data));
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
 });
 
-router.get('/getBalnce', async function(req, res){
-    try{
+router.get('/getBalnce', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         let result = await contract.methods.getBalance().call();
         res.status(200).send('Balance:' + web3.utils.fromWei(result, 'ether') + ' ethers');
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
 });
 
-router.get('/probarRetorno', async function(req, res){
-    try{
+router.get('/probarRetorno', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         let result = await contract.methods.probarRetorno(6).call();
         res.status(200).send('Retorno:' + result);
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
 });
 
-router.get('/', async function(req, res){
-    try{
+router.get('/', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         let result = await contract.methods.probarRetorno(6).call();
         res.status(200).send('Retorno:' + result);
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
@@ -119,48 +119,48 @@ router.get('/', async function(req, res){
 
 // Nuestros end points
 
-router.post('/setRol', async function(req, res){
-    try{
+router.post('/setRol', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         await contract.methods.setRol(
             req.body.auditor,
             req.body.gestor
         ).send({
-            from:accounts[0]
+            from: accounts[0]
         });
         res.status(200).send('Retorno: Ok');
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
 });
 
-router.post('/setActive', async function(req, res){
-    try{
+router.post('/setActive', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         await contract.methods.setActive(
             req.body.activeStatus
         ).send({
-            from:accounts[0]
+            from: accounts[0]
         });
         res.status(200).send('Retorno: Ok');
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
 });
 
-router.get('/getOneField', async function(req, res){
-    try{
+router.get('/getOneField', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.getOneField().call({
-            from:accounts[0]
+            from: accounts[0]
         });
         res.status(200).send('Address:' + result);
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
@@ -169,8 +169,8 @@ router.get('/getOneField', async function(req, res){
 
 // Votacion de SubObjetivos
 
-router.post('/addSubObjetivo', async function(req, res){
-    try{
+router.post('/addSubObjetivo', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.addSubObjetivo(
@@ -186,50 +186,88 @@ router.post('/addSubObjetivo', async function(req, res){
         //    console.log('receipt: ' + receipt)
         //})
         res.status(200).send('Ok');
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
 });
 
-router.get('/habilitarPeriodoDeVotacion', async function(req, res){
-    try{
+router.get('/habilitarPeriodoDeVotacion', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.habilitarPeriodoDeVotacion().call({
-            from:accounts[0]
-        });
+        let result = await contract.methods.habilitarPeriodoDeVotacion(
+        ).send({
+            from: accounts[0],
+            gas: 300000
+        })
+        .on('error', function(error){
+            console.log('error: ' + error);
+        })
+        .on('receipt', function(receipt){
+            console.log('receipt: ' + receipt) // contains the new contract address
+        })
         res.status(200).send('Resultado:' + result);
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
 });
 
-router.get('/tieneCtaActiva', async function(req, res){
-    try{
+router.get('/tieneCtaActiva', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.tieneCtaActiva().call({
-            from:accounts[0]
+            from: accounts[0]
         });
-        res.status(200).send('Resultado:' + result);
-    } catch(error){
+        res.status(200).send('Resultado: ' + result);
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
 });
 
-router.get('/getSubObjetivosEnProcesoDeVotacion', async function(req, res){
-    try{
+router.get('/getVotacionActiva', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.getVotacionActiva().call({
+            from: accounts[0]
+        });
+        res.status(200).send('votacionActiva: ' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/setVotacionActiva', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        await contract.methods.setVotacionActiva(
+            req.body.status
+        ).send({
+            from: accounts[0]
+        });
+        res.status(200).send('Retorno: Ok');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/getSubObjetivosEnProcesoDeVotacion', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.getSubObjetivosEnProcesoDeVotacion().call({
-            from:accounts[0]
+            from: accounts[0]
         });
         console.log(result);
         res.status(200).send('Resultado:' + result);
-    } catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
@@ -262,8 +300,8 @@ router.post('/addSubObjetivo', async function(req, res){
         .on('receipt', function(receipt){
             console.log('receipt: ' + receipt.contractAddress) // contains the new contract address
         })
-        .on('confirmation', function(confirmationNumber, receipt){ 
-            console.log('confirmationNumber: ' + confirmationNumber + ", receipt: " + receipt); 
+        .on('confirmation', function(confirmationNumber, receipt){
+            console.log('confirmationNumber: ' + confirmationNumber + ", receipt: " + receipt);
         })
         .then(function(newContractInstance){
             console.log('newContractInstance: ' + newContractInstance.options.address) // instance with the new contract address
