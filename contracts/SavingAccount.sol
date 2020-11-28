@@ -71,7 +71,7 @@ contract SavingAccount {
     }
     
     modifier onlyAhorristas() {
-        require(isInMapping(msg.sender) == true, 'Not an Ahorrista');
+        require(isInAhorristasMapping(msg.sender) == true, 'Not an Ahorrista');
         _;
     }
     
@@ -100,57 +100,47 @@ contract SavingAccount {
         _;
     }
     
-    // constructor() public
-    // {   
-    //     administrador = msg.sender;
-    //     isActive = false;
-    // }
-
-    // function init(uint maxAhorristas, uint ahorroObj, string memory elObjetivo, uint minAporteDep, uint minAporteActivar, bool ahorristaVeAhorroActual, bool gestorVeAhorroActual) public
-    // {
-    //     require(maxAhorristas >= 6, "maxAhorristas must be greater than 5");
-    //     require(minAporteDep >= 0, "minAporteDep must be a positive value"); //ver si sirve
-    //     require(bytes(elObjetivo).length != 0, "elObjetivo must be specified");
-        
-    //     // administrador = msg.sender;
-    //     // isActive = false;
-    //     cantMaxAhorristas = maxAhorristas;
-    //     ahorroObjetivo = ahorroObj;
-    //     objetivo = elObjetivo;
-    //     minAporteDeposito = minAporteDep;
-    //     minAporteActivarCta = minAporteActivar;
-    //     ahorroActualVisiblePorAhorristas = ahorristaVeAhorroActual;
-    //     ahorroActualVisiblePorGestores = gestorVeAhorroActual;
-    // }
-    
-    //mock para pruebas
-    constructor() public
-    {   
+    constructor() public {   
         administrador = msg.sender;
-        isActive = true;
-        cantMaxAhorristas = 15;
-        ahorroObjetivo = 10000;
-        objetivo = "comprar una casa";
-        minAporteDeposito = 10;
-        minAporteActivarCta = 20;
-        ahorroActualVisiblePorAhorristas = true;
-        ahorroActualVisiblePorGestores = true;
+        isActive = true; // Solo para test, debe ser false
         votacionActiva = false;
     }
-    
+
     function setConfigAddress( GeneralConfiguration _address ) public {
         generalConf = _address;
     }
     
+    // item 22
     function getAhorroActual() public onlyAdminOrAuditor view returns (uint) {
         return ahorroActual;
     }
     
-    //item 10 
+    //////////////////////////////////////////
+    ///////////// Items 6 al 10 //////////////
+    /////// Init, Registro y Deposito ////////
+    //////////////////////////////////////////
+
+    // Endpoint
+    // Item 7 y 9
+    function init(uint maxAhorristas, uint ahorroObj, string memory elObjetivo, uint minAporteDep, uint minAporteActivar, bool ahorristaVeAhorroActual, bool gestorVeAhorroActual) public onlyAdmin {
+        require(maxAhorristas >= 6, "maxAhorristas must be greater than 5");
+        require(minAporteDep >= 0, "minAporteDep must be a positive value"); //ver si sirve
+        require(bytes(elObjetivo).length != 0, "elObjetivo must be specified");
+
+        cantMaxAhorristas = maxAhorristas;
+        ahorroObjetivo = ahorroObj;
+        objetivo = elObjetivo;
+        minAporteDeposito = minAporteDep;
+        minAporteActivarCta = minAporteActivar;
+        ahorroActualVisiblePorAhorristas = ahorristaVeAhorroActual;
+        ahorroActualVisiblePorGestores = gestorVeAhorroActual;
+    }
+
+    // Endpoint
+    // Item 8 y 10
     function sendDepositWithRegistration(string memory cedula, string memory fullName, address addressBeneficiario) public payable savingContractIsActive receiveMinDepositAmount {
         address addressUser = msg.sender;
-        if (!isInMapping(addressUser))
-        {
+        if (!isInAhorristasMapping(addressUser)) {
             ahorristas[addressUser].cedula = cedula;
             ahorristas[addressUser].nombreCompleto = fullName;
             ahorristas[addressUser].fechaIngreso = block.timestamp;
@@ -159,14 +149,6 @@ contract SavingAccount {
             ahorristas[addressUser].montoAhorro = msg.value;
             ahorristas[addressUser].montoAdeudado = 0;
             ahorristas[addressUser].banderas = Banderas(false,false,false,false,false,false, false);
-            // ahorristas[addressUser].isGestor = false;
-            // ahorristas[addressUser].isAuditor = false;
-            // ahorristas[addressUser].isActive = false;
-            // ahorristas[addressUser].isAproved = false;
-            // ahorristas[addressUser].ahorristaHaVotado = false;
-            // ahorristas[addressUser].auditorCierraVotacion = false;
-            // ahorristas[addressUser].gestorVotaEjecucion = false;
-            
             ahorristasIndex[cantAhorristas] = addressUser;
             cantAhorristas++;
             if(msg.value >= minAporteActivarCta){
@@ -176,8 +158,9 @@ contract SavingAccount {
         }
     }
     
+    // Item 6, 8 
     function sendDeposit() public payable savingContractIsActive receiveMinDepositAmount {
-        if (isInMapping(msg.sender))
+        if (isInAhorristasMapping(msg.sender))
         {
             ahorristas[msg.sender].montoAhorro += msg.value;
             if (ahorristas[msg.sender].banderas.isAproved) {
@@ -189,15 +172,11 @@ contract SavingAccount {
         }
     }
     
-    function isInMapping(address unAddress) private view returns(bool)
-    {
-        return ahorristas[unAddress].cuentaEth != address(0);
-    }
-    
+    // Item 10
     function aproveAhorrista(address unAddress) public onlyAuditor returns (bool) {
         bool retorno = false;
         
-        if (isInMapping(unAddress) && ahorristas[unAddress].banderas.isActive == true) 
+        if (isInAhorristasMapping(unAddress) && ahorristas[unAddress].banderas.isActive == true) 
         {
             if (isActive == false) 
             {
@@ -217,6 +196,7 @@ contract SavingAccount {
         return retorno;
     }
     
+    // Item 10
     function getAhorristasToAprove() public onlyAuditor view returns(address[] memory) {
         address[] memory losActivosSinAprobar = new address[](cantAhorristasActivos - cantAhorristasAproved);
         uint j = 0;
@@ -233,7 +213,10 @@ contract SavingAccount {
         return losActivosSinAprobar;
     }
     
-    //inicio item 11 al 16 -- Votacion de Subobjetivos
+    //////////////////////////////////////////
+    ////////// Items 11 al 16 ////////////////
+    /////// Votacion de Subobjetivos /////////
+    //////////////////////////////////////////
     
     // Endpoint
     function habilitarPeriodoDeVotacion() public onlyAdmin returns(bool) {
@@ -250,6 +233,7 @@ contract SavingAccount {
         return false;
     }
     
+    // Endpoint - Probar
     function votarCerrarPeriodoDeVotacion() public onlyAuditor returns(string memory){
         if(votacionActiva == false) { return "No existe periodo de votacion abierto"; }
         ahorristas[msg.sender].banderas.auditorCierraVotacion = true;
@@ -271,6 +255,7 @@ contract SavingAccount {
         return "El periodo de votacion ha quedado cerrado";
     }
     
+    // Endpoint - Probar
     function ejecutarProxSubObjetivo() public onlyGestor returns (string memory) {
         uint maxVotos = 0;
         uint subObjIndex = 0;
@@ -290,9 +275,7 @@ contract SavingAccount {
         
         //caso feliz tienen plata el subobj number one
         if(maxVotos > 0 && subObjetivos[subObjIndex].monto <= ahorroActual) {
-            subObjetivos[subObjIndex].estado = Estado.Ejecutado;
-            ahorroActual =- subObjetivos[subObjIndex].monto;
-            subObjetivos[subObjIndex].ctaDestino.transfer(subObjetivos[subObjIndex].monto);
+            ejecutarSubObjetivo(subObjIndex);
             return subObjetivos[subObjIndex].descripcion;
         }
         
@@ -317,7 +300,8 @@ contract SavingAccount {
     
     }
     
-    function votarSubObjetivoPendienteDeEjecucion(string memory descripcion) public onlyGestor returns(string memory){ 
+    // Endpoint - Probar
+    function votarSubObjetivoPendienteEjecucion(string memory descripcion) public onlyGestor returns(string memory){ 
         //limpiar la bandera esta
         if(ahorristas[msg.sender].banderas.gestorVotaEjecucion == true) { return "Ya habias votado"; }    
             
@@ -325,7 +309,6 @@ contract SavingAccount {
             if(subObjetivos[i].estado == Estado.PendienteEjecucion){
                 if(keccak256(abi.encodePacked(subObjetivos[i].descripcion)) == keccak256(abi.encodePacked(descripcion))){
                     ahorristas[msg.sender].banderas.gestorVotaEjecucion = true;
-                    
                     uint cantGestoresAprobaron = 0;
                     for(uint j=0; j<cantAhorristas; j++) {
                         if (ahorristas[ahorristasIndex[j]].banderas.isGestor == true && ahorristas[ahorristasIndex[j]].banderas.gestorVotaEjecucion == true){
@@ -333,15 +316,11 @@ contract SavingAccount {
                         }
                     }
                     if(cantGestoresAprobaron >= 2) {
-                        subObjetivos[i].estado = Estado.Ejecutado;
-                        ahorroActual =- subObjetivos[i].monto;
-                        subObjetivos[i].ctaDestino.transfer(subObjetivos[i].monto);
-                        
+                        ejecutarSubObjetivo(i);
                         //se resetean las banderas de votos de los gestores
                         for(uint k=0; k<cantAhorristas; k++) {
                             ahorristas[ahorristasIndex[k]].banderas.gestorVotaEjecucion = false;
                         }
-                        
                         return string(abi.encodePacked("Se ejecuto el subobjetivo ", subObjetivos[i].descripcion));
                     }
                     return "Se ha agregado su voto pero todavia falta un Gestor por votar";
@@ -350,8 +329,9 @@ contract SavingAccount {
         }
         return "No se encontro el subobjetivo";
     }
-    
-    function getSubObjetivosPendientesDeEjecucion() public onlyGestor view returns(string[] memory) { 
+
+    // Endpoint
+    function getSubObjetivosPendienteEjecucion() public onlyGestor view returns(string[] memory) { 
         uint cantSubObj=0;
         for(uint i=0; i<subObjetivos.length; i++) { 
             if(subObjetivos[i].estado == Estado.PendienteEjecucion){
@@ -360,18 +340,16 @@ contract SavingAccount {
         }
         string[] memory losSubObjetivos = new string[](cantSubObj);
         uint j = 0;
-        
         for(uint i=0; i<subObjetivos.length; i++) {
-            if(subObjetivos[i].estado == Estado.PendienteEjecucion)
-                {
-                    losSubObjetivos[j] = subObjetivos[i].descripcion;    
-                    j++;
-                }
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion) {
+                losSubObjetivos[j] = subObjetivos[i].descripcion;    
+                j++;
+            }
         }
-        
         return losSubObjetivos;
     }
     
+    // Endpoint - Probar
     function votarSubObjetivoEnProesoDeVotacion(string memory descripcion) public returns(string memory){ //onlyAhorristas
         if(votacionActiva == false) { return "No existe periodo de votacion abierto"; }
         if(tieneCtaActiva() == false){ return "Su cuenta no esta activa, no puede votar"; }
@@ -421,8 +399,21 @@ contract SavingAccount {
     function tieneCtaActiva() public view returns (bool) {  //onlyAhorristas
         return ahorristas[msg.sender].banderas.isActive == true;
     }
-    
-    //fin item 11 al 16 -- Votacion de Subobjetivos
+
+    function ejecutarSubObjetivo(uint index) private {
+        subObjetivos[index].estado = Estado.Ejecutado;
+        ahorroActual =- subObjetivos[index].monto;
+        subObjetivos[index].ctaDestino.transfer(subObjetivos[index].monto);
+    }
+
+    //////////////////////////////////////////
+    ///////// Funciones Auxiliares ///////////
+    //////////////////////////////////////////
+
+    function isInAhorristasMapping(address unAddress) private view returns(bool)
+    {
+        return ahorristas[unAddress].cuentaEth != address(0);
+    }
     
     //////////////////////////////////////////
     ////////// METODOS DE PRUEBA /////////////
@@ -455,56 +446,36 @@ contract SavingAccount {
     function setVotacionActiva(bool state) public {
         votacionActiva = state;
     }
-    
-    // function retornaBoolean(uint valor) public pure returns(bool) {
-    //     require(valor < 5, 'menor a 5 no funca');
-    //     if(valor<10){
-    //         return true;
-    //     }else{
-    //         return false;
-    //     }
-    // } 
-    
-    // function probarRetorno(uint valor) public pure returns(bool){
-    //     bool retorno = retornaBoolean(valor);
-        
-    //     return retorno;
-    // }
-    
-    // function getAhorristasToAprove() public onlyAuditor view returns (string[] memory){ 
-    //     string[] memory losActivosSinAprobar = new string[](cantAhorristasActivos - cantAhorristasAproved);
-    //     uint j = 0;
-    //     if (cantAhorristasActivos - cantAhorristasAproved > 0) 
-    //     {
-    //         for(uint i = 0; i < cantAhorristas; i++)
-    //         {
-    //             if(ahorristas[ahorristasIndex[i]].isActive && !ahorristas[ahorristasIndex[i]].isAproved)
-    //             {
-    //                 losActivosSinAprobar[j] = (abi.encodePacked(ahorristas[ahorristasIndex[i]].cuentaEth));    
-    //                 j++;
-    //             }
-    //         }    
-    //     }
-        
-    //     return losActivosSinAprobar;
-    // }
-    
-     /*
-    function getMappingValue() public view returns (uint[] memory) {
-        uint[] memory memoryArray = new uint[](myVariable.sizeOfMapping);
-        for(uint i = 0; i < myVariable.sizeOfMapping; i++) {
-            memoryArray[i] = myVariable.myMappingInStruct[i];
-        }
-        return memoryArray;
+
+    // Endpoint
+    function getAhorrista(address ads) public view returns(Ahorrista memory){
+        return ahorristas[ads];
     }
-    
-    function name() public view returns(address[] memory) {
-        address[] memory playerList;
-        for(uint i=0; i<getPlayerCount(); i++) {
-            playerList[i] = players[i];
-        }
-        return playerList;
+
+    // Endpoint
+    function savingAccountStatePart1() public view returns(uint, uint, string memory, uint, uint, bool, bool, uint) {
+        uint v1 = cantMaxAhorristas;
+        uint v2 = ahorroObjetivo;
+        string memory v3 = objetivo;
+        uint v4 = minAporteDeposito;
+        uint v5 = minAporteActivarCta;
+        bool v6 = ahorroActualVisiblePorAhorristas;
+        bool v7 = ahorroActualVisiblePorGestores;
+        uint v8 = cantAhorristas;
+        return (v1, v2, v3, v4, v5, v6, v7, v8);
     }
-    */
-    
+
+    // Endpoint
+    function savingAccountStatePart2() public view returns(uint, uint, uint, uint, address, bool, uint, uint) {
+        uint v9 = cantAhorristasActivos;
+        uint v10 = cantAhorristasAproved;
+        uint v11 = cantGestores;
+        uint v12 = cantAuditores;
+        address v13 = administrador;
+        bool v14 = isActive;
+        uint v15 = ahorroActual;
+        uint v16 = totalRecibidoDeposito;
+        return (v9, v10, v11, v12, v13, v14, v15, v16);
+    }
+
 }

@@ -6,6 +6,135 @@
 	},
 	"item": [
 		{
+			"name": "Base",
+			"item": [
+				{
+					"name": "Hello World",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								""
+							]
+						},
+						"description": "Hello World"
+					},
+					"response": []
+				},
+				{
+					"name": "Compile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/compile",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"compile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deploy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/deploy",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"deploy"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Init, Registro y Deposito",
+			"item": [
+				{
+					"name": "init",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"maxAhorristas\": 12,\n    \"ahorroObj\": 10000,\n    \"elObjetivo\": \"comprar una casa\",\n    \"minAporteDep\": 10,\n    \"minAporteActivar\": 20,   \n    \"ahorristaVeAhorroActual\": true,\n    \"gestorVeAhorroActual\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/init",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"init"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"Pedro Gomez\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Votación de SubObjetivos",
 			"item": [
 				{
@@ -87,7 +216,36 @@
 					"response": []
 				},
 				{
-					"name": "addSubObjetivo : PendienteEjecucion",
+					"name": "addSubObjetivo : PendienteEjecucion 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"desc\": \"Comprar una casa\",\n    \"monto\": 5000,\n    \"estado\": 2,\n    \"ctaDestino\": \"0xe84399A9A0533915f73f7096fA7276AE48AB2328\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/addSubObjetivo",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"addSubObjetivo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addSubObjetivo : PendienteEjecucion 2",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -154,39 +312,14 @@
 						}
 					},
 					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Base",
-			"item": [
-				{
-					"name": "Hello World",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								""
-							]
-						},
-						"description": "Hello World"
-					},
-					"response": []
 				},
 				{
-					"name": "Compile",
+					"name": "getSubObjetivosPendienteEjecucion",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/api/contract/compile",
+							"raw": "localhost:3000/api/contract/getSubObjetivosPendienteEjecucion",
 							"host": [
 								"localhost"
 							],
@@ -194,19 +327,28 @@
 							"path": [
 								"api",
 								"contract",
-								"compile"
+								"getSubObjetivosPendienteEjecucion"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Deploy",
+					"name": "votarSubObjetivoPendienteEjecucion",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"descripcion\": \"Comprar una casa\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "localhost:3000/api/contract/deploy",
+							"raw": "localhost:3000/api/contract/votarSubObjetivoPendienteEjecucion",
 							"host": [
 								"localhost"
 							],
@@ -214,7 +356,76 @@
 							"path": [
 								"api",
 								"contract",
-								"deploy"
+								"votarSubObjetivoPendienteEjecucion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarSubObjetivoEnProesoDeVotacion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"descripcion\": \"Comprar una tele\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/votarSubObjetivoEnProesoDeVotacion",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarSubObjetivoEnProesoDeVotacion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ejecutarProxSubObjetivo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/ejecutarProxSubObjetivo",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"ejecutarProxSubObjetivo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarCerrarPeriodoDeVotacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/votarCerrarPeriodoDeVotacion",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarCerrarPeriodoDeVotacion"
 							]
 						}
 					},
@@ -348,6 +559,55 @@
 								"api",
 								"contract",
 								"setActive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorrista",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ads\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorrista",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorrista"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] savingAccountState",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/savingAccountState",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"savingAccountState"
 							]
 						}
 					},

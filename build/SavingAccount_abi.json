@@ -207,6 +207,153 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ads",
+        "type": "address"
+      }
+    ],
+    "name": "getAhorrista",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "cedula",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "nombreCompleto",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fechaIngreso",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "cuentaEth",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "cuentaBeneficenciaEth",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "montoAhorro",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "montoAdeudado",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "isGestor",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isAuditor",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isActive",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isAproved",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "ahorristaHaVotado",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "auditorCierraVotacion",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "gestorVotaEjecucion",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct SavingAccount.Banderas",
+            "name": "banderas",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct SavingAccount.Ahorrista",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ads",
+        "type": "address"
+      }
+    ],
+    "name": "getAhorristaBanderas",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getAhorristasToAprove",
     "outputs": [
@@ -260,7 +407,7 @@
   },
   {
     "inputs": [],
-    "name": "getSubObjetivosPendientesDeEjecucion",
+    "name": "getSubObjetivosPendienteEjecucion",
     "outputs": [
       {
         "internalType": "string[]",
@@ -298,6 +445,49 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "maxAhorristas",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "ahorroObj",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "elObjetivo",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minAporteDep",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minAporteActivar",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "ahorristaVeAhorroActual",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "gestorVeAhorroActual",
+        "type": "bool"
+      }
+    ],
+    "name": "init",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "isActive",
     "outputs": [
@@ -305,6 +495,102 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "savingAccountStatePart1",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "savingAccountStatePart2",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -495,7 +781,7 @@
         "type": "string"
       }
     ],
-    "name": "votarSubObjetivoPendienteDeEjecucion",
+    "name": "votarSubObjetivoPendienteEjecucion",
     "outputs": [
       {
         "internalType": "string",

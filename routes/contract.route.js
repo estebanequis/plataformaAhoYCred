@@ -196,18 +196,19 @@ router.get('/habilitarPeriodoDeVotacion', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.habilitarPeriodoDeVotacion(
+        contract.methods.habilitarPeriodoDeVotacion(
         ).send({
             from: accounts[0],
             gas: 300000
         })
-        .on('error', function(error){
+        .on('error', (error) => {
             console.log('error: ' + error);
+            res.status(500).send(error);
         })
-        .on('receipt', function(receipt){
+        .on('receipt', (receipt) => {
             console.log('receipt: ' + receipt) // contains the new contract address
+            res.status(200).send('receipt:' + receipt);
         })
-        res.status(200).send('Resultado:' + result);
     } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
@@ -267,6 +268,216 @@ router.get('/getSubObjetivosEnProcesoDeVotacion', async function (req, res) {
         });
         console.log(result);
         res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/getSubObjetivosPendienteEjecucion', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.getSubObjetivosPendienteEjecucion().call({
+            from: accounts[0]
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/votarSubObjetivoPendienteEjecucion', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.votarSubObjetivoPendienteEjecucion(
+            req.body.descripcion
+        ).send({
+            from: accounts[0]
+        });
+        res.status(200).send('Retorno: ' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/votarSubObjetivoEnProesoDeVotacion', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.votarSubObjetivoEnProesoDeVotacion(
+            req.body.descripcion
+        ).send({
+            from: accounts[0]
+        });
+        res.status(200).send('Retorno: ' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+/*
+router.post('/getAhorrista', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.getAhorrista(
+            req.body.ads
+        ).call({
+            from: accounts[0]
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+*/
+
+router.get('/ejecutarProxSubObjetivo', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.ejecutarProxSubObjetivo(
+        ).send({
+            from: accounts[0]
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/votarCerrarPeriodoDeVotacion', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.votarCerrarPeriodoDeVotacion(
+        ).send({
+            from: accounts[0]
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/init', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.init(
+            req.body.maxAhorristas,             // uint
+            req.body.ahorroObj,                 // uint
+            req.body.elObjetivo,                // string
+            req.body.minAporteDep,              // uint
+            req.body.minAporteActivar,          // uint    
+            req.body.ahorristaVeAhorroActual,   // bool
+            req.body.gestorVeAhorroActual       // bool
+        ).send({
+            from: accounts[0],
+            gas: 300000
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/savingAccountState', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result1 = await contract.methods.savingAccountStatePart1(
+        ).call({
+            from: accounts[0]
+        });
+        let result2 = await contract.methods.savingAccountStatePart2(
+        ).call({
+            from: accounts[0]
+        });
+        res.status(200).send('Estados de SavingAccount: \n\n' +
+            'cantMaxAhorristas: ' + result1[0] + '\n' +
+            'ahorroObjetivo: ' + result1[1] + '\n' +
+            'objetivo: ' + result1[2] + '\n' +
+            'minAporteDeposito: ' + result1[3] + '\n' +
+            'minAporteActivarCta: ' + result1[4] + '\n' +
+            'ahorroActualVisiblePorAhorristas: ' + result1[5] + '\n' +
+            'ahorroActualVisiblePorGestores: ' + result1[6] + '\n' +
+            'cantAhorristas: ' + result1[7] + '\n' +
+            'cantAhorristasActivos: ' + result2[0] + '\n' +
+            'cantAhorristasAproved: ' + result2[1] + '\n' +
+            'cantGestores: ' + result2[2] + '\n' +
+            'cantAuditores: ' + result2[3] + '\n' +
+            'administrador: ' + result2[4] + '\n' +
+            'isActive: ' + result2[5] + '\n' +
+            'ahorroActual: ' + result2[6] + '\n' +
+            'totalRecibidoDeposito: ' + result2[7] + '\n'
+        );
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/sendDepositWithRegistration', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.sendDepositWithRegistration(
+            req.body.cedula,                // string
+            req.body.fullName,              // string
+            req.body.addressBeneficiario    // string
+        ).send({
+            from: accounts[0],
+            gas: 300000,
+            value: 300000,
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/getAhorrista', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.getAhorrista(
+            req.body.ads    // string
+        ).call({
+            from: accounts[0]
+        });
+        res.status(200).send('Estados del Ahorrista: \n\n' +
+            'cedula: ' + result[0] + '\n' +
+            'nombreCompleto: ' + result[1] + '\n' +
+            'fechaIngreso: ' + result[2] + '\n' +
+            'cuentaEth: ' + result[3] + '\n' +
+            'cuentaBeneficenciaEth: ' + result[4] + '\n' +
+            'montoAhorro: ' + result[5] + '\n' +
+            'montoAdeudado: ' + result[6] + '\n' +
+            'isGestor: ' + result[7][0] + '\n' +
+            'isAuditor: ' + result[7][1] + '\n' +
+            'isActive: ' + result[7][2] + '\n' +
+            'isAproved: ' + result[7][3] + '\n' +
+            'ahorristaHaVotado: ' + result[7][4] + '\n' +
+            'auditorCierraVotacion: ' + result[7][5] + '\n' +
+            'gestorVotaEjecucion: ' + result[7][6] + '\n'
+        );
     } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
