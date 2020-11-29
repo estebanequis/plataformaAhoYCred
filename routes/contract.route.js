@@ -22,112 +22,28 @@ router.get('/deploy', function (req, res) {
     }
 });
 
-router.get('/sum', async function (req, res) {
-    try {
-        const contract = contractService.getContract();
-
-        let result = await contract.methods.sum(1, 3).call()
-            .then(function (result) {
-                res.status(200).send('Result:' + result);
-            });
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error);
-    }
-});
-
-router.get('/getIndex', async function (req, res) {
-    try {
-        const contract = contractService.getContract();
-        let result = await contract.methods.index().call();
-        res.status(200).send('Event index:' + result);
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error);
-    }
-});
-
-router.get('/publishEvent', async function (req, res) {
+router.get('/setAuditorTrue', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.publishEvent('My first event').send({
-            from: accounts[0]
+        await contract.methods.setAuditorTrue().send({
+            from: accounts[req.query.cta],
+            gas: 3000000
         });
-        res.status(200).send('Event published.');
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error);
-    }
-});
-
-router.get('/getPublishedEvent', async function (req, res) {
-    try {
-        const contract = contractService.getContract();
-        let eventMethodName = 'messageEvent(uint,string)';
-        let filterEventMethod = web3.utils.sha3(eventMethodName);
-        let indexInEvent = web3.utils.padLeft(web3.utils.toHex(1), 64);
-
-        let filters = {
-            address: contract._address,
-            fromBlock: "0x1",
-            toBlock: "latest",
-            topics: [filterEventMethod, indexInEvent]
-        }
-
-        let result = await web3.eth.getPastLogs(filters);
-        res.status(200).send('Event message:' + web3.eth.util.hexToUtf8(result[0].data));
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error);
-    }
-});
-
-router.get('/getBalnce', async function (req, res) {
-    try {
-        const contract = contractService.getContract();
-        let result = await contract.methods.getBalance().call();
-        res.status(200).send('Balance:' + web3.utils.fromWei(result, 'ether') + ' ethers');
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error);
-    }
-});
-
-router.get('/probarRetorno', async function (req, res) {
-    try {
-        const contract = contractService.getContract();
-        let result = await contract.methods.probarRetorno(6).call();
-        res.status(200).send('Retorno:' + result);
+        res.status(200).send('Retorno: Ok');
     } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
 });
 
-router.get('/', async function (req, res) {
-    try {
-        const contract = contractService.getContract();
-        let result = await contract.methods.probarRetorno(6).call();
-        res.status(200).send('Retorno:' + result);
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error.data);
-    }
-});
-
-// Nuestros end points
-
-router.post('/setRol', async function (req, res) {
+router.get('/setGestorTrue', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        await contract.methods.setRol(
-            req.body.auditor,
-            req.body.gestor
-        ).send({
-            from: accounts[0]
+        await contract.methods.setGestorTrue().send({
+            from: accounts[req.query.cta],
+            gas: 3000000
         });
         res.status(200).send('Retorno: Ok');
     } catch (error) {
@@ -143,7 +59,8 @@ router.post('/setActive', async function (req, res) {
         await contract.methods.setActive(
             req.body.activeStatus
         ).send({
-            from: accounts[0]
+            from: accounts[req.query.cta],
+            gas: 300000
         });
         res.status(200).send('Retorno: Ok');
     } catch (error) {
@@ -151,21 +68,6 @@ router.post('/setActive', async function (req, res) {
         res.status(500).send(error.data);
     }
 });
-
-router.get('/getOneField', async function (req, res) {
-    try {
-        const contract = contractService.getContract();
-        const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.getOneField().call({
-            from: accounts[0]
-        });
-        res.status(200).send('Address:' + result);
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error.data);
-    }
-});
-
 
 // Votacion de SubObjetivos
 
@@ -179,7 +81,7 @@ router.post('/addSubObjetivo', async function (req, res) {
             req.body.estado,
             req.body.ctaDestino
         ).send({
-            from: accounts[0],
+            from: accounts[req.query.cta],
             gas: 300000
         });
         //.then('receipt', function(receipt) {
@@ -198,7 +100,7 @@ router.get('/habilitarPeriodoDeVotacion', async function (req, res) {
         const accounts = await web3.eth.getAccounts();
         contract.methods.habilitarPeriodoDeVotacion(
         ).send({
-            from: accounts[0],
+            from: accounts[req.query.cta],
             gas: 300000
         })
         .on('error', (error) => {
@@ -220,7 +122,7 @@ router.get('/tieneCtaActiva', async function (req, res) {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.tieneCtaActiva().call({
-            from: accounts[0]
+            from: accounts[req.query.cta]
         });
         res.status(200).send('Resultado: ' + result);
     } catch (error) {
@@ -234,7 +136,7 @@ router.get('/getVotacionActiva', async function (req, res) {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.getVotacionActiva().call({
-            from: accounts[0]
+            from: accounts[req.query.cta]
         });
         res.status(200).send('votacionActiva: ' + result);
     } catch (error) {
@@ -250,7 +152,8 @@ router.post('/setVotacionActiva', async function (req, res) {
         await contract.methods.setVotacionActiva(
             req.body.status
         ).send({
-            from: accounts[0]
+            from: accounts[req.query.cta],
+            gas: 300000
         });
         res.status(200).send('Retorno: Ok');
     } catch (error) {
@@ -264,7 +167,7 @@ router.get('/getSubObjetivosEnProcesoDeVotacion', async function (req, res) {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.getSubObjetivosEnProcesoDeVotacion().call({
-            from: accounts[0]
+            from: accounts[req.query.cta]
         });
         console.log(result);
         res.status(200).send('Resultado:' + result);
@@ -279,7 +182,7 @@ router.get('/getSubObjetivosPendienteEjecucion', async function (req, res) {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.getSubObjetivosPendienteEjecucion().call({
-            from: accounts[0]
+            from: accounts[req.query.cta]
         });
         console.log(result);
         res.status(200).send('Resultado:' + result);
@@ -296,7 +199,8 @@ router.post('/votarSubObjetivoPendienteEjecucion', async function (req, res) {
         let result = await contract.methods.votarSubObjetivoPendienteEjecucion(
             req.body.descripcion
         ).send({
-            from: accounts[0]
+            from: accounts[req.query.cta],
+            gas: 3000000
         });
         res.status(200).send('Retorno: ' + result);
     } catch (error) {
@@ -312,7 +216,8 @@ router.post('/votarSubObjetivoEnProesoDeVotacion', async function (req, res) {
         let result = await contract.methods.votarSubObjetivoEnProesoDeVotacion(
             req.body.descripcion
         ).send({
-            from: accounts[0]
+            from: accounts[req.query.cta],
+            gas: 300000
         });
         res.status(200).send('Retorno: ' + result);
     } catch (error) {
@@ -321,32 +226,14 @@ router.post('/votarSubObjetivoEnProesoDeVotacion', async function (req, res) {
     }
 });
 
-/*
-router.post('/getAhorrista', async function (req, res) {
-    try {
-        const contract = contractService.getContract();
-        const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.getAhorrista(
-            req.body.ads
-        ).call({
-            from: accounts[0]
-        });
-        console.log(result);
-        res.status(200).send('Resultado:' + result);
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error.data);
-    }
-});
-*/
-
 router.get('/ejecutarProxSubObjetivo', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.ejecutarProxSubObjetivo(
         ).send({
-            from: accounts[0]
+            from: accounts[req.query.cta],
+            gas: 300000
         });
         console.log(result);
         res.status(200).send('Resultado:' + result);
@@ -362,7 +249,8 @@ router.get('/votarCerrarPeriodoDeVotacion', async function (req, res) {
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.votarCerrarPeriodoDeVotacion(
         ).send({
-            from: accounts[0]
+            from: accounts[req.query.cta],
+            gas: 300000
         });
         console.log(result);
         res.status(200).send('Resultado:' + result);
@@ -385,11 +273,27 @@ router.post('/init', async function (req, res) {
             req.body.ahorristaVeAhorroActual,   // bool
             req.body.gestorVeAhorroActual       // bool
         ).send({
-            from: accounts[0],
+            from: accounts[req.query.cta],
             gas: 300000
         });
         console.log(result);
         res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/activarSavingAccount', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        await contract.methods.activarSavingAccount()
+        .send({
+            from: accounts[req.query.cta],
+            gas: 300000
+        });
+        res.status(200).send('Retorno: Ok');
     } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
@@ -402,11 +306,11 @@ router.get('/savingAccountState', async function (req, res) {
         const accounts = await web3.eth.getAccounts();
         let result1 = await contract.methods.savingAccountStatePart1(
         ).call({
-            from: accounts[0]
+            from: accounts[req.query.cta]
         });
         let result2 = await contract.methods.savingAccountStatePart2(
         ).call({
-            from: accounts[0]
+            from: accounts[req.query.cta]
         });
         res.status(200).send('Estados de SavingAccount: \n\n' +
             'cantMaxAhorristas: ' + result1[0] + '\n' +
@@ -441,9 +345,60 @@ router.post('/sendDepositWithRegistration', async function (req, res) {
             req.body.fullName,              // string
             req.body.addressBeneficiario    // string
         ).send({
-            from: accounts[0],
+            from: accounts[req.query.cta],
             gas: 300000,
-            value: 300000,
+            value: req.body.amount
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/sendDeposit', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.sendDeposit()
+        .send({
+            from: accounts[req.query.cta],
+            gas: 300000,
+            value: req.body.amount
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/aproveAhorrista', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.aproveAhorrista(
+            req.body.addressAhorrista    // string
+        ).send({
+            from: accounts[req.query.cta],
+            gas: 300000
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/getAhorristasToAprove', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.getAhorristasToAprove().call({
+            from: accounts[req.query.cta]
         });
         console.log(result);
         res.status(200).send('Resultado:' + result);
@@ -460,7 +415,7 @@ router.post('/getAhorrista', async function (req, res) {
         let result = await contract.methods.getAhorrista(
             req.body.ads    // string
         ).call({
-            from: accounts[0]
+            from: accounts[req.query.cta]
         });
         res.status(200).send('Estados del Ahorrista: \n\n' +
             'cedula: ' + result[0] + '\n' +
@@ -484,43 +439,54 @@ router.post('/getAhorrista', async function (req, res) {
     }
 });
 
-module.exports = router;
-
-/*
-router.post('/addSubObjetivo', async function(req, res){
-    try{
+router.get('/getAhorristas', async function (req, res) {
+    try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.addSubObjetivo(
-            req.body.desc,
-            req.body.monto,
-            req.body.estado,
-            req.body.ctaDestino
-        ).send({
-            from: accounts[0],
-            gas: 300000
-        }, function(error, transactionHash){
-            console.log('error: ' + error, 'transactionHash: ' + transactionHash);
-        })
-        .on('error', function(error){
-            console.log('error: ' + error);
-        })
-        .on('transactionHash', function(transactionHash){
-            console.log('transactionHash: ' + transactionHash);
-        })
-        .on('receipt', function(receipt){
-            console.log('receipt: ' + receipt.contractAddress) // contains the new contract address
-        })
-        .on('confirmation', function(confirmationNumber, receipt){
-            console.log('confirmationNumber: ' + confirmationNumber + ", receipt: " + receipt);
-        })
-        .then(function(newContractInstance){
-            console.log('newContractInstance: ' + newContractInstance.options.address) // instance with the new contract address
+        let result = await contract.methods.getAhorristas().call({
+            from: accounts[req.query.cta]
         });
-        res.status(200).send('Ok');
-    } catch(error){
+        var retorno = "Estados de los Ahorristas: \n\n";
+        for(var i=0; i<result.length; i++){
+            retorno += 'cedula: ' + result[i][0] + '\n' +
+            'nombreCompleto: ' + result[i][1] + '\n' +
+            'fechaIngreso: ' + result[i][2] + '\n' +
+            'cuentaEth: ' + result[i][3] + '\n' +
+            'cuentaBeneficenciaEth: ' + result[i][4] + '\n' +
+            'montoAhorro: ' + result[i][5] + '\n' +
+            'montoAdeudado: ' + result[i][6] + '\n' +
+            'isGestor: ' + result[i][7][0] + '\n' +
+            'isAuditor: ' + result[i][7][1] + '\n' +
+            'isActive: ' + result[i][7][2] + '\n' +
+            'isAproved: ' + result[i][7][3] + '\n' +
+            'ahorristaHaVotado: ' + result[i][7][4] + '\n' +
+            'auditorCierraVotacion: ' + result[i][7][5] + '\n' +
+            'gestorVotaEjecucion: ' + result[i][7][6] + '\n\n';
+        }
+        res.status(200).send(retorno);
+    } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
     }
 });
-*/
+
+router.post('/setConfigAddress', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.setConfigAddress(
+            req.body.configAddress    // string
+        ).send({
+            from: accounts[req.query.cta],
+            gas: 300000
+        });
+        console.log(result);
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+module.exports = router;
+

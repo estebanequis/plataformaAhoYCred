@@ -5,6 +5,13 @@
     "type": "constructor"
   },
   {
+    "inputs": [],
+    "name": "activarSavingAccount",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "string",
@@ -305,49 +312,92 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "ads",
-        "type": "address"
-      }
-    ],
-    "name": "getAhorristaBanderas",
+    "inputs": [],
+    "name": "getAhorristas",
     "outputs": [
       {
-        "internalType": "bool",
+        "components": [
+          {
+            "internalType": "string",
+            "name": "cedula",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "nombreCompleto",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fechaIngreso",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "cuentaEth",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "cuentaBeneficenciaEth",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "montoAhorro",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "montoAdeudado",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "isGestor",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isAuditor",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isActive",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isAproved",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "ahorristaHaVotado",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "auditorCierraVotacion",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "gestorVotaEjecucion",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct SavingAccount.Banderas",
+            "name": "banderas",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct SavingAccount.Ahorrista[]",
         "name": "",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -374,19 +424,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getOneField",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -646,6 +683,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "setAuditorTrue",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "contract GeneralConfiguration",
@@ -659,19 +703,8 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "auditor",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "gestor",
-        "type": "bool"
-      }
-    ],
-    "name": "setRol",
+    "inputs": [],
+    "name": "setGestorTrue",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

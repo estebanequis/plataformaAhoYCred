@@ -23,6 +23,10 @@ contract GeneralConfiguration {
     constructor() public
     {
         owner = msg.sender;
+        //valores por defecto
+        minCantAhorristas = 6;
+        minCantGestores = 2;
+        minCantAuditores = 1;
     }
     
     function setRestrictions(uint minAhorristas, uint minGestores, uint minAuditores) public onlyOwner validateRelationBetweenRoles(minAhorristas, minGestores, minAuditores){

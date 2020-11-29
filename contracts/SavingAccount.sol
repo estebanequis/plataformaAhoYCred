@@ -102,7 +102,7 @@ contract SavingAccount {
     
     constructor() public {   
         administrador = msg.sender;
-        isActive = true; // Solo para test, debe ser false
+        //isActive = true; // Solo para test, debe ser false
         votacionActiva = false;
     }
 
@@ -114,7 +114,14 @@ contract SavingAccount {
     function getAhorroActual() public onlyAdminOrAuditor view returns (uint) {
         return ahorroActual;
     }
-    
+
+    // item 3
+    function activarSavingAccount() public onlyAdmin {
+        if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, cantAuditores)){
+            isActive = true;
+        }  
+    }
+
     //////////////////////////////////////////
     ///////////// Items 6 al 10 //////////////
     /////// Init, Registro y Deposito ////////
@@ -138,7 +145,7 @@ contract SavingAccount {
 
     // Endpoint
     // Item 8 y 10
-    function sendDepositWithRegistration(string memory cedula, string memory fullName, address addressBeneficiario) public payable savingContractIsActive receiveMinDepositAmount {
+    function sendDepositWithRegistration(string memory cedula, string memory fullName, address addressBeneficiario) public payable receiveMinDepositAmount {
         address addressUser = msg.sender;
         if (!isInAhorristasMapping(addressUser)) {
             ahorristas[addressUser].cedula = cedula;
@@ -158,6 +165,7 @@ contract SavingAccount {
         }
     }
     
+    //Endpoint
     // Item 6, 8 
     function sendDeposit() public payable savingContractIsActive receiveMinDepositAmount {
         if (isInAhorristasMapping(msg.sender))
@@ -172,6 +180,7 @@ contract SavingAccount {
         }
     }
     
+    //Endpoint
     // Item 10
     function aproveAhorrista(address unAddress) public onlyAuditor returns (bool) {
         bool retorno = false;
@@ -196,6 +205,7 @@ contract SavingAccount {
         return retorno;
     }
     
+    // Endpoint
     // Item 10
     function getAhorristasToAprove() public onlyAuditor view returns(address[] memory) {
         address[] memory losActivosSinAprobar = new address[](cantAhorristasActivos - cantAhorristasAproved);
@@ -420,16 +430,27 @@ contract SavingAccount {
     //////////////////////////////////////////
     
     // Endpoint
-    function setRol(bool auditor, bool gestor) public {
-        ahorristas[msg.sender].banderas.isAuditor = auditor;
-        ahorristas[msg.sender].banderas.isGestor = gestor;
-    }
-    
-    // Endpoint
-    function getOneField() public view returns (address){
-        return ahorristas[msg.sender].cuentaEth;
+    function setGestorTrue() public {
+        bool currentState = ahorristas[msg.sender].banderas.isGestor;
+        if(!currentState){
+            cantAhorristasAproved++;
+            cantGestores++;
+            ahorristas[msg.sender].banderas.isGestor = true;
+            ahorristas[msg.sender].banderas.isAproved = true;
+        }
     }
 
+    // Endpoint
+    function setAuditorTrue() public {
+        bool currentState = ahorristas[msg.sender].banderas.isAuditor;
+        if(!currentState){
+            cantAhorristasAproved++;
+            cantAuditores++;
+            ahorristas[msg.sender].banderas.isAuditor = true;
+            ahorristas[msg.sender].banderas.isAproved = true;
+        }
+    }
+    
     // Endpoint
     function setActive(bool activeStatus) public returns(bool) {
         address ads = msg.sender;
@@ -450,6 +471,15 @@ contract SavingAccount {
     // Endpoint
     function getAhorrista(address ads) public view returns(Ahorrista memory){
         return ahorristas[ads];
+    }
+
+    // Endpoint
+    function getAhorristas() public view returns(Ahorrista[] memory){
+        Ahorrista[] memory memoryArray = new Ahorrista[](cantAhorristas);
+        for(uint i = 0; i < cantAhorristas; i++) {
+            memoryArray[i] = ahorristas[ahorristasIndex[i]];
+        }
+        return memoryArray;
     }
 
     // Endpoint

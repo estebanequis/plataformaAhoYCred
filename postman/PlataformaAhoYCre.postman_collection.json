@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b38e37b3-8b4a-460a-a7e9-d96155d7b26f",
+		"_postman_id": "33aa8f86-4897-4672-8ec6-375717003ed8",
 		"name": "PlataformaAhoYCre",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -66,6 +66,41 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "setConfigAddress",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"configAddress\": \"0xCcd72eC3815789bA4AfdfD5565C42FcEA1dbD56D\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/setConfigAddress?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setConfigAddress"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -88,7 +123,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/api/contract/init",
+							"raw": "localhost:3000/api/contract/init?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -97,19 +132,25 @@
 								"api",
 								"contract",
 								"init"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "sendDepositWithRegistration",
+					"name": "sendDepositWithRegistration0 (admin)",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"Pedro Gomez\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\n}",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"soy admin\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -117,7 +158,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/api/contract/sendDepositWithRegistration",
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -126,6 +167,553 @@
 								"api",
 								"contract",
 								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration1 (ahorrista 1)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 1\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration2 (ahorrista 2)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 2\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration3 (ahorrista 3)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 3\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=3",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration4 (ahorrista 4)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 4\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration5 (ahorrista 5)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 5\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=5",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration6 (prox gestor 6)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"gestor 6\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=6",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] setGestorTrue (gestor 6)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/setGestorTrue?cta=6",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setGestorTrue"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration7 (prox gestor 7)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"gestor 7\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] setGestorTrue (gestor 7)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/setGestorTrue?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setGestorTrue"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration8 (prox auditor 8)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"auditor 8\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] setAuditorTrue (auditor 8)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/setAuditorTrue?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setAuditorTrue"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration9 (prox auditor 9)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"auditor 9\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] setAuditorTrue (auditor 9)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/setAuditorTrue?cta=9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setAuditorTrue"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activarSavingAccount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/activarSavingAccount?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"activarSavingAccount"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDeposit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDeposit?cta=2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDeposit"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAhorristasToAprove",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristasToAprove?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristasToAprove"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "aproveAhorrista",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"addressAhorrista\": \"0x79e05CDaC0D76186d7B9131B57D04EE9daE2Aa77\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/aproveAhorrista?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"aproveAhorrista"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
 							]
 						}
 					},
@@ -487,12 +1075,12 @@
 					"response": []
 				},
 				{
-					"name": "[TEST] getOneField",
+					"name": "[TEST] setAuditorTrue",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/api/contract/getOneField",
+							"raw": "localhost:3000/api/contract/setAuditorTrue?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -500,28 +1088,25 @@
 							"path": [
 								"api",
 								"contract",
-								"getOneField"
+								"setAuditorTrue"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "[TEST] setRol (Auditor y Gestor)",
+					"name": "[TEST] setGestorTrue",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"auditor\": true,\n\t\"gestor\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "localhost:3000/api/contract/setRol",
+							"raw": "localhost:3000/api/contract/setGestorTrue?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -529,7 +1114,13 @@
 							"path": [
 								"api",
 								"contract",
-								"setRol"
+								"setGestorTrue"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -579,7 +1170,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/api/contract/getAhorrista",
+							"raw": "localhost:3000/api/contract/getAhorrista?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -588,6 +1179,38 @@
 								"api",
 								"contract",
 								"getAhorrista"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -599,7 +1222,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/api/contract/savingAccountState",
+							"raw": "localhost:3000/api/contract/savingAccountState?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -608,6 +1231,12 @@
 								"api",
 								"contract",
 								"savingAccountState"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
 							]
 						}
 					},

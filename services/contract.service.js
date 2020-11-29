@@ -56,7 +56,9 @@ const methods = {
                 data: '0x' + bytecode.object
             })
             .send({
-                gas: '3000000',
+                //gas: '3000000',
+                gas: 10000000,
+                gasLimit: 10000000,
                 from: accounts[0],
                 value: 0
             });
