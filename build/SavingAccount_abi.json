@@ -5,6 +5,37 @@
     "type": "constructor"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "gestorAdrs",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "descripcion",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "monto",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "ctaDestino",
+        "type": "address"
+      }
+    ],
+    "name": "SubObjetivoEvent",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "activarSavingAccount",
     "outputs": [],
@@ -116,7 +147,7 @@
           },
           {
             "internalType": "bool",
-            "name": "ahorristaHaVotado",
+            "name": "ahorristaVotaSubObjetivo",
             "type": "bool"
           },
           {
@@ -128,6 +159,43 @@
             "internalType": "bool",
             "name": "gestorVotaEjecucion",
             "type": "bool"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "votoAGestor",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "votoAAuditor",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "postuladoComoGestor",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "postuladoComoAuditor",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "votosRecibidoComoGestor",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "votosRecibidoComoAuditor",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct SavingAccount.VotoRoles",
+            "name": "votoRoles",
+            "type": "tuple"
           }
         ],
         "internalType": "struct SavingAccount.Banderas",
@@ -186,6 +254,24 @@
         "type": "string"
       }
     ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "subObjIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "gestorAdrs",
+        "type": "address"
+      }
+    ],
+    "name": "ejecutarSubObjetivoEvent",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -273,7 +359,7 @@
               },
               {
                 "internalType": "bool",
-                "name": "ahorristaHaVotado",
+                "name": "ahorristaVotaSubObjetivo",
                 "type": "bool"
               },
               {
@@ -285,6 +371,43 @@
                 "internalType": "bool",
                 "name": "gestorVotaEjecucion",
                 "type": "bool"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bool",
+                    "name": "votoAGestor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "votoAAuditor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "postuladoComoGestor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "postuladoComoAuditor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "votosRecibidoComoGestor",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "votosRecibidoComoAuditor",
+                    "type": "uint256"
+                  }
+                ],
+                "internalType": "struct SavingAccount.VotoRoles",
+                "name": "votoRoles",
+                "type": "tuple"
               }
             ],
             "internalType": "struct SavingAccount.Banderas",
@@ -365,7 +488,7 @@
               },
               {
                 "internalType": "bool",
-                "name": "ahorristaHaVotado",
+                "name": "ahorristaVotaSubObjetivo",
                 "type": "bool"
               },
               {
@@ -377,6 +500,43 @@
                 "internalType": "bool",
                 "name": "gestorVotaEjecucion",
                 "type": "bool"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bool",
+                    "name": "votoAGestor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "votoAAuditor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "postuladoComoGestor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "postuladoComoAuditor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "votosRecibidoComoGestor",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "votosRecibidoComoAuditor",
+                    "type": "uint256"
+                  }
+                ],
+                "internalType": "struct SavingAccount.VotoRoles",
+                "name": "votoRoles",
+                "type": "tuple"
               }
             ],
             "internalType": "struct SavingAccount.Banderas",
@@ -408,6 +568,19 @@
   {
     "inputs": [],
     "name": "getAhorroActual",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRealBalance",
     "outputs": [
       {
         "internalType": "uint256",

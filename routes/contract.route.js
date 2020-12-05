@@ -75,6 +75,7 @@ router.post('/addSubObjetivo', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
+        console.log(req.body.monto);
         let result = await contract.methods.addSubObjetivo(
             req.body.desc,
             req.body.monto,
@@ -510,5 +511,58 @@ router.get('/getSubObjetivos', async function (req, res) {
     }
 });
 
-module.exports = router;
+router.get('/getRealBalance', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.getRealBalance().call({
+            from: accounts[req.query.cta]
+        });
+        res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
 
+// Probar
+router.post('/getPublishedEventByGestor', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        let eventMethodName = 'SubObjetivoEvent(address,string,uint,address)';
+        let filterEventMethod = web3.utils.sha3(eventMethodName);
+        let filters = {
+            address: contract._address,
+            fromBlock: "0x1",
+            toBlock: "latest",
+            topics: [filterEventMethod, req.body.gestorAddress, null]
+        }
+        let result = await web3.eth.getPastLogs(filters);
+        res.status(200).send('SubObjetivoEvent message: ' + web3.eth.util.hexToUtf8(result[0].data));
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+// Probar
+router.post('/getPublishedEventByObjetivo', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        let eventMethodName = 'SubObjetivoEvent(address,string,uint,address)';
+        let filterEventMethod = web3.utils.sha3(eventMethodName);
+        let filters = {
+            address: contract._address,
+            fromBlock: "0x1",
+            toBlock: "latest",
+            topics: [filterEventMethod, null, web3.utils.sha3(req.body.objetivo)]
+        }
+        let result = await web3.eth.getPastLogs(filters);
+        res.status(200).send('SubObjetivoEvent message: ' + web3.eth.util.hexToUtf8(result[0].data));
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+module.exports = router;

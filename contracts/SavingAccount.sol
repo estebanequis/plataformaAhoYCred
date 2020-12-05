@@ -7,8 +7,7 @@ import './GeneralConfiguration.sol';
 contract SavingAccount {
     
     // el administrador no puede ser ni gestor ni auditor
-    struct Ahorrista
-    {
+    struct Ahorrista {
         string cedula;
         string nombreCompleto;
         uint fechaIngreso;
@@ -24,12 +23,25 @@ contract SavingAccount {
         bool isAuditor;
         bool isActive;
         bool isAproved;
-        bool ahorristaHaVotado;
+        bool ahorristaVotaSubObjetivo;
         bool auditorCierraVotacion;
         bool gestorVotaEjecucion;
+        VotoRoles votoRoles;
     }
+
+    struct VotoRoles {
+        bool votoAGestor;
+        bool votoAAuditor;
+        bool postuladoComoGestor;
+        bool postuladoComoAuditor;
+        uint votosRecibidoComoGestor;
+        uint votosRecibidoComoAuditor;
+    }
+
+    enum EstadoVotacionRoles {Cerrado, Postulacion, Votacion}
+    EstadoVotacionRoles estadoVotacionRoles;
     
-    enum Estado {EnProcesoDeVotacion, Aprobado, PendienteEjecucion ,Ejecutado}
+    enum Estado {EnProcesoDeVotacion, Aprobado, PendienteEjecucion, Ejecutado}
     
     struct SubObjetivo {
         string descripcion;
@@ -60,11 +72,21 @@ contract SavingAccount {
     uint minAporteActivarCta;
     bool ahorroActualVisiblePorAhorristas;
     bool ahorroActualVisiblePorGestores;
-
     bool votacionActiva;   //bandera para indicar periodo de votacion activo
-    
     uint totalRecibidoDeposito;  //no me queda claro para que sirve
     
+    // Probar
+    // Item 17
+    event SubObjetivoEvent(address indexed gestorAdrs, string indexed descripcion, uint monto, address ctaDestino);
+    function ejecutarSubObjetivoEvent(uint subObjIndex, address gestorAdrs) public {
+        emit SubObjetivoEvent(
+            gestorAdrs,
+            subObjetivos[subObjIndex].descripcion,
+            subObjetivos[subObjIndex].monto,
+            subObjetivos[subObjIndex].ctaDestino
+        );
+    }
+
     modifier onlyAdmin() {
         require(msg.sender == administrador, 'Not the Admin');
         _;
@@ -141,6 +163,7 @@ contract SavingAccount {
         minAporteActivarCta = minAporteActivar;
         ahorroActualVisiblePorAhorristas = ahorristaVeAhorroActual;
         ahorroActualVisiblePorGestores = gestorVeAhorroActual;
+        estadoVotacionRoles = EstadoVotacionRoles.Cerrado;
     }
 
     // Endpoint
@@ -155,7 +178,7 @@ contract SavingAccount {
             ahorristas[addressUser].cuentaBeneficenciaEth = addressBeneficiario;
             ahorristas[addressUser].montoAhorro = msg.value;
             ahorristas[addressUser].montoAdeudado = 0;
-            ahorristas[addressUser].banderas = Banderas(false,false,false,false,false,false, false);
+            ahorristas[addressUser].banderas = Banderas(false,false,false,false,false,false, false, VotoRoles(false, false, false, false, 0, 0));
             ahorristasIndex[cantAhorristas] = addressUser;
             cantAhorristas++;
             if(msg.value >= minAporteActivarCta){
@@ -240,7 +263,7 @@ contract SavingAccount {
     function habilitarPeriodoDeVotacion() public onlyAdmin returns(bool) {
         // Se resetean las banderas
         for(uint i=0; i<cantAhorristas; i++) {
-            ahorristas[ahorristasIndex[i]].banderas.ahorristaHaVotado = false;
+            ahorristas[ahorristasIndex[i]].banderas.ahorristaVotaSubObjetivo = false;
             ahorristas[ahorristasIndex[i]].banderas.auditorCierraVotacion = false;
         }
         // Se fija si existe al menos un SubObjetivo con estado EnProcesoDeVotacion En caso de encontrarlo, activa la votacion
@@ -282,7 +305,7 @@ contract SavingAccount {
     function votarSubObjetivoEnProesoDeVotacion(string memory descripcion) public onlyAhorristas returns(string memory) {
         require(votacionActiva == true, 'No existe periodo de votacion abierto.');
         require(tieneCtaActiva(msg.sender) == true, 'Su cuenta no esta activa, no puede votar.');
-        require(ahorristas[msg.sender].banderas.ahorristaHaVotado == false, 'Ya ha votado.');
+        require(ahorristas[msg.sender].banderas.ahorristaVotaSubObjetivo == false, 'Ya ha votado.');
         // Buscamos los SubObjetivos con estado EnProcesoDeVotacion.
         // Si existe alguno con la misma descripcion ingresada, se le agrega un voto
         // Y se marca al ahorrista como que ha votado.
@@ -290,7 +313,7 @@ contract SavingAccount {
             if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
                 if(keccak256(abi.encodePacked(subObjetivos[i].descripcion)) == keccak256(abi.encodePacked(descripcion))){
                     subObjetivos[i].cantVotos++;
-                    ahorristas[msg.sender].banderas.ahorristaHaVotado = true;
+                    ahorristas[msg.sender].banderas.ahorristaVotaSubObjetivo = true;
                     return "OK";
                 }         
             }
@@ -382,6 +405,7 @@ contract SavingAccount {
         subObjetivos[index].estado = Estado.Ejecutado;
         ahorroActual = ahorroActual - subObjetivos[index].monto;
         subObjetivos[index].ctaDestino.transfer(subObjetivos[index].monto);
+        ejecutarSubObjetivoEvent(index, msg.sender);
     }
     
     // Endpoint
@@ -455,6 +479,7 @@ contract SavingAccount {
             cantGestores++;
             ahorristas[msg.sender].banderas.isGestor = true;
             ahorristas[msg.sender].banderas.isAproved = true;
+            ahorroActual += ahorristas[msg.sender].montoAhorro;
         }
     }
 
@@ -466,6 +491,7 @@ contract SavingAccount {
             cantAuditores++;
             ahorristas[msg.sender].banderas.isAuditor = true;
             ahorristas[msg.sender].banderas.isAproved = true;
+            ahorroActual += ahorristas[msg.sender].montoAhorro;
         }
     }
     
@@ -529,6 +555,11 @@ contract SavingAccount {
     // Endpoint
     function getSubObjetivos() public view returns(SubObjetivo[] memory){
         return subObjetivos;
+    }
+
+    // Endpoint
+    function getRealBalance() public view returns(uint) {
+        return address(this).balance;
     }
 
 }
