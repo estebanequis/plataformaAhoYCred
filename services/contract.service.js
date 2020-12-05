@@ -4,6 +4,7 @@ const solc = require('solc');
 const { default: Web3 } = require('web3');
 
 const configPath = path.resolve(process.cwd(), 'config.json');
+//const contractFileName = 'GeneralConfiguration.sol';
 const contractFileName = 'SavingAccount.sol';
 const contractName = contractFileName.replace('.sol','');
 const contractPath = path.resolve(process.cwd(), 'contracts', contractFileName);

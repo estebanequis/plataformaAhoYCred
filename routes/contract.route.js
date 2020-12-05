@@ -78,7 +78,6 @@ router.post('/addSubObjetivo', async function (req, res) {
         let result = await contract.methods.addSubObjetivo(
             req.body.desc,
             req.body.monto,
-            req.body.estado,
             req.body.ctaDestino
         ).send({
             from: accounts[req.query.cta],
@@ -111,20 +110,6 @@ router.get('/habilitarPeriodoDeVotacion', async function (req, res) {
             console.log('receipt: ' + receipt) // contains the new contract address
             res.status(200).send('receipt:' + receipt);
         })
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error.data);
-    }
-});
-
-router.get('/tieneCtaActiva', async function (req, res) {
-    try {
-        const contract = contractService.getContract();
-        const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.tieneCtaActiva().call({
-            from: accounts[req.query.cta]
-        });
-        res.status(200).send('Resultado: ' + result);
     } catch (error) {
         console.log(error);
         res.status(500).send(error.data);
@@ -482,6 +467,43 @@ router.post('/setConfigAddress', async function (req, res) {
         });
         console.log(result);
         res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/getSubObjetivos', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.getSubObjetivos().call({
+            from: accounts[req.query.cta]
+        });
+        var retorno = "Estados de los SubObjetivos: \n\n";
+        for(var i=0; i<result.length; i++){
+            var estado = '';
+            switch (result[i][2]) {
+                case '0':
+                    estado = 'EnProcesoDeVotacion';
+                    break;
+                case '1':
+                    estado = 'Aprobado';
+                    break;
+                case '2':
+                    estado = 'PendienteEjecucion';
+                    break;
+                case '3':
+                    estado = 'Ejecutado';
+                    break;
+            }
+            retorno += 'descripcion: ' + result[i][0] + '\n' +
+            'monto: ' + result[i][1] + '\n' +
+            'estado: ' + estado + '\n' +
+            'ctaDestino: ' + result[i][3] + '\n' +
+            'cantVotos: ' + result[i][4] + '\n\n';
+        }
+        res.status(200).send(retorno);
     } catch (error) {
         console.log(error);
         res.status(500).send(error.data);

@@ -24,24 +24,13 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "estadoKey",
-        "type": "uint256"
-      },
-      {
         "internalType": "address payable",
         "name": "ctaDestino",
         "type": "address"
       }
     ],
     "name": "addSubObjetivo",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -431,6 +420,46 @@
   },
   {
     "inputs": [],
+    "name": "getSubObjetivos",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "descripcion",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "monto",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum SavingAccount.Estado",
+            "name": "estado",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address payable",
+            "name": "ctaDestino",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cantVotos",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct SavingAccount.SubObjetivo[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getSubObjetivosEnProcesoDeVotacion",
     "outputs": [
       {
@@ -756,19 +785,6 @@
         "internalType": "uint256",
         "name": "cantVotos",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "tieneCtaActiva",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
       }
     ],
     "stateMutability": "view",

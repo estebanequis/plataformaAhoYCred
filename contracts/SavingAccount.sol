@@ -184,7 +184,6 @@ contract SavingAccount {
     // Item 10
     function aproveAhorrista(address unAddress) public onlyAuditor returns (bool) {
         bool retorno = false;
-        
         if (isInAhorristasMapping(unAddress) && ahorristas[unAddress].banderas.isActive == true) 
         {
             if (isActive == false) 
@@ -229,141 +228,64 @@ contract SavingAccount {
     //////////////////////////////////////////
     
     // Endpoint
+    /* El Admin puede agregar un SubObjetivo */
+    function addSubObjetivo(string memory desc, uint monto, address payable ctaDestino) public onlyAdmin {
+        Estado estado = Estado(0);
+        subObjetivos.push(SubObjetivo(desc, monto, estado, ctaDestino, 0));
+    }
+
+    // Endpoint
+    /* En caso de que exista al menos 1 SubObjetivo con estado EnProcesoDeVotacion
+    Se habilitara el periodo de votacion */
     function habilitarPeriodoDeVotacion() public onlyAdmin returns(bool) {
+        // Se resetean las banderas
         for(uint i=0; i<cantAhorristas; i++) {
             ahorristas[ahorristasIndex[i]].banderas.ahorristaHaVotado = false;
             ahorristas[ahorristasIndex[i]].banderas.auditorCierraVotacion = false;
         }
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
+        // Se fija si existe al menos un SubObjetivo con estado EnProcesoDeVotacion En caso de encontrarlo, activa la votacion
+        for(uint i=0; i<subObjetivos.length; i++) {
+            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion) {
                 votacionActiva = true;
                 return true;
             }
         }
         return false;
     }
-    
-    // Endpoint - Probar
-    function votarCerrarPeriodoDeVotacion() public onlyAuditor returns(string memory){
-        if(votacionActiva == false) { return "No existe periodo de votacion abierto"; }
-        ahorristas[msg.sender].banderas.auditorCierraVotacion = true;
-        
-        for(uint i=0; i<cantAhorristas; i++) {
-            if (ahorristas[ahorristasIndex[i]].banderas.auditorCierraVotacion == false && ahorristas[ahorristasIndex[i]].banderas.isAuditor == true){
-                return "Se ha agregado su voto pero faltan Auditores por votar";
-            }
-        }
-        
-        votacionActiva = false;
-        
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion && subObjetivos[i].cantVotos > 0){
-               subObjetivos[i].estado = Estado.Aprobado;
-            }
-        }
-        
-        return "El periodo de votacion ha quedado cerrado";
-    }
-    
-    // Endpoint - Probar
-    function ejecutarProxSubObjetivo() public onlyGestor returns (string memory) {
-        uint maxVotos = 0;
-        uint subObjIndex = 0;
-        bool existePendiente = false;
-        
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.Aprobado){
-               if(subObjetivos[i].cantVotos > maxVotos) {
-                   maxVotos = subObjetivos[i].cantVotos;
-                   subObjIndex = i;
-               }
-            }
-            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
-                existePendiente = true;
-            }
-        }
-        
-        //caso feliz tienen plata el subobj number one
-        if(maxVotos > 0 && subObjetivos[subObjIndex].monto <= ahorroActual) {
-            ejecutarSubObjetivo(subObjIndex);
-            return subObjetivos[subObjIndex].descripcion;
-        }
-        
-        if(existePendiente == true) { return "Ya existe un SubObjetivo pendiente de ejecucion"; }
-        
-        maxVotos = 0;
-        subObjIndex = 0;
-        
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.Aprobado && subObjetivos[i].monto <= ahorroActual){
-              if(subObjetivos[i].cantVotos > maxVotos) {
-                  maxVotos = subObjetivos[i].cantVotos;
-                  subObjIndex = i;
-              }
-            }
-        }
-        
-        if(maxVotos > 0) {
-            subObjetivos[subObjIndex].estado = Estado.PendienteEjecucion;
-            return string(abi.encodePacked(subObjetivos[subObjIndex].descripcion, " (pendiente de ejecucion)"));
-        }
-    
-    }
-    
-    // Endpoint - Probar
-    function votarSubObjetivoPendienteEjecucion(string memory descripcion) public onlyGestor returns(string memory){ 
-        //limpiar la bandera esta
-        if(ahorristas[msg.sender].banderas.gestorVotaEjecucion == true) { return "Ya habias votado"; }    
-            
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
-                if(keccak256(abi.encodePacked(subObjetivos[i].descripcion)) == keccak256(abi.encodePacked(descripcion))){
-                    ahorristas[msg.sender].banderas.gestorVotaEjecucion = true;
-                    uint cantGestoresAprobaron = 0;
-                    for(uint j=0; j<cantAhorristas; j++) {
-                        if (ahorristas[ahorristasIndex[j]].banderas.isGestor == true && ahorristas[ahorristasIndex[j]].banderas.gestorVotaEjecucion == true){
-                            cantGestoresAprobaron++;
-                        }
-                    }
-                    if(cantGestoresAprobaron >= 2) {
-                        ejecutarSubObjetivo(i);
-                        //se resetean las banderas de votos de los gestores
-                        for(uint k=0; k<cantAhorristas; k++) {
-                            ahorristas[ahorristasIndex[k]].banderas.gestorVotaEjecucion = false;
-                        }
-                        return string(abi.encodePacked("Se ejecuto el subobjetivo ", subObjetivos[i].descripcion));
-                    }
-                    return "Se ha agregado su voto pero todavia falta un Gestor por votar";
-                }         
-            }
-        }
-        return "No se encontro el subobjetivo";
-    }
 
     // Endpoint
-    function getSubObjetivosPendienteEjecucion() public onlyGestor view returns(string[] memory) { 
+    /* Los ahorristas pueden obtener un listado de los SubObjetivos disponibles */
+    function getSubObjetivosEnProcesoDeVotacion() public onlyAhorristas view returns(string[] memory) {
+        require(votacionActiva == true, 'Para obtener la lista de SubObjetivos, es necesario que la votacion se encuentre activa.');
+        require(tieneCtaActiva(msg.sender) == true, 'Para obtener la lista de SubObjetivos, es necesario que su cuenta este activa.');
+        // Se obtiene la cantidad de SubObjetivos que se encuentran EnProcesoDeVotacion
         uint cantSubObj=0;
         for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
+            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
                 cantSubObj++;     
             }
         }
         string[] memory losSubObjetivos = new string[](cantSubObj);
+        // Se agrega a la lista a retornar, las descripciones de cada uno de los SubObjetivos en proceso de votacion
         uint j = 0;
         for(uint i=0; i<subObjetivos.length; i++) {
-            if(subObjetivos[i].estado == Estado.PendienteEjecucion) {
-                losSubObjetivos[j] = subObjetivos[i].descripcion;    
+            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion) {
+                losSubObjetivos[j] = subObjetivos[i].descripcion;
                 j++;
             }
         }
         return losSubObjetivos;
     }
-    
-    // Endpoint - Probar
-    function votarSubObjetivoEnProesoDeVotacion(string memory descripcion) public returns(string memory){ //onlyAhorristas
-        if(votacionActiva == false) { return "No existe periodo de votacion abierto"; }
-        if(tieneCtaActiva() == false){ return "Su cuenta no esta activa, no puede votar"; }
-            
+
+    // Endpoint
+    /* Todos los ahorristas con cuentas activas pueden votar durante el periodo de votacion una unica vez */
+    function votarSubObjetivoEnProesoDeVotacion(string memory descripcion) public onlyAhorristas returns(string memory) {
+        require(votacionActiva == true, 'No existe periodo de votacion abierto.');
+        require(tieneCtaActiva(msg.sender) == true, 'Su cuenta no esta activa, no puede votar.');
+        require(ahorristas[msg.sender].banderas.ahorristaHaVotado == false, 'Ya ha votado.');
+        // Buscamos los SubObjetivos con estado EnProcesoDeVotacion.
+        // Si existe alguno con la misma descripcion ingresada, se le agrega un voto
+        // Y se marca al ahorrista como que ha votado.
         for(uint i=0; i<subObjetivos.length; i++) { 
             if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
                 if(keccak256(abi.encodePacked(subObjetivos[i].descripcion)) == keccak256(abi.encodePacked(descripcion))){
@@ -375,45 +297,135 @@ contract SavingAccount {
         }
         return "No se encontro el subobjetivo";
     }
-    
+
     // Endpoint
-    function addSubObjetivo(string memory desc, uint monto, uint estadoKey, address payable ctaDestino) public onlyAdmin returns(bool) {
-        require(estadoKey <= uint(Estado.Ejecutado));
-        Estado estado = Estado(estadoKey);
-        subObjetivos.push(SubObjetivo(desc, monto, estado, ctaDestino, 0));
-        return true;
+    /* Los auditores pueden votar para cerrar el periodo de votacion */
+    function votarCerrarPeriodoDeVotacion() public onlyAuditor returns(string memory) {
+        if(votacionActiva == false) { return "No existe periodo de votacion abierto"; }
+        // Se agrega el voto al auditor que llamo al metodo
+        ahorristas[msg.sender].banderas.auditorCierraVotacion = true;
+        // Buscamos si existe algun auditor sin votar
+        for(uint i=0; i<cantAhorristas; i++) {
+            if (ahorristas[ahorristasIndex[i]].banderas.auditorCierraVotacion == false && ahorristas[ahorristasIndex[i]].banderas.isAuditor == true) {
+                return "Se ha agregado su voto pero faltan Auditores por votar";
+            }
+        }
+        // Como todos los auditores votaron cerrar el periodo, se cierra la votacion
+        votacionActiva = false;
+        // Todos los SubObjetivos que tuvieron votos, se pasan a estado Aprobado
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion && subObjetivos[i].cantVotos > 0){
+               subObjetivos[i].estado = Estado.Aprobado;
+            }
+        }
+        return "El periodo de votacion ha quedado cerrado";
     }
 
     // Endpoint
-    function getSubObjetivosEnProcesoDeVotacion() public view returns(string[] memory) {  //onlyAhorristas
+    /* Los gestores pueden obtener un listado de los SubObjetivos pendientes de ejecucion */
+    function getSubObjetivosPendienteEjecucion() public onlyGestor view returns(string[] memory) { 
+        // Se obtiene la cantidad de SubObjetivos que se encuentran pendientes de ejecucion
         uint cantSubObj=0;
         for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
                 cantSubObj++;     
             }
         }
         string[] memory losSubObjetivos = new string[](cantSubObj);
+        // Se agrega a la lista de retorno los SubObjetivos pendientes de ejecucion
         uint j = 0;
-        if (votacionActiva == true && tieneCtaActiva() == true) {
-            for(uint i=0; i<subObjetivos.length; i++) {
-                if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion) {
-                    losSubObjetivos[j] = subObjetivos[i].descripcion;
-                    j++;
-                }
+        for(uint i=0; i<subObjetivos.length; i++) {
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion) {
+                losSubObjetivos[j] = subObjetivos[i].descripcion;    
+                j++;
             }
         }
         return losSubObjetivos;
     }
 
     // Endpoint
-    function tieneCtaActiva() public view returns (bool) {  //onlyAhorristas
-        return ahorristas[msg.sender].banderas.isActive == true;
+    /* Los gestores pueden votar un SubObjetivo */
+    function votarSubObjetivoPendienteEjecucion(string memory descripcion) public onlyGestor returns(string memory){ 
+        require(ahorristas[msg.sender].banderas.gestorVotaEjecucion == false, 'Ya has votado.');
+        // Se busca en la lista de SubObjetivos los SubObjetivos pendientes de ejecucion
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
+                // Si se encuentra uno con la misma descripcion del request, se le agrega el voto al Gestor
+                if(keccak256(abi.encodePacked(subObjetivos[i].descripcion)) == keccak256(abi.encodePacked(descripcion))){
+                    ahorristas[msg.sender].banderas.gestorVotaEjecucion = true;
+                    uint cantGestoresAprobaron = 0;
+                    // Se busca la cantidad de Gestores que han votado la ejecucion hasta el momento
+                    for(uint j=0; j<cantAhorristas; j++) {
+                        if (ahorristas[ahorristasIndex[j]].banderas.isGestor == true && ahorristas[ahorristasIndex[j]].banderas.gestorVotaEjecucion == true){
+                            cantGestoresAprobaron++;
+                        }
+                    }
+                    // Si ya existia otro Gestor que voto la ejecucion, entonces se ejecuta el SubObjetivo
+                    if(cantGestoresAprobaron >= 2) {
+                        ejecutarSubObjetivo(i);
+                        // Se resetean las banderas de votos de los gestores
+                        for(uint k=0; k<cantAhorristas; k++) {
+                            ahorristas[ahorristasIndex[k]].banderas.gestorVotaEjecucion = false;
+                        }
+                        return string(abi.encodePacked("Se ejecuto el SubObjetivo ", subObjetivos[i].descripcion));
+                    }
+                    return "Se ha agregado su voto pero todavia falta un Gestor por votar";
+                }         
+            }
+        }
+        return "No se encontro el subobjetivo";
     }
 
+    // TODO: Verificar por que no se transfiere realmente los weis
+    /* Ejecuta un SubObjetivo segun su index en la lista de SubObjetivos */
     function ejecutarSubObjetivo(uint index) private {
         subObjetivos[index].estado = Estado.Ejecutado;
-        ahorroActual =- subObjetivos[index].monto;
+        ahorroActual = ahorroActual - subObjetivos[index].monto;
         subObjetivos[index].ctaDestino.transfer(subObjetivos[index].monto);
+    }
+    
+    // Endpoint
+    function ejecutarProxSubObjetivo() public onlyGestor returns (string memory) {
+        uint maxVotos = 0;
+        uint subObjIndex = 0;
+        bool existePendiente = false;
+        // Se busca en la lista de SubObjetivos el indice y la cantidad de votos del mas votado
+        // Si tenia como estado Pendiente de ejecucion, se pone existePendiente
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.Aprobado){
+               if(subObjetivos[i].cantVotos > maxVotos) {
+                   maxVotos = subObjetivos[i].cantVotos;
+                   subObjIndex = i;
+               }
+            }
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
+                existePendiente = true;
+            }
+        }
+        // Si tiene plata el SubObjetivo mas votado y el monto es menor o igual al ahorro actual, se ejecuta
+        if(maxVotos > 0 && subObjetivos[subObjIndex].monto <= ahorroActual) {
+            ejecutarSubObjetivo(subObjIndex);
+            return subObjetivos[subObjIndex].descripcion;
+        }
+        // Si ya existia un SubObjetivo pendiente de ejecucion, entonces no se permite que exista otro mas pendiente de ejecucion
+        if(existePendiente == true) { return "Ya existe un SubObjetivo pendiente de ejecucion"; }
+        // En caso de que no exista un SubObjetivo pendiente de ejecucion, entonces se procede a encontrar
+        // Al proximo mas votado, pero que se tenga el ahorro suficiente para poder pagarlo.
+        maxVotos = 0;
+        subObjIndex = 0;
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.Aprobado && subObjetivos[i].monto <= ahorroActual){
+              if(subObjetivos[i].cantVotos > maxVotos) {
+                  maxVotos = subObjetivos[i].cantVotos;
+                  subObjIndex = i;
+              }
+            }
+        }
+        // En caso de encontrarlo, se le cambia el estado a pendiente de ejecucion y se retorna la descripcion
+        if(maxVotos > 0) {
+            subObjetivos[subObjIndex].estado = Estado.PendienteEjecucion;
+            return string(abi.encodePacked(subObjetivos[subObjIndex].descripcion, " (pendiente de ejecucion)"));
+        }
     }
 
     //////////////////////////////////////////
@@ -423,6 +435,12 @@ contract SavingAccount {
     function isInAhorristasMapping(address unAddress) private view returns(bool)
     {
         return ahorristas[unAddress].cuentaEth != address(0);
+    }
+
+    // Endpoint
+    /* Devuelve si el ahorrista que realiza el request, tiene cuenta activa */
+    function tieneCtaActiva(address adrs) private view returns (bool) {
+        return ahorristas[adrs].banderas.isActive == true;
     }
     
     //////////////////////////////////////////
@@ -506,6 +524,11 @@ contract SavingAccount {
         uint v15 = ahorroActual;
         uint v16 = totalRecibidoDeposito;
         return (v9, v10, v11, v12, v13, v14, v15, v16);
+    }
+
+    // Endpoint
+    function getSubObjetivos() public view returns(SubObjetivo[] memory){
+        return subObjetivos;
     }
 
 }

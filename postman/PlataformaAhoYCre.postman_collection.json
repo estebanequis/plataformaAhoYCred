@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "33aa8f86-4897-4672-8ec6-375717003ed8",
+		"_postman_id": "2f6775a9-02b7-447c-ade0-6ac543fe0c9b",
 		"name": "PlataformaAhoYCre",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -8,25 +8,6 @@
 		{
 			"name": "Base",
 			"item": [
-				{
-					"name": "Hello World",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								""
-							]
-						},
-						"description": "Hello World"
-					},
-					"response": []
-				},
 				{
 					"name": "Compile",
 					"request": {
@@ -68,47 +49,6 @@
 					"response": []
 				},
 				{
-					"name": "setConfigAddress",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"configAddress\": \"0xCcd72eC3815789bA4AfdfD5565C42FcEA1dbD56D\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/setConfigAddress?cta=0",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"setConfigAddress"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Init, Registro y Deposito",
-			"item": [
-				{
 					"name": "init",
 					"request": {
 						"method": "POST",
@@ -143,6 +83,47 @@
 					},
 					"response": []
 				},
+				{
+					"name": "setConfigAddress",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"configAddress\": \"{{generalConf}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/setConfigAddress?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setConfigAddress"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Init, Registro y Deposito",
+			"item": [
 				{
 					"name": "sendDepositWithRegistration0 (admin)",
 					"request": {
@@ -207,146 +188,6 @@
 								{
 									"key": "cta",
 									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "sendDepositWithRegistration2 (ahorrista 2)",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 2\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=2",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"sendDepositWithRegistration"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "2"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "sendDepositWithRegistration3 (ahorrista 3)",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 3\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=3",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"sendDepositWithRegistration"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "sendDepositWithRegistration4 (ahorrista 4)",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 4\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=4",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"sendDepositWithRegistration"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "4"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "sendDepositWithRegistration5 (ahorrista 5)",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 5\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=5",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"sendDepositWithRegistration"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "5"
 								}
 							]
 						}
@@ -598,6 +439,76 @@
 					"response": []
 				},
 				{
+					"name": "aproveAhorrista (admin)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"addressAhorrista\": \"{{address0}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/aproveAhorrista?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"aproveAhorrista"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "aproveAhorrista (ahorrista 1)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"addressAhorrista\": \"{{address1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/aproveAhorrista?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"aproveAhorrista"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "activarSavingAccount",
 					"request": {
 						"method": "GET",
@@ -683,41 +594,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "aproveAhorrista",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"addressAhorrista\": \"0x79e05CDaC0D76186d7B9131B57D04EE9daE2Aa77\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/aproveAhorrista?cta=8",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"aproveAhorrista"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "8"
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -726,33 +602,13 @@
 			"name": "Votación de SubObjetivos",
 			"item": [
 				{
-					"name": "habilitarPeriodoDeVotacion",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/habilitarPeriodoDeVotacion",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"habilitarPeriodoDeVotacion"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "addSubObjetivo : EnProcesoDeVotacion 1",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"desc\": \"Comprar una tele\",\n    \"monto\": 500,\n    \"estado\": 0,\n    \"ctaDestino\": \"0xe84399A9A0533915f73f7096fA7276AE48AB2328\"\n}",
+							"raw": "{\n\t\"desc\": \"Comprar una tele\",\n    \"monto\": 5000000,\n    \"ctaDestino\": \"{{address3}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -760,7 +616,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/api/contract/addSubObjetivo",
+							"raw": "localhost:3000/api/contract/addSubObjetivo?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -769,6 +625,12 @@
 								"api",
 								"contract",
 								"addSubObjetivo"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -781,7 +643,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"desc\": \"Comprar un auto\",\n    \"monto\": 300,\n    \"estado\": 0,\n    \"ctaDestino\": \"0xe84399A9A0533915f73f7096fA7276AE48AB2328\"\n}",
+							"raw": "{\n\t\"desc\": \"Comprar un auto\",\n    \"monto\": 30000,\n    \"ctaDestino\": \"{{address3}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -789,7 +651,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/api/contract/addSubObjetivo",
+							"raw": "localhost:3000/api/contract/addSubObjetivo?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -798,76 +660,24 @@
 								"api",
 								"contract",
 								"addSubObjetivo"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "addSubObjetivo : PendienteEjecucion 1",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"desc\": \"Comprar una casa\",\n    \"monto\": 5000,\n    \"estado\": 2,\n    \"ctaDestino\": \"0xe84399A9A0533915f73f7096fA7276AE48AB2328\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/addSubObjetivo",
-							"host": [
-								"localhost"
 							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"addSubObjetivo"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "addSubObjetivo : PendienteEjecucion 2",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"desc\": \"Comprar una casa\",\n    \"monto\": 5000,\n    \"estado\": 2,\n    \"ctaDestino\": \"0xe84399A9A0533915f73f7096fA7276AE48AB2328\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
 								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/addSubObjetivo",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"addSubObjetivo"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "tieneCtaActiva",
+					"name": "habilitarPeriodoDeVotacion",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/api/contract/tieneCtaActiva",
+							"raw": "localhost:3000/api/contract/habilitarPeriodoDeVotacion?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -875,7 +685,13 @@
 							"path": [
 								"api",
 								"contract",
-								"tieneCtaActiva"
+								"habilitarPeriodoDeVotacion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -887,7 +703,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/api/contract/getSubObjetivosEnProcesoDeVotacion",
+							"raw": "localhost:3000/api/contract/getSubObjetivosEnProcesoDeVotacion?cta=1",
 							"host": [
 								"localhost"
 							],
@@ -896,62 +712,19 @@
 								"api",
 								"contract",
 								"getSubObjetivosEnProcesoDeVotacion"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getSubObjetivosPendienteEjecucion",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getSubObjetivosPendienteEjecucion",
-							"host": [
-								"localhost"
 							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getSubObjetivosPendienteEjecucion"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "votarSubObjetivoPendienteEjecucion",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"descripcion\": \"Comprar una casa\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
 								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/votarSubObjetivoPendienteEjecucion",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"votarSubObjetivoPendienteEjecucion"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "votarSubObjetivoEnProesoDeVotacion",
+					"name": "votarSubObjetivoEnProesoDeVotacion 1",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -965,7 +738,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/api/contract/votarSubObjetivoEnProesoDeVotacion",
+							"raw": "localhost:3000/api/contract/votarSubObjetivoEnProesoDeVotacion?cta=0",
 							"host": [
 								"localhost"
 							],
@@ -974,18 +747,33 @@
 								"api",
 								"contract",
 								"votarSubObjetivoEnProesoDeVotacion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "ejecutarProxSubObjetivo",
+					"name": "votarSubObjetivoEnProesoDeVotacion 2",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"descripcion\": \"Comprar un auto\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "localhost:3000/api/contract/ejecutarProxSubObjetivo",
+							"raw": "localhost:3000/api/contract/votarSubObjetivoEnProesoDeVotacion?cta=1",
 							"host": [
 								"localhost"
 							],
@@ -993,19 +781,51 @@
 							"path": [
 								"api",
 								"contract",
-								"ejecutarProxSubObjetivo"
+								"votarSubObjetivoEnProesoDeVotacion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "votarCerrarPeriodoDeVotacion",
+					"name": "[TEST] getSubObjetivos Copy 3",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/api/contract/votarCerrarPeriodoDeVotacion",
+							"raw": "localhost:3000/api/contract/getSubObjetivos?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivos"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarCerrarPeriodoDeVotacion (Auditor 8)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/votarCerrarPeriodoDeVotacion?cta=8",
 							"host": [
 								"localhost"
 							],
@@ -1014,17 +834,43 @@
 								"api",
 								"contract",
 								"votarCerrarPeriodoDeVotacion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
 							]
 						}
 					},
 					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Test",
-			"item": [
+				},
+				{
+					"name": "votarCerrarPeriodoDeVotacion (Auditor 9)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/votarCerrarPeriodoDeVotacion?cta=9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarCerrarPeriodoDeVotacion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "[TEST] getVotacionActiva",
 					"request": {
@@ -1045,6 +891,238 @@
 					},
 					"response": []
 				},
+				{
+					"name": "[TEST] getSubObjetivos Copy 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getSubObjetivos?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivos"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ejecutarProxSubObjetivo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/ejecutarProxSubObjetivo?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"ejecutarProxSubObjetivo"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getSubObjetivos Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getSubObjetivos?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivos"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSubObjetivosPendienteEjecucion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getSubObjetivosPendienteEjecucion?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivosPendienteEjecucion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarSubObjetivoPendienteEjecucion (Gestor 6)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"descripcion\": \"Comprar un auto\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/votarSubObjetivoPendienteEjecucion?cta=6",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarSubObjetivoPendienteEjecucion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getSubObjetivos Copy 4",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getSubObjetivos?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivos"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarSubObjetivoPendienteEjecucion (Gestor 7)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"descripcion\": \"Comprar un auto\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/votarSubObjetivoPendienteEjecucion?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarSubObjetivoPendienteEjecucion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getSubObjetivos Copy 5",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getSubObjetivos?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivos"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Test",
+			"item": [
 				{
 					"name": "[TEST] setVotacionActiva",
 					"request": {
@@ -1217,6 +1295,32 @@
 					"response": []
 				},
 				{
+					"name": "[TEST] getSubObjetivos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getSubObjetivos?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivos"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "[TEST] savingAccountState",
 					"request": {
 						"method": "GET",
@@ -1236,6 +1340,292 @@
 								{
 									"key": "cta",
 									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Extras",
+			"item": [
+				{
+					"name": "sendDepositWithRegistration2 (ahorrista 2)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 2\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration3 (ahorrista 3)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 3\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=3",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration4 (ahorrista 4)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 4\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDepositWithRegistration5 (ahorrista 5)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 5\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 300000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDepositWithRegistration?cta=5",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDepositWithRegistration"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "aproveAhorrista (ahorrista 2)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"addressAhorrista\": \"{{address2}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/aproveAhorrista?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"aproveAhorrista"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "aproveAhorrista (ahorrista 3)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"addressAhorrista\": \"{{address0}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/aproveAhorrista?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"aproveAhorrista"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "aproveAhorrista (ahorrista 4)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"addressAhorrista\": \"{{address4}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/aproveAhorrista?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"aproveAhorrista"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "aproveAhorrista (ahorrista 5)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"addressAhorrista\": \"{{address5}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/aproveAhorrista?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"aproveAhorrista"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
 								}
 							]
 						}
