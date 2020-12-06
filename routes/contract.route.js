@@ -76,7 +76,8 @@ router.post('/init', async function (req, res) {
             req.body.recargo,                   // uint
             req.body.pMaxPrestamo,              // uint
             req.body.pDtoAporteAudGest,         // uint
-            req.body.pAlAbandonar               // uint
+            req.body.pAlAbandonar,              // uint
+            req.body.pzoRevocarFallecimiento    // uint
         ).send({
             from: accounts[req.query.cta],
             gas: 300000
@@ -99,7 +100,7 @@ router.post('/sendDepositWithRegistration', async function (req, res) {
             req.body.addressBeneficiario    // string
         ).send({
             from: accounts[req.query.cta],
-            gas: 300000,
+            gas: 3000000,
             value: req.body.amount
         });
         console.log(result);
@@ -644,6 +645,68 @@ router.post('/abandonarContrato', async function (req, res) {
 });
 
 //////////////////////////////////////////
+/////////// Items 30, 31 y 33 ////////////
+///////////// Fallecimiento //////////////
+//////////////////////////////////////////
+
+router.post('/votarFallecimiento', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.votarFallecimiento(
+            req.body.adrs       // string
+        ).send({
+            from: accounts[req.query.cta],
+            gas: 3000000
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/revocarFallecimiento', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.revocarFallecimiento()
+        .send({
+            from: accounts[req.query.cta],
+            gas: 3000000
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/liquidarCuentaAhorro', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.liquidarCuentaAhorro(
+            req.body.adrs       // string
+        ).send({
+            from: accounts[req.query.cta],
+            gas: 3000000
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+//////////////////////////////////////////
+///////////// Items 34 y 35 //////////////
+/////////// Liquidar Contrato ////////////
+//////////////////////////////////////////
+
+
+
+//////////////////////////////////////////
 ////////// METODOS DE PRUEBA /////////////
 //////////////////////////////////////////
 
@@ -731,7 +794,12 @@ router.get('/getAhorristas', async function (req, res) {
             '   VisualizarAhorro: \n' +
             '       solicitoVerAhorro: ' + result[i][7][3][0] + '\n' +
             '       tienePermiso: ' + result[i][7][3][1] + '\n' +
-            '   ultimoDeposito: ' + result[i][7][4] + '\n\n';
+            '   Fallecimiento: \n' +
+            '       isAlive: ' + result[i][7][4][0] + '\n' +
+            '       yaVoto: ' + result[i][7][4][1] + '\n' +
+            '       cantVotos: ' + result[i][7][4][2] + '\n' +
+            '       fechaFallecimiento: ' + result[i][7][4][3] + '\n' +
+            '   ultimoDeposito: ' + result[i][7][5] + '\n\n';
         }
         res.status(200).send(retorno);
     } catch (error) {

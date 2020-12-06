@@ -15,15 +15,15 @@ contract SavingAccount {
     uint minAporteDeposito;
     uint pctDtoAporteAudGest;
     uint minAporteActivarCta;
-    uint totalRecibidoDeposito; //no me queda claro para que sirve
-    uint plazoSinRecargo = 40;  // Se debe indicar los segundos necesarios para que no se cobren recargos entre depositos, (5184000 son 60 dias)
+    uint totalRecibidoDeposito;         //no me queda claro para que sirve
+    uint plazoSinRecargo = 40;          // Se debe indicar los segundos necesarios para que no se cobren recargos entre depositos, (5184000 son 60 dias)
     uint montoRecargo;
-    uint pctAlAbandonar; // Porcentaje de retiro al abandonar el contrato
+    uint pctAlAbandonar;                // Porcentaje de retiro al abandonar el contrato
 
     uint cantMaxAhorristas;
-    uint cantAhorristas;        // Incluye todos (Ahorristas, Auditores, Gestores y Admin)
-    uint cantAhorristasActivos; // Incluye activos (sin importar si estan aprobados o no)
-    uint cantAhorristasAproved; // Solo los ahorristas isAproved == true
+    uint cantAhorristas;                // Incluye todos (Ahorristas, Auditores, Gestores y Admin)
+    uint cantAhorristasActivos;         // Incluye activos (sin importar si estan aprobados o no)
+    uint cantAhorristasAproved;         // Solo los ahorristas isAproved == true
     uint cantGestores;
     uint cantAuditores;
     mapping(address => Ahorrista) public ahorristas;
@@ -34,7 +34,7 @@ contract SavingAccount {
         uint fechaIngreso;
         address payable cuentaEth;
         address payable cuentaBeneficenciaEth;
-        uint montoAhorro;   //si isActive == false -> seria el dinero que no se suma al ahorro total del contrato
+        uint montoAhorro;               //si isActive == false -> seria el dinero que no se suma al ahorro total del contrato
         Prestamos prestamos;
         Banderas banderas;
     }
@@ -44,7 +44,16 @@ contract SavingAccount {
         VotoSubObjetivos votoSubObjetivos;
         VotoRoles votoRoles;
         VisualizarAhorro visualizarAhorro;
+        Fallecimiento fallecimiento;
         uint ultimoDeposito;
+    }
+
+    uint plazoRevocarFallecimiento;     // Plazo en el cual una persona puede revocar su fallecimiento
+    struct Fallecimiento {
+        bool isAlive;
+        bool yaVoto;                    // En caso de que sea un Gestor, guarda si ya voto o no
+        uint cantVotos;                 // Indica la cantidad de votos que tiene su fallecimiento
+        uint fechaFallecimiento;        // Indica el timestamp del momento en el cual 2 Gestores votaron su fallecimiento
     }
 
     struct EstadoAhorrista {
@@ -52,7 +61,6 @@ contract SavingAccount {
         bool isAuditor;
         bool isActive;
         bool isAproved;
-        bool isAlive;
     }
 
     bool votacionSubObjetivosActiva;   //bandera para indicar periodo de votacion activo
@@ -104,7 +112,7 @@ contract SavingAccount {
         _;
     }
     
-    modifier onlyAhorristas() {
+    modifier onlyAhorrista() {
         require(isInAhorristasMapping(msg.sender) == true, 'Not an Ahorrista');
         _;
     }
@@ -132,11 +140,6 @@ contract SavingAccount {
         _;
     }
     
-    modifier receiveMinDepositAmount() {
-        require(msg.value >= minAporteDeposito, 'Not enough deposit amount');
-        _;
-    }
-    
     modifier savingContractIsActive() {
         require(isActive == true, 'Saving Acccount Contract not active');
         _;
@@ -144,8 +147,6 @@ contract SavingAccount {
     
     constructor() public {   
         administrador = msg.sender;
-        isActive = false;
-        votacionSubObjetivosActiva = false;
     }
 
     function setConfigAddress( GeneralConfiguration _address ) public {
@@ -165,7 +166,7 @@ contract SavingAccount {
     //////////////////////////////////////////
 
     // Item 7 y 9
-    function init(uint maxAhorristas, uint ahorroObj, string memory elObjetivo, uint minAporteDep, uint minAporteActivar, bool ahorristaVeAhorroActual, bool gestorVeAhorroActual, uint recargo, uint pMaxPrestamo, uint pDtoAporteAudGest, uint pAlAbandonar) public onlyAdmin {
+    function init(uint maxAhorristas, uint ahorroObj, string memory elObjetivo, uint minAporteDep, uint minAporteActivar, bool ahorristaVeAhorroActual, bool gestorVeAhorroActual, uint recargo, uint pMaxPrestamo, uint pDtoAporteAudGest, uint pAlAbandonar, uint pzoRevocarFallecimiento) public onlyAdmin {
         require(maxAhorristas >= 6, "maxAhorristas must be greater than 5");
         require(minAporteDep >= 0, "minAporteDep must be a positive value"); //ver si sirve
         require(bytes(elObjetivo).length != 0, "elObjetivo must be specified");
@@ -182,10 +183,12 @@ contract SavingAccount {
         pctMaxPrestamo = pMaxPrestamo;
         pctDtoAporteAudGest = pDtoAporteAudGest;
         pctAlAbandonar = pAlAbandonar;
+        plazoRevocarFallecimiento = pzoRevocarFallecimiento;
     }
 
     // Item 8 y 10
-    function sendDepositWithRegistration(string memory cedula, string memory fullName, address payable addressBeneficiario) public payable receiveMinDepositAmount {
+    function sendDepositWithRegistration(string memory cedula, string memory fullName, address payable addressBeneficiario) public payable {
+        require(msg.value >= minAporteDeposito, 'Monto insuficiente');
         address payable addressUser = msg.sender;
         if (!isInAhorristasMapping(addressUser)) {
             ahorristas[addressUser].cedula = cedula;
@@ -195,7 +198,7 @@ contract SavingAccount {
             ahorristas[addressUser].cuentaBeneficenciaEth = addressBeneficiario;
             ahorristas[addressUser].montoAhorro = msg.value;
             ahorristas[addressUser].prestamos = Prestamos(false,0,0);
-            ahorristas[addressUser].banderas = Banderas(EstadoAhorrista(false,false,false,false,false),VotoSubObjetivos(false,false,false),VotoRoles(false,false,false,false,0,0),VisualizarAhorro(false,false), 0);
+            ahorristas[addressUser].banderas = Banderas(EstadoAhorrista(false,false,false,false),VotoSubObjetivos(false,false,false),VotoRoles(false,false,false,false,0,0),VisualizarAhorro(false,false),Fallecimiento(true,false,0,0),0);
             ahorristasIndex[cantAhorristas] = addressUser;
             cantAhorristas++;
             if(msg.value >= minAporteActivarCta) {
@@ -273,7 +276,7 @@ contract SavingAccount {
     }
 
     /* Todos los ahorristas con cuentas activas pueden votar durante el periodo de votacion una unica vez */
-    function votarSubObjetivoEnProesoDeVotacion(string memory descripcion) public onlyAhorristas returns(string memory) {
+    function votarSubObjetivoEnProesoDeVotacion(string memory descripcion) public onlyAhorrista returns(string memory) {
         require(votacionSubObjetivosActiva == true, 'No existe periodo de votacion abierto.');
         require(tieneCtaActiva(msg.sender) == true, 'Su cuenta no esta activa, no puede votar.');
         require(ahorristas[msg.sender].banderas.votoSubObjetivos.ahorristaVotaSubObjetivo == false, 'Ya ha votado.');
@@ -438,7 +441,7 @@ contract SavingAccount {
         estadoVotacionRoles = EstadoVotacionRoles.Votacion;
     }
 
-    function votarGestor(address gestorAdrs) onlyAhorristas public {
+    function votarGestor(address gestorAdrs) onlyAhorrista public {
         require(tieneCtaActiva(msg.sender), "Para votar, es necesario que su cuenta este activa.");
         require(ahorristas[msg.sender].banderas.votoRoles.votoAGestor == false, "Ya ha votado un Gestor.");
         require(ahorristas[gestorAdrs].banderas.votoRoles.postuladoComoGestor == true, "No esta postulado como Gestor.");
@@ -447,7 +450,7 @@ contract SavingAccount {
         ahorristas[gestorAdrs].banderas.votoRoles.votosRecibidoComoGestor++;
     }
 
-    function votarAuditor(address auditorAdrs) onlyAhorristas public {
+    function votarAuditor(address auditorAdrs) onlyAhorrista public {
         require(tieneCtaActiva(msg.sender), "Para votar, es necesario que su cuenta este activa.");
         require(ahorristas[msg.sender].banderas.votoRoles.votoAAuditor == false, "Ya ha votado un Auditor.");
         require(ahorristas[auditorAdrs].banderas.votoRoles.postuladoComoAuditor == true, "No esta postulado como Auditor.");
@@ -562,7 +565,7 @@ contract SavingAccount {
         return ahorroActual;
     }
 
-    function solicitarVerMontoAhorro() public onlyAhorristas {
+    function solicitarVerMontoAhorro() public onlyAhorrista {
         require(msg.sender != administrador, 'Ya tiene permitido ver el monto de ahorro actual.');
         require(ahorristas[msg.sender].banderas.estadoAhorrista.isAuditor == false, 'Ya tiene permitido ver el monto de ahorro actual.');
         ahorristas[msg.sender].banderas.visualizarAhorro.solicitoVerAhorro = true;
@@ -584,7 +587,7 @@ contract SavingAccount {
     //////////////// Prestamos ///////////////
     //////////////////////////////////////////
 
-    function solicitarPrestamo(uint montoSolicitado) public onlyAhorristas {
+    function solicitarPrestamo(uint montoSolicitado) public onlyAhorrista {
         require(ahorristas[msg.sender].banderas.estadoAhorrista.isActive == true, "Debes estar activo para solicitar un prestamo.");
         require(montoSolicitado <= (ahorroActual*pctMaxPrestamo)/100, "El monto solicitado no debe ser mayor al porcentaje maximo permitido para prestamos.");
         ahorristas[msg.sender].prestamos.solicitoPrestamo = true;
@@ -601,7 +604,7 @@ contract SavingAccount {
         ejecutarPrestamoEvent(ahorristaAdrs, ahorristas[ahorristaAdrs].prestamos.montoSolicitado);
     }
 
-    function pagarPrestamo() payable public onlyAhorristas {
+    function pagarPrestamo() payable public onlyAhorrista {
         require(ahorristas[msg.sender].banderas.estadoAhorrista.isActive == false, "Debes estar inactivo para pagar un prestamo.");
         require(msg.value <= ahorristas[msg.sender].prestamos.montoAdeudado, "El monto que puedes pagar debe ser menor o igual a lo que adeudas.");
         ahorristas[msg.sender].prestamos.montoAdeudado -= msg.value;
@@ -626,7 +629,7 @@ contract SavingAccount {
     /////////// Plazo de deposito ////////////
     //////////////////////////////////////////
 
-    function pagarRecargo() payable public onlyAhorristas savingContractIsActive {
+    function pagarRecargo() payable public onlyAhorrista savingContractIsActive {
         require((block.timestamp - ahorristas[msg.sender].banderas.ultimoDeposito) > plazoSinRecargo, "No es necesario pagar recargos para realizar un deposito.");
         require(msg.value == montoRecargo, "El valor no es igual al monto de recargo establecido");
         ahorristas[msg.sender].banderas.ultimoDeposito = block.timestamp;
@@ -639,7 +642,7 @@ contract SavingAccount {
     //////////////////////////////////////////
 
     // TODO: No se transfieren realmente los weis hacia afuera
-    function abandonarContrato(bool conRetiro) public onlyAhorristas {
+    function abandonarContrato(bool conRetiro) public onlyAhorrista {
         require(msg.sender != administrador, "No se puede retirar");
         if (conRetiro == true) {
             require(tieneCtaActiva(msg.sender), "No tiene cuenta activa.");
@@ -650,23 +653,7 @@ contract SavingAccount {
         }
         if (ahorristas[msg.sender].banderas.estadoAhorrista.isActive) cantAhorristasActivos--; 
         if (ahorristas[msg.sender].banderas.estadoAhorrista.isAproved) cantAhorristasAproved--;
-        ahorristasIndex[getAhorristaIndexByAddress(msg.sender)] = ahorristasIndex[cantAhorristas-1];
-        ahorristasIndex[cantAhorristas-1] = address(0);
-        cantAhorristas--;
-        if (ahorristas[msg.sender].banderas.estadoAhorrista.isAuditor) {
-            cantAuditores--;
-            if (generalConf.isValid(cantAhorristasAproved, cantGestores, cantAuditores) == false) {
-                if (estadoVotacionRoles == EstadoVotacionRoles.Cerrado) estadoVotacionRoles = EstadoVotacionRoles.Postulacion;
-            }
-        } 
-        if (ahorristas[msg.sender].banderas.estadoAhorrista.isGestor) {
-            cantGestores--;
-            if (generalConf.isValid(cantAhorristasAproved, cantGestores, cantAuditores) == false) {
-                if (estadoVotacionRoles == EstadoVotacionRoles.Cerrado) estadoVotacionRoles = EstadoVotacionRoles.Postulacion;
-            }
-        }
-        
-        delete ahorristas[msg.sender];
+        borrarAhorrista(msg.sender);
     }
 
     function getAhorristaIndexByAddress(address adrs) private view returns(uint) {
@@ -678,6 +665,70 @@ contract SavingAccount {
         }
         return retorno;
     }
+
+    function borrarAhorrista(address adrs) private {
+        ahorristasIndex[getAhorristaIndexByAddress(adrs)] = ahorristasIndex[cantAhorristas-1];
+        ahorristasIndex[cantAhorristas-1] = address(0);
+        cantAhorristas--;
+        if (ahorristas[adrs].banderas.estadoAhorrista.isAuditor) {
+            cantAuditores--;
+            if (generalConf.isValid(cantAhorristasAproved, cantGestores, cantAuditores) == false) {
+                if (estadoVotacionRoles == EstadoVotacionRoles.Cerrado) estadoVotacionRoles = EstadoVotacionRoles.Postulacion;
+            }
+        } 
+        if (ahorristas[adrs].banderas.estadoAhorrista.isGestor) {
+            cantGestores--;
+            if (generalConf.isValid(cantAhorristasAproved, cantGestores, cantAuditores) == false) {
+                if (estadoVotacionRoles == EstadoVotacionRoles.Cerrado) estadoVotacionRoles = EstadoVotacionRoles.Postulacion;
+            }
+        }
+        delete ahorristas[adrs];
+    }
+
+    //////////////////////////////////////////
+    /////////// Items 30, 31 y 33 ////////////
+    ///////////// Fallecimiento //////////////
+    //////////////////////////////////////////
+
+    function votarFallecimiento(address adrs) public onlyGestor {
+        require(ahorristas[msg.sender].banderas.fallecimiento.isAlive == true, "No se encuentra vivo.");
+        require(ahorristas[msg.sender].banderas.fallecimiento.yaVoto == false, "Ya voto.");
+        ahorristas[adrs].banderas.fallecimiento.cantVotos++;
+        ahorristas[msg.sender].banderas.fallecimiento.yaVoto = true;
+        if (ahorristas[adrs].banderas.fallecimiento.cantVotos >= 2) {
+            ahorristas[adrs].banderas.fallecimiento.isAlive = false;
+            ahorristas[adrs].banderas.fallecimiento.fechaFallecimiento = block.timestamp;
+        } 
+    } 
+
+    function revocarFallecimiento() public onlyAhorrista {
+        require(ahorristas[msg.sender].banderas.fallecimiento.isAlive == false, "No se encuentra fallecido.");
+        require(block.timestamp <= ahorristas[msg.sender].banderas.fallecimiento.fechaFallecimiento + plazoRevocarFallecimiento, "Supero el plazo.");
+        resetFallecimientos();
+    }
+
+    function liquidarCuentaAhorro(address adrs) public onlyAuditor {
+        require(ahorristas[adrs].banderas.fallecimiento.isAlive == false, "No fallecio");
+        require(block.timestamp > ahorristas[adrs].banderas.fallecimiento.fechaFallecimiento + plazoRevocarFallecimiento, "No supero el plazo.");
+        uint montoLiquidacion = (ahorristas[adrs].montoAhorro*pctAlAbandonar)/100;
+        ahorristas[adrs].cuentaBeneficenciaEth.transfer(montoLiquidacion);
+        ahorroActual -= montoLiquidacion;
+        borrarAhorrista(adrs);
+        resetFallecimientos();
+    }
+
+    function resetFallecimientos() private {
+        for(uint i=0; i<cantAhorristas; i++) {
+            ahorristas[ahorristasIndex[i]].banderas.fallecimiento = Fallecimiento(true, false, 0, 0);
+        }
+    }
+
+    //////////////////////////////////////////
+    ///////////// Items 34 y 35 //////////////
+    /////////// Liquidar Contrato ////////////
+    //////////////////////////////////////////
+
+
 
     //////////////////////////////////////////
     ///////// Funciones Auxiliares ///////////
@@ -718,6 +769,7 @@ contract SavingAccount {
         }
     }
 
+/*
     function getAhorristas() public view returns(Ahorrista[] memory){
         Ahorrista[] memory memoryArray = new Ahorrista[](cantAhorristas);
         for(uint i = 0; i < cantAhorristas; i++) {
@@ -725,72 +777,41 @@ contract SavingAccount {
         }
         return memoryArray;
     }
-
+    */
+    
+/*
     function getRealBalance() public view returns(uint) {
         return address(this).balance;
     }
+*/
 
+/*
     function savingAccountStatePart1() public view returns(uint, uint, string memory, uint, uint, bool, bool, uint) {
-        uint v1 = cantMaxAhorristas;
-        uint v2 = ahorroObjetivo;
-        string memory v3 = objetivo;
-        uint v4 = minAporteDeposito;
-        uint v5 = minAporteActivarCta;
-        bool v6 = ahorroActualVisiblePorAhorristas;
-        bool v7 = ahorroActualVisiblePorGestores;
-        uint v8 = cantAhorristas;
-        return (v1, v2, v3, v4, v5, v6, v7, v8);
+        return (cantMaxAhorristas, ahorroObjetivo, objetivo, minAporteDeposito, minAporteActivarCta, ahorroActualVisiblePorAhorristas, ahorroActualVisiblePorGestores, cantAhorristas);
     }
 
     function savingAccountStatePart2() public view returns(uint, uint, uint, uint, address, bool, uint, uint) {
-        uint v9 = cantAhorristasActivos;
-        uint v10 = cantAhorristasAproved;
-        uint v11 = cantGestores;
-        uint v12 = cantAuditores;
-        address v13 = administrador;
-        bool v14 = isActive;
-        uint v15 = ahorroActual;
-        uint v16 = totalRecibidoDeposito;
-        return (v9, v10, v11, v12, v13, v14, v15, v16);
+        return (cantAhorristasActivos, cantAhorristasAproved, cantGestores, cantAuditores, administrador, isActive, ahorroActual, totalRecibidoDeposito);
     }
+*/
 
-    /*
+/*
     function getVotacionActiva() public view returns(bool) {
         return votacionSubObjetivosActiva;
-    }
-
-    function savingAccountStatePart1() public view returns(uint, uint, string memory, uint, uint, bool, bool, uint) {
-        uint v1 = cantMaxAhorristas;
-        uint v2 = ahorroObjetivo;
-        string memory v3 = objetivo;
-        uint v4 = minAporteDeposito;
-        uint v5 = minAporteActivarCta;
-        bool v6 = ahorroActualVisiblePorAhorristas;
-        bool v7 = ahorroActualVisiblePorGestores;
-        uint v8 = cantAhorristas;
-        return (v1, v2, v3, v4, v5, v6, v7, v8);
-    }
-
-    function savingAccountStatePart2() public view returns(uint, uint, uint, uint, address, bool, uint, uint) {
-        uint v9 = cantAhorristasActivos;
-        uint v10 = cantAhorristasAproved;
-        uint v11 = cantGestores;
-        uint v12 = cantAuditores;
-        address v13 = administrador;
-        bool v14 = isActive;
-        uint v15 = ahorroActual;
-        uint v16 = totalRecibidoDeposito;
-        return (v9, v10, v11, v12, v13, v14, v15, v16);
     }
 
     function getSubObjetivos() public view returns(SubObjetivo[] memory){
         return subObjetivos;
     }
+*/
 
+/*
     function getVotacionRolesState() public view returns(EstadoVotacionRoles) {
         return estadoVotacionRoles;
     }
+*/
 
+/*
     // Los gestores pueden obtener un listado de los SubObjetivos pendientes de ejecucion
     function getSubObjetivosPendienteEjecucion() public onlyGestor view returns(string[] memory) { 
         // Se obtiene la cantidad de SubObjetivos que se encuentran pendientes de ejecucion
@@ -811,9 +832,11 @@ contract SavingAccount {
         }
         return losSubObjetivos;
     }
+*/
 
+/*
     // Los ahorristas pueden obtener un listado de los SubObjetivos disponibles
-    function getSubObjetivosEnProcesoDeVotacion() public onlyAhorristas view returns(string[] memory) {
+    function getSubObjetivosEnProcesoDeVotacion() public onlyAhorrista view returns(string[] memory) {
         require(votacionSubObjetivosActiva == true, 'Para obtener la lista de SubObjetivos, es necesario que la votacion se encuentre activa.');
         require(tieneCtaActiva(msg.sender) == true, 'Para obtener la lista de SubObjetivos, es necesario que su cuenta este activa.');
         // Se obtiene la cantidad de SubObjetivos que se encuentran EnProcesoDeVotacion
@@ -834,7 +857,9 @@ contract SavingAccount {
         }
         return losSubObjetivos;
     }
+*/
 
+/*
     function getAhorristasToAprove() public onlyAuditor view returns(address[] memory) {
         address[] memory losActivosSinAprobar = new address[](cantAhorristasActivos - cantAhorristasAproved);
         uint j = 0;
@@ -848,7 +873,6 @@ contract SavingAccount {
         }
         return losActivosSinAprobar;
     }
-
     */
 
 }
