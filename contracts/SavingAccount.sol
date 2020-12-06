@@ -6,7 +6,6 @@ import './GeneralConfiguration.sol';
 
 contract SavingAccount {
     
-    // el administrador no puede ser ni gestor ni auditor
     struct Ahorrista {
         string cedula;
         string nombreCompleto;
@@ -23,10 +22,15 @@ contract SavingAccount {
         bool isAuditor;
         bool isActive;
         bool isAproved;
+        VotoSubObjetivos votoSubObjetivos;
+        VotoRoles votoRoles;
+        VisualizarAhorro visualizarAhorro;
+    }
+
+    struct VotoSubObjetivos {
         bool ahorristaVotaSubObjetivo;
         bool auditorCierraVotacion;
         bool gestorVotaEjecucion;
-        VotoRoles votoRoles;
     }
 
     struct VotoRoles {
@@ -36,6 +40,11 @@ contract SavingAccount {
         bool postuladoComoAuditor;
         uint votosRecibidoComoGestor;
         uint votosRecibidoComoAuditor;
+    }
+
+    struct VisualizarAhorro {
+        bool solicitoVerAhorro;
+        bool tienePermiso;
     }
 
     enum EstadoVotacionRoles {Cerrado, Postulacion, Votacion}
@@ -96,6 +105,14 @@ contract SavingAccount {
         require(isInAhorristasMapping(msg.sender) == true, 'Not an Ahorrista');
         _;
     }
+
+    modifier NotGestorOrAuditorOrAdmin() {
+        require(isInAhorristasMapping(msg.sender) == true, 'No es un ahorrista');
+        require(msg.sender != administrador, 'No puede ser Administrador');
+        require(ahorristas[msg.sender].banderas.isAuditor == false, 'No puede ser Auditor');
+        require(ahorristas[msg.sender].banderas.isGestor == false, 'No puede ser Gestor');
+        _;
+    }
     
     modifier onlyAuditor() {
         require(ahorristas[msg.sender].banderas.isAuditor == true, 'Not an Auditor');
@@ -124,17 +141,12 @@ contract SavingAccount {
     
     constructor() public {   
         administrador = msg.sender;
-        //isActive = true; // Solo para test, debe ser false
+        isActive = false;
         votacionActiva = false;
     }
 
     function setConfigAddress( GeneralConfiguration _address ) public {
         generalConf = _address;
-    }
-    
-    // item 22
-    function getAhorroActual() public onlyAdminOrAuditor view returns (uint) {
-        return ahorroActual;
     }
 
     // item 3
@@ -178,7 +190,7 @@ contract SavingAccount {
             ahorristas[addressUser].cuentaBeneficenciaEth = addressBeneficiario;
             ahorristas[addressUser].montoAhorro = msg.value;
             ahorristas[addressUser].montoAdeudado = 0;
-            ahorristas[addressUser].banderas = Banderas(false,false,false,false,false,false, false, VotoRoles(false, false, false, false, 0, 0));
+            ahorristas[addressUser].banderas = Banderas(false,false,false,false,VotoSubObjetivos(false,false,false),VotoRoles(false,false,false,false,0,0),VisualizarAhorro(false,false));
             ahorristasIndex[cantAhorristas] = addressUser;
             cantAhorristas++;
             if(msg.value >= minAporteActivarCta){
@@ -246,7 +258,7 @@ contract SavingAccount {
     }
     
     //////////////////////////////////////////
-    ////////// Items 11 al 16 ////////////////
+    ////////// Items 11 al 17 ////////////////
     /////// Votacion de Subobjetivos /////////
     //////////////////////////////////////////
     
@@ -263,8 +275,8 @@ contract SavingAccount {
     function habilitarPeriodoDeVotacion() public onlyAdmin returns(bool) {
         // Se resetean las banderas
         for(uint i=0; i<cantAhorristas; i++) {
-            ahorristas[ahorristasIndex[i]].banderas.ahorristaVotaSubObjetivo = false;
-            ahorristas[ahorristasIndex[i]].banderas.auditorCierraVotacion = false;
+            ahorristas[ahorristasIndex[i]].banderas.votoSubObjetivos.ahorristaVotaSubObjetivo = false;
+            ahorristas[ahorristasIndex[i]].banderas.votoSubObjetivos.auditorCierraVotacion = false;
         }
         // Se fija si existe al menos un SubObjetivo con estado EnProcesoDeVotacion En caso de encontrarlo, activa la votacion
         for(uint i=0; i<subObjetivos.length; i++) {
@@ -305,7 +317,7 @@ contract SavingAccount {
     function votarSubObjetivoEnProesoDeVotacion(string memory descripcion) public onlyAhorristas returns(string memory) {
         require(votacionActiva == true, 'No existe periodo de votacion abierto.');
         require(tieneCtaActiva(msg.sender) == true, 'Su cuenta no esta activa, no puede votar.');
-        require(ahorristas[msg.sender].banderas.ahorristaVotaSubObjetivo == false, 'Ya ha votado.');
+        require(ahorristas[msg.sender].banderas.votoSubObjetivos.ahorristaVotaSubObjetivo == false, 'Ya ha votado.');
         // Buscamos los SubObjetivos con estado EnProcesoDeVotacion.
         // Si existe alguno con la misma descripcion ingresada, se le agrega un voto
         // Y se marca al ahorrista como que ha votado.
@@ -313,7 +325,7 @@ contract SavingAccount {
             if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
                 if(keccak256(abi.encodePacked(subObjetivos[i].descripcion)) == keccak256(abi.encodePacked(descripcion))){
                     subObjetivos[i].cantVotos++;
-                    ahorristas[msg.sender].banderas.ahorristaVotaSubObjetivo = true;
+                    ahorristas[msg.sender].banderas.votoSubObjetivos.ahorristaVotaSubObjetivo = true;
                     return "OK";
                 }         
             }
@@ -326,10 +338,10 @@ contract SavingAccount {
     function votarCerrarPeriodoDeVotacion() public onlyAuditor returns(string memory) {
         if(votacionActiva == false) { return "No existe periodo de votacion abierto"; }
         // Se agrega el voto al auditor que llamo al metodo
-        ahorristas[msg.sender].banderas.auditorCierraVotacion = true;
+        ahorristas[msg.sender].banderas.votoSubObjetivos.auditorCierraVotacion = true;
         // Buscamos si existe algun auditor sin votar
         for(uint i=0; i<cantAhorristas; i++) {
-            if (ahorristas[ahorristasIndex[i]].banderas.auditorCierraVotacion == false && ahorristas[ahorristasIndex[i]].banderas.isAuditor == true) {
+            if (ahorristas[ahorristasIndex[i]].banderas.votoSubObjetivos.auditorCierraVotacion == false && ahorristas[ahorristasIndex[i]].banderas.isAuditor == true) {
                 return "Se ha agregado su voto pero faltan Auditores por votar";
             }
         }
@@ -369,17 +381,17 @@ contract SavingAccount {
     // Endpoint
     /* Los gestores pueden votar un SubObjetivo */
     function votarSubObjetivoPendienteEjecucion(string memory descripcion) public onlyGestor returns(string memory){ 
-        require(ahorristas[msg.sender].banderas.gestorVotaEjecucion == false, 'Ya has votado.');
+        require(ahorristas[msg.sender].banderas.votoSubObjetivos.gestorVotaEjecucion == false, 'Ya has votado.');
         // Se busca en la lista de SubObjetivos los SubObjetivos pendientes de ejecucion
         for(uint i=0; i<subObjetivos.length; i++) { 
             if(subObjetivos[i].estado == Estado.PendienteEjecucion){
                 // Si se encuentra uno con la misma descripcion del request, se le agrega el voto al Gestor
                 if(keccak256(abi.encodePacked(subObjetivos[i].descripcion)) == keccak256(abi.encodePacked(descripcion))){
-                    ahorristas[msg.sender].banderas.gestorVotaEjecucion = true;
+                    ahorristas[msg.sender].banderas.votoSubObjetivos.gestorVotaEjecucion = true;
                     uint cantGestoresAprobaron = 0;
                     // Se busca la cantidad de Gestores que han votado la ejecucion hasta el momento
                     for(uint j=0; j<cantAhorristas; j++) {
-                        if (ahorristas[ahorristasIndex[j]].banderas.isGestor == true && ahorristas[ahorristasIndex[j]].banderas.gestorVotaEjecucion == true){
+                        if (ahorristas[ahorristasIndex[j]].banderas.isGestor == true && ahorristas[ahorristasIndex[j]].banderas.votoSubObjetivos.gestorVotaEjecucion == true){
                             cantGestoresAprobaron++;
                         }
                     }
@@ -388,7 +400,7 @@ contract SavingAccount {
                         ejecutarSubObjetivo(i);
                         // Se resetean las banderas de votos de los gestores
                         for(uint k=0; k<cantAhorristas; k++) {
-                            ahorristas[ahorristasIndex[k]].banderas.gestorVotaEjecucion = false;
+                            ahorristas[ahorristasIndex[k]].banderas.votoSubObjetivos.gestorVotaEjecucion = false;
                         }
                         return string(abi.encodePacked("Se ejecuto el SubObjetivo ", subObjetivos[i].descripcion));
                     }
@@ -397,15 +409,6 @@ contract SavingAccount {
             }
         }
         return "No se encontro el subobjetivo";
-    }
-
-    // TODO: Verificar por que no se transfiere realmente los weis
-    /* Ejecuta un SubObjetivo segun su index en la lista de SubObjetivos */
-    function ejecutarSubObjetivo(uint index) private {
-        subObjetivos[index].estado = Estado.Ejecutado;
-        ahorroActual = ahorroActual - subObjetivos[index].monto;
-        subObjetivos[index].ctaDestino.transfer(subObjetivos[index].monto);
-        ejecutarSubObjetivoEvent(index, msg.sender);
     }
     
     // Endpoint
@@ -452,6 +455,197 @@ contract SavingAccount {
         }
     }
 
+    
+    // TODO: Verificar por que no se transfiere realmente los weis
+    /* Ejecuta un SubObjetivo segun su index en la lista de SubObjetivos */
+    function ejecutarSubObjetivo(uint index) private {
+        subObjetivos[index].estado = Estado.Ejecutado;
+        ahorroActual = ahorroActual - subObjetivos[index].monto;
+        subObjetivos[index].ctaDestino.transfer(subObjetivos[index].monto);
+        ejecutarSubObjetivoEvent(index, msg.sender);
+    }
+
+    //////////////////////////////////////////
+    ///////////// Items 19 al 21 /////////////
+    /////////// Votacion de Roles ////////////
+    //////////////////////////////////////////
+
+    // Endpoint
+    function habilitarPostulacionDeCandidatos() public onlyAdmin {
+        require(estadoVotacionRoles == EstadoVotacionRoles.Cerrado, "Para habilitar la postulacion de candidatos, el estado acual debe ser cerrado.");
+        require(isActive == true, "El contrato debe estar activo para poder habilitar la postulacion de candidatos.");
+        require(cantAhorristasAproved >= 6, "El contrato debe tener al menos 6 ahorristas aprobados para habilitar la postulacion de candidatos.");
+        estadoVotacionRoles = EstadoVotacionRoles.Postulacion;
+    }
+
+    // Endpoint
+    function postularseComoGestor() public NotGestorOrAuditorOrAdmin {
+        require(estadoVotacionRoles == EstadoVotacionRoles.Postulacion, "Para poder postularse, el estado de la votacion debe ser de postulacion.");
+        require(tieneCtaActiva(msg.sender), "Para poder postularse, debes tener la cuenta de ahorro activa.");
+        ahorristas[msg.sender].banderas.votoRoles.postuladoComoGestor = true;
+    }
+
+    // Endpoint
+    function postularseComoAuditor() public NotGestorOrAuditorOrAdmin {
+        require(estadoVotacionRoles == EstadoVotacionRoles.Postulacion, "Para poder postularse, el estado de la votacion debe ser de postulacion.");
+        require(tieneCtaActiva(msg.sender), "Para poder postularse, debes tener la cuenta de ahorro activa.");
+        ahorristas[msg.sender].banderas.votoRoles.postuladoComoAuditor = true;
+    }
+
+    // Endpoint
+    function habilitarVotoDeCandidatos() public onlyAdmin {
+        require(estadoVotacionRoles == EstadoVotacionRoles.Postulacion, "Para habilitar la votacion de candidatos, el estado acual debe ser postulacion.");
+        estadoVotacionRoles = EstadoVotacionRoles.Votacion;
+    }
+
+    // Endpoint
+    function votarGestor(address gestorAdrs) onlyAhorristas public {
+        require(tieneCtaActiva(msg.sender), "Para votar, es necesario que su cuenta este activa.");
+        require(ahorristas[msg.sender].banderas.votoRoles.votoAGestor == false, "Ya ha votado un Gestor.");
+        require(ahorristas[gestorAdrs].banderas.votoRoles.postuladoComoGestor == true, "No esta postulado como Gestor.");
+        require(estadoVotacionRoles == EstadoVotacionRoles.Votacion, "Para poder votar, el estado acual debe ser votacion.");
+        ahorristas[msg.sender].banderas.votoRoles.votoAGestor = true;
+        ahorristas[gestorAdrs].banderas.votoRoles.votosRecibidoComoGestor++;
+    }
+
+    // Endpoint
+    function votarAuditor(address auditorAdrs) onlyAhorristas public {
+        require(tieneCtaActiva(msg.sender), "Para votar, es necesario que su cuenta este activa.");
+        require(ahorristas[msg.sender].banderas.votoRoles.votoAAuditor == false, "Ya ha votado un Auditor.");
+        require(ahorristas[auditorAdrs].banderas.votoRoles.postuladoComoAuditor == true, "No esta postulado como Auditor.");
+        require(estadoVotacionRoles == EstadoVotacionRoles.Votacion, "Para poder votar, el estado acual debe ser votacion.");
+        ahorristas[msg.sender].banderas.votoRoles.votoAAuditor = true;
+        ahorristas[auditorAdrs].banderas.votoRoles.votosRecibidoComoAuditor++;
+    }
+
+    // Endpoint
+    function cerrarVotoDeCandidatos() public onlyAdmin {
+        require(estadoVotacionRoles == EstadoVotacionRoles.Votacion, "Para cerrar la votacion de candidatos, el estado acual debe ser votacion.");
+        asignarRolesPorVotos();
+        estadoVotacionRoles = EstadoVotacionRoles.Cerrado;
+        resetearVotoRoles();
+    }
+
+    function asignarRolesPorVotos() private returns(bool) {
+        uint maxVotosAuditor = 0;
+        address addressMaxVotosAuditor;
+        uint segMaxVotosAuditor = 0;
+        address addressSegMaxVotosAuditor;
+        uint maxVotosGestor = 0;
+        address addressMaxVotosGestor;
+        uint segMaxVotosGestor = 0;
+        address addressSegMaxVotosGestor;
+        for(uint i=0; i<cantAhorristas; i++) { 
+            address addressAhorrista = ahorristas[ahorristasIndex[i]].cuentaEth;
+            uint votosComoAuditor = ahorristas[ahorristasIndex[i]].banderas.votoRoles.votosRecibidoComoAuditor;
+            if(votosComoAuditor > maxVotosAuditor) {
+                maxVotosAuditor = votosComoAuditor;
+                addressMaxVotosAuditor = addressAhorrista;
+            } else if (votosComoAuditor > segMaxVotosAuditor) {
+                segMaxVotosAuditor = votosComoAuditor;
+                addressSegMaxVotosAuditor = addressAhorrista;
+            }
+            uint votosComoGestor = ahorristas[ahorristasIndex[i]].banderas.votoRoles.votosRecibidoComoGestor;
+            if(votosComoGestor > maxVotosGestor) {
+                maxVotosGestor = votosComoGestor;
+                addressMaxVotosGestor = addressAhorrista;
+            } else if (votosComoGestor > segMaxVotosGestor) {
+                segMaxVotosGestor = votosComoGestor;
+                addressSegMaxVotosGestor = addressAhorrista;
+            }
+        }
+        if ((addressMaxVotosAuditor == address(0)) && (addressMaxVotosGestor == address(0))) {
+            return false;
+        }
+        if ((addressMaxVotosAuditor != address(0)) && (addressMaxVotosGestor == address(0))) {
+            if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, (cantAuditores+1))) {
+                ahorristas[addressMaxVotosAuditor].banderas.isAuditor = true;
+                cantAuditores++;
+                return true;
+            }
+            return false;
+        }
+        if ((addressMaxVotosAuditor == address(0)) && (addressMaxVotosGestor != address(0))) {
+            if (generalConf.validateRestrictions(cantAhorristasAproved, (cantGestores+1), cantAuditores)) {
+                ahorristas[addressMaxVotosGestor].banderas.isGestor = true;
+                cantGestores++;
+                return true;
+            }
+            return false;
+        }
+        // Si son diferentes address, te quedas con el Auditor que tuvo mas votos y con el Gestor que tuvo mas votos
+        if ((addressMaxVotosAuditor != addressMaxVotosGestor)) {
+            if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, (cantAuditores+1))) {
+                ahorristas[addressMaxVotosAuditor].banderas.isAuditor = true;
+                cantAuditores++;
+            }
+            if (generalConf.validateRestrictions(cantAhorristasAproved, (cantGestores+1), cantAuditores)) {
+                ahorristas[addressMaxVotosGestor].banderas.isGestor = true;
+                cantGestores++;
+            }
+        // Si los address con mas votos son iguales, a ese address se le asigna el rol por el cual tuvo mas votos
+        } else if (maxVotosAuditor >= maxVotosGestor) {
+            if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, (cantAuditores+1))) {
+                ahorristas[addressMaxVotosAuditor].banderas.isAuditor = true;
+                cantAuditores++;
+            }
+            if ((addressSegMaxVotosGestor != address(0)) && generalConf.validateRestrictions(cantAhorristasAproved, (cantGestores+1), cantAuditores)) {
+                ahorristas[addressSegMaxVotosGestor].banderas.isGestor = true;
+                cantGestores++;
+            }
+        } else if (maxVotosGestor > maxVotosAuditor) {
+            if (generalConf.validateRestrictions(cantAhorristasAproved, (cantGestores+1), cantAuditores)) {
+                ahorristas[addressMaxVotosGestor].banderas.isGestor = true;
+                cantGestores++;
+            }
+            if ((addressSegMaxVotosAuditor != address(0)) && generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, (cantAuditores+1))) {
+                ahorristas[addressSegMaxVotosAuditor].banderas.isAuditor = true;
+                cantAuditores++;
+            }
+        }
+        return true;
+    }
+
+    function resetearVotoRoles() private {
+        for(uint i=0; i<cantAhorristas; i++) {
+            ahorristas[ahorristasIndex[i]].banderas.votoRoles = VotoRoles(false, false, false, false, 0, 0);
+        }
+    }
+
+    //////////////////////////////////////////
+    ///////////// Items 22 al 23 /////////////
+    //////////// Monto de ahorro /////////////
+    //////////////////////////////////////////
+
+    // Endpoint
+    function getAhorroActual() public view returns (uint) {
+        require(msg.sender == administrador 
+            || ahorristas[msg.sender].banderas.isAuditor == true
+            || ahorristas[msg.sender].banderas.visualizarAhorro.tienePermiso == true,
+            "No tiene permiso para poder ver el monto de ahorro actual.");
+        return ahorroActual;
+    }
+
+    // Endpoint
+    function solicitarVerMontoAhorro() public onlyAhorristas {
+        require(msg.sender != administrador, 'Ya tiene permitido ver el monto de ahorro actual.');
+        require(ahorristas[msg.sender].banderas.isAuditor == false, 'Ya tiene permitido ver el monto de ahorro actual.');
+        ahorristas[msg.sender].banderas.visualizarAhorro.solicitoVerAhorro = true;
+    }
+
+    // Endpoint
+    function permitirVerMontoAhorro(address ahorristaAdrs) public onlyAdminOrAuditor {
+        require(ahorristas[ahorristaAdrs].banderas.visualizarAhorro.solicitoVerAhorro == true, 'El ahorrista no solicito ver el monto de ahorro actual.');
+        ahorristas[ahorristaAdrs].banderas.visualizarAhorro.tienePermiso = true;
+    }
+
+    // Endpoint
+    function revocarVerMontoAhorro(address ahorristaAdrs) public onlyAdminOrAuditor {
+        require(ahorristas[ahorristaAdrs].banderas.visualizarAhorro.tienePermiso == true, 'El ahorrista no tenia permisos para ver el monto de ahorro actual.');
+        ahorristas[ahorristaAdrs].banderas.visualizarAhorro.solicitoVerAhorro = false;
+        ahorristas[ahorristaAdrs].banderas.visualizarAhorro.tienePermiso = false;
+    }
+
     //////////////////////////////////////////
     ///////// Funciones Auxiliares ///////////
     //////////////////////////////////////////
@@ -494,27 +688,10 @@ contract SavingAccount {
             ahorroActual += ahorristas[msg.sender].montoAhorro;
         }
     }
-    
-    // Endpoint
-    function setActive(bool activeStatus) public returns(bool) {
-        address ads = msg.sender;
-        ahorristas[ads].banderas.isActive = activeStatus;
-        return true;
-    }
 
     // Endpoint
     function getVotacionActiva() public view returns(bool) {
         return votacionActiva;
-    }
-
-    // Endpoint
-    function setVotacionActiva(bool state) public {
-        votacionActiva = state;
-    }
-
-    // Endpoint
-    function getAhorrista(address ads) public view returns(Ahorrista memory){
-        return ahorristas[ads];
     }
 
     // Endpoint
@@ -560,6 +737,11 @@ contract SavingAccount {
     // Endpoint
     function getRealBalance() public view returns(uint) {
         return address(this).balance;
+    }
+
+    // Endpoint
+    function getVotacionRolesState() public view returns(EstadoVotacionRoles) {
+        return estadoVotacionRoles;
     }
 
 }
