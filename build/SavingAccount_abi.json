@@ -111,246 +111,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "administrador",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "ahorristas",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "cedula",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "nombreCompleto",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "fechaIngreso",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address payable",
-        "name": "cuentaEth",
-        "type": "address"
-      },
-      {
-        "internalType": "address payable",
-        "name": "cuentaBeneficenciaEth",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "montoAhorro",
-        "type": "uint256"
-      },
-      {
-        "components": [
-          {
-            "internalType": "bool",
-            "name": "solicitoPrestamo",
-            "type": "bool"
-          },
-          {
-            "internalType": "uint256",
-            "name": "montoSolicitado",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "montoAdeudado",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct SavingAccount.Prestamos",
-        "name": "prestamos",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "isGestor",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isAuditor",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isActive",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isAproved",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct SavingAccount.EstadoAhorrista",
-            "name": "estadoAhorrista",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "ahorristaVotaSubObjetivo",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "auditorCierraVotacion",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "gestorVotaEjecucion",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct SavingAccount.VotoSubObjetivos",
-            "name": "votoSubObjetivos",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "votoAGestor",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "votoAAuditor",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "postuladoComoGestor",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "postuladoComoAuditor",
-                "type": "bool"
-              },
-              {
-                "internalType": "uint256",
-                "name": "votosRecibidoComoGestor",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "votosRecibidoComoAuditor",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct SavingAccount.VotoRoles",
-            "name": "votoRoles",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "solicitoVerAhorro",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "tienePermiso",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct SavingAccount.VisualizarAhorro",
-            "name": "visualizarAhorro",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "isAlive",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "yaVoto",
-                "type": "bool"
-              },
-              {
-                "internalType": "uint256",
-                "name": "cantVotos",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "fechaFallecimiento",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct SavingAccount.Fallecimiento",
-            "name": "fallecimiento",
-            "type": "tuple"
-          },
-          {
-            "internalType": "uint256",
-            "name": "ultimoDeposito",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct SavingAccount.Banderas",
-        "name": "banderas",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "ahorristasIndex",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -359,13 +119,7 @@
       }
     ],
     "name": "aproveAhorrista",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -397,13 +151,7 @@
   {
     "inputs": [],
     "name": "ejecutarProxSubObjetivo",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -427,12 +175,221 @@
   },
   {
     "inputs": [],
-    "name": "generalConf",
+    "name": "getAhorristas",
     "outputs": [
       {
-        "internalType": "contract GeneralConfiguration",
+        "components": [
+          {
+            "internalType": "string",
+            "name": "cedula",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "nombreCompleto",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fechaIngreso",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address payable",
+            "name": "cuentaEth",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "cuentaBeneficenciaEth",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "montoAhorro",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "solicitoPrestamo",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "montoSolicitado",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "montoAdeudado",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct SavingAccount.Prestamos",
+            "name": "prestamos",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "components": [
+                  {
+                    "internalType": "bool",
+                    "name": "isGestor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "isAuditor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "isActive",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "isAproved",
+                    "type": "bool"
+                  }
+                ],
+                "internalType": "struct SavingAccount.EstadoAhorrista",
+                "name": "estadoAhorrista",
+                "type": "tuple"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bool",
+                    "name": "ahorristaVotaSubObjetivo",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "auditorCierraVotacion",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "gestorVotaEjecucion",
+                    "type": "bool"
+                  }
+                ],
+                "internalType": "struct SavingAccount.VotoSubObjetivos",
+                "name": "votoSubObjetivos",
+                "type": "tuple"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bool",
+                    "name": "votoAGestor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "votoAAuditor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "postuladoComoGestor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "postuladoComoAuditor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "votosRecibidoComoGestor",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "votosRecibidoComoAuditor",
+                    "type": "uint256"
+                  }
+                ],
+                "internalType": "struct SavingAccount.VotoRoles",
+                "name": "votoRoles",
+                "type": "tuple"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bool",
+                    "name": "solicitoVerAhorro",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "tienePermiso",
+                    "type": "bool"
+                  }
+                ],
+                "internalType": "struct SavingAccount.VisualizarAhorro",
+                "name": "visualizarAhorro",
+                "type": "tuple"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bool",
+                    "name": "isAlive",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "yaVoto",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "cantVotos",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "fechaFallecimiento",
+                    "type": "uint256"
+                  }
+                ],
+                "internalType": "struct SavingAccount.Fallecimiento",
+                "name": "fallecimiento",
+                "type": "tuple"
+              },
+              {
+                "internalType": "uint256",
+                "name": "ultimoDeposito",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct SavingAccount.Banderas",
+            "name": "banderas",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct SavingAccount.Ahorrista[]",
         "name": "",
-        "type": "address"
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAhorristasToAprove",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -453,7 +410,86 @@
   },
   {
     "inputs": [],
-    "name": "habilitarPeriodoDeVotacion",
+    "name": "getRealBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSubObjetivos",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "descripcion",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "monto",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum SavingAccount.Estado",
+            "name": "estado",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address payable",
+            "name": "ctaDestino",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cantVotos",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct SavingAccount.SubObjetivo[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSubObjetivosEnProcesoDeVotacion",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSubObjetivosPendienteEjecucion",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getVotacionActiva",
     "outputs": [
       {
         "internalType": "bool",
@@ -461,6 +497,26 @@
         "type": "bool"
       }
     ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getVotacionRolesState",
+    "outputs": [
+      {
+        "internalType": "enum SavingAccount.EstadoVotacionRoles",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "habilitarPeriodoDeVotacion",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -547,19 +603,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "isActive",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -631,6 +674,102 @@
     "name": "revocarVerMontoAhorro",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "savingAccountStatePart1",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "savingAccountStatePart2",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -765,13 +904,7 @@
   {
     "inputs": [],
     "name": "votarCerrarPeriodoDeVotacion",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -810,13 +943,7 @@
       }
     ],
     "name": "votarSubObjetivoEnProesoDeVotacion",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -829,13 +956,7 @@
       }
     ],
     "name": "votarSubObjetivoPendienteEjecucion",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   }

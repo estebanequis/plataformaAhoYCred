@@ -151,7 +151,8 @@ router.get('/getAhorristasToAprove', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.getAhorristasToAprove().call({
+        let result = await contract.methods.getAhorristasToAprove()
+        .call({
             from: accounts[req.query.cta]
         });
         console.log(result);
@@ -214,7 +215,8 @@ router.get('/getSubObjetivosEnProcesoDeVotacion', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.getSubObjetivosEnProcesoDeVotacion().call({
+        let result = await contract.methods.getSubObjetivosEnProcesoDeVotacion()
+        .call({
             from: accounts[req.query.cta]
         });
         console.log(result);
@@ -263,7 +265,8 @@ router.get('/getSubObjetivosPendienteEjecucion', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.getSubObjetivosPendienteEjecucion().call({
+        let result = await contract.methods.getSubObjetivosPendienteEjecucion()
+        .call({
             from: accounts[req.query.cta]
         });
         console.log(result);

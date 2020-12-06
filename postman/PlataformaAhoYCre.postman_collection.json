@@ -55,7 +55,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"maxAhorristas\": 12,\n    \"ahorroObj\": 7000000000000000,\n    \"elObjetivo\": \"comprar una casa\",\n    \"minAporteDep\": 100000,\n    \"minAporteActivar\": 20,   \n    \"ahorristaVeAhorroActual\": true,\n    \"gestorVeAhorroActual\": true,\n    \"recargo\": 1000000,\n    \"pMaxPrestamo\": 10,\n    \"pDtoAporteAudGest\": 20,\n    \"pAlAbandonar\": 80\n}",
+							"raw": "{\n\t\"maxAhorristas\": 12,\n    \"ahorroObj\": 7000000000000000,\n    \"elObjetivo\": \"comprar una casa\",\n    \"minAporteDep\": 100000,\n    \"minAporteActivar\": 20,   \n    \"ahorristaVeAhorroActual\": true,\n    \"gestorVeAhorroActual\": true,\n    \"recargo\": 1000000,\n    \"pMaxPrestamo\": 10,\n    \"pDtoAporteAudGest\": 20,\n    \"pAlAbandonar\": 80,\n    \"pzoRevocarFallecimiento\": 60\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -166,7 +166,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 1\",\n    \"addressBeneficiario\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\",\n    \"amount\": 1000000000000000\n}",
+							"raw": "{\n\t\"cedula\": \"1.234.567-8\",\n    \"fullName\": \"ahorrista 1\",\n    \"addressBeneficiario\": \"{{address4}}\",\n    \"amount\": 1000000000000000\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2534,6 +2534,273 @@
 								{
 									"key": "cta",
 									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Fallecimiento",
+			"item": [
+				{
+					"name": "[TEST] getAhorristas Copy 1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarFallecimiento (gestor 6)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"adrs\": \"{{address1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/votarFallecimiento?cta=6",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarFallecimiento"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarFallecimiento (gestor 7)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"adrs\": \"{{address1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/votarFallecimiento?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarFallecimiento"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 3",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revocarFallecimiento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/revocarFallecimiento?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"revocarFallecimiento"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 4",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "liquidarCuentaAhorro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"adrs\": \"{{address1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/liquidarCuentaAhorro?cta=9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"liquidarCuentaAhorro"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 5",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
 								}
 							]
 						}

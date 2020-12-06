@@ -28,7 +28,7 @@ const methods = {
             language: "Solidity",
             sources: sourceContent,
             settings: {
-                optimizer: { "enabled": true, "runs": 200 },
+                optimizer: { "enabled": true, "runs": 1 },
                 // libraries: libraryContent,
                 outputSelection: { "*": { "*": ["abi", "evm.bytecode"] } }
             }
@@ -57,9 +57,8 @@ const methods = {
                 data: '0x' + bytecode.object
             })
             .send({
-                //gas: '3000000',
-                gas: 10000000,
-                gasLimit: 10000000,
+                gas: 12500000,
+                gasLimit: 12500000,
                 from: accounts[0],
                 value: 0
             });
