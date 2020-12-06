@@ -25,6 +25,7 @@ contract SavingAccount {
         VotoSubObjetivos votoSubObjetivos;
         VotoRoles votoRoles;
         VisualizarAhorro visualizarAhorro;
+        uint ultimoDeposito;
     }
 
     struct VotoSubObjetivos {
@@ -83,7 +84,9 @@ contract SavingAccount {
     bool ahorroActualVisiblePorGestores;
     bool votacionActiva;   //bandera para indicar periodo de votacion activo
     uint totalRecibidoDeposito;  //no me queda claro para que sirve
-    
+    uint plazoSinRecargo = 40; // Se debe indicar los segundos necesarios para que no se cobren recargos entre depositos, (5184000 son 60 dias)
+    uint montoRecargo;
+
     // Probar
     // Item 17
     event SubObjetivoEvent(address indexed gestorAdrs, string indexed descripcion, uint monto, address ctaDestino);
@@ -163,7 +166,7 @@ contract SavingAccount {
 
     // Endpoint
     // Item 7 y 9
-    function init(uint maxAhorristas, uint ahorroObj, string memory elObjetivo, uint minAporteDep, uint minAporteActivar, bool ahorristaVeAhorroActual, bool gestorVeAhorroActual) public onlyAdmin {
+    function init(uint maxAhorristas, uint ahorroObj, string memory elObjetivo, uint minAporteDep, uint minAporteActivar, bool ahorristaVeAhorroActual, bool gestorVeAhorroActual, uint recargo) public onlyAdmin {
         require(maxAhorristas >= 6, "maxAhorristas must be greater than 5");
         require(minAporteDep >= 0, "minAporteDep must be a positive value"); //ver si sirve
         require(bytes(elObjetivo).length != 0, "elObjetivo must be specified");
@@ -176,6 +179,7 @@ contract SavingAccount {
         ahorroActualVisiblePorAhorristas = ahorristaVeAhorroActual;
         ahorroActualVisiblePorGestores = gestorVeAhorroActual;
         estadoVotacionRoles = EstadoVotacionRoles.Cerrado;
+        montoRecargo = recargo;
     }
 
     // Endpoint
@@ -190,11 +194,12 @@ contract SavingAccount {
             ahorristas[addressUser].cuentaBeneficenciaEth = addressBeneficiario;
             ahorristas[addressUser].montoAhorro = msg.value;
             ahorristas[addressUser].montoAdeudado = 0;
-            ahorristas[addressUser].banderas = Banderas(false,false,false,false,VotoSubObjetivos(false,false,false),VotoRoles(false,false,false,false,0,0),VisualizarAhorro(false,false));
+            ahorristas[addressUser].banderas = Banderas(false,false,false,false,VotoSubObjetivos(false,false,false),VotoRoles(false,false,false,false,0,0),VisualizarAhorro(false,false), 0);
             ahorristasIndex[cantAhorristas] = addressUser;
             cantAhorristas++;
             if(msg.value >= minAporteActivarCta){
                 ahorristas[addressUser].banderas.isActive = true;
+                ahorristas[addressUser].banderas.ultimoDeposito = block.timestamp;
                 cantAhorristasActivos++;
             }
         }
@@ -203,9 +208,10 @@ contract SavingAccount {
     //Endpoint
     // Item 6, 8 
     function sendDeposit() public payable savingContractIsActive receiveMinDepositAmount {
-        if (isInAhorristasMapping(msg.sender))
-        {
+        require((block.timestamp - ahorristas[msg.sender].banderas.ultimoDeposito) <= plazoSinRecargo, "El plazo sin recargo fue superado, debe pagar el recargo para poder depositar.");
+        if (isInAhorristasMapping(msg.sender)) {
             ahorristas[msg.sender].montoAhorro += msg.value;
+            ahorristas[msg.sender].banderas.ultimoDeposito = block.timestamp;
             if (ahorristas[msg.sender].banderas.isAproved) {
                 ahorroActual += msg.value;
             }else if(!ahorristas[msg.sender].banderas.isActive && ahorristas[msg.sender].montoAhorro >= minAporteActivarCta){
@@ -645,6 +651,19 @@ contract SavingAccount {
         ahorristas[ahorristaAdrs].banderas.visualizarAhorro.solicitoVerAhorro = false;
         ahorristas[ahorristaAdrs].banderas.visualizarAhorro.tienePermiso = false;
     }
+
+    //////////////////////////////////////////
+    //////////////// Item 27 /////////////////
+    /////////// Plazo de deposito ////////////
+    //////////////////////////////////////////
+
+    // Endpoint
+    function pagarRecargo() payable public onlyAhorristas savingContractIsActive {
+        require((block.timestamp - ahorristas[msg.sender].banderas.ultimoDeposito) > plazoSinRecargo, "No es necesario pagar recargos para realizar un deposito.");
+        require(msg.value == montoRecargo, "El valor no es igual al monto de recargo establecido");
+        ahorristas[msg.sender].banderas.ultimoDeposito = block.timestamp;
+        ahorroActual += msg.value;
+    } 
 
     //////////////////////////////////////////
     ///////// Funciones Auxiliares ///////////

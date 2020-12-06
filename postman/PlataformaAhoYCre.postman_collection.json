@@ -55,7 +55,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"maxAhorristas\": 12,\n    \"ahorroObj\": 10000,\n    \"elObjetivo\": \"comprar una casa\",\n    \"minAporteDep\": 10,\n    \"minAporteActivar\": 20,   \n    \"ahorristaVeAhorroActual\": true,\n    \"gestorVeAhorroActual\": true\n}",
+							"raw": "{\n\t\"maxAhorristas\": 12,\n    \"ahorroObj\": 7000000000000000,\n    \"elObjetivo\": \"comprar una casa\",\n    \"minAporteDep\": 10,\n    \"minAporteActivar\": 20,   \n    \"ahorristaVeAhorroActual\": true,\n    \"gestorVeAhorroActual\": true,\n    \"recargo\": 1000000\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -617,7 +617,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\t\n    \"amount\": 300000\n}",
+							"raw": "{\t\n    \"amount\": 10000000\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -625,7 +625,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/api/contract/sendDeposit?cta=2",
+							"raw": "localhost:3000/api/contract/sendDeposit?cta=1",
 							"host": [
 								"localhost"
 							],
@@ -638,7 +638,7 @@
 							"query": [
 								{
 									"key": "cta",
-									"value": "2"
+									"value": "1"
 								}
 							]
 						}
@@ -665,6 +665,47 @@
 								{
 									"key": "cta",
 									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Plazo de deposito",
+			"item": [
+				{
+					"name": "pagarRecargo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"montoRecargo\": 1000000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/pagarRecargo?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"pagarRecargo"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
 								}
 							]
 						}

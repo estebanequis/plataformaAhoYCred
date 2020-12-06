@@ -72,7 +72,8 @@ router.post('/init', async function (req, res) {
             req.body.minAporteDep,              // uint
             req.body.minAporteActivar,          // uint    
             req.body.ahorristaVeAhorroActual,   // bool
-            req.body.gestorVeAhorroActual       // bool
+            req.body.gestorVeAhorroActual,      // bool
+            req.body.recargo                    // uint
         ).send({
             from: accounts[req.query.cta],
             gas: 300000
@@ -537,6 +538,28 @@ router.post('/revocarVerMontoAhorro', async function (req, res) {
 });
 
 //////////////////////////////////////////
+//////////////// Item 27 /////////////////
+/////////// Plazo de deposito ////////////
+//////////////////////////////////////////
+
+router.post('/pagarRecargo', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.pagarRecargo()
+        .send({
+            from: accounts[req.query.cta],
+            gas: 300000,
+            value: req.body.montoRecargo
+        });
+        res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+//////////////////////////////////////////
 ////////// METODOS DE PRUEBA /////////////
 //////////////////////////////////////////
 
@@ -604,7 +627,7 @@ router.get('/getAhorristas', async function (req, res) {
             'isAuditor: ' + result[i][7][1] + '\n' +
             'isActive: ' + result[i][7][2] + '\n' +
             'isAproved: ' + result[i][7][3] + '\n' +
-            'ahorristaHaVotado: ' + result[i][7][4][0] + '\n' +
+            'ahorristaVotaSubObjetivo: ' + result[i][7][4][0] + '\n' +
             'auditorCierraVotacion: ' + result[i][7][4][1] + '\n' +
             'gestorVotaEjecucion: ' + result[i][7][4][2] + '\n' +
             'votoAGestor: ' + result[i][7][5][0] + '\n' +
@@ -613,7 +636,9 @@ router.get('/getAhorristas', async function (req, res) {
             'postuladoComoAuditor: ' + result[i][7][5][3] + '\n' +
             'votosRecibidoComoGestor: ' + result[i][7][5][4] + '\n' +
             'votosRecibidoComoAuditor: ' + result[i][7][5][5] + '\n' +
-            'solicitarVerAhorro: ' + result[i][7][6] + '\n\n';
+            'solicitoVerAhorro: ' + result[i][7][6][0] + '\n' +
+            'tienePermiso: ' + result[i][7][6][1] + '\n' +
+            'ultimoDeposito: ' + result[i][7][7] + '\n\n';
         }
         res.status(200).send(retorno);
     } catch (error) {

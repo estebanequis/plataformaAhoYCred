@@ -220,6 +220,11 @@
             "internalType": "struct SavingAccount.VisualizarAhorro",
             "name": "visualizarAhorro",
             "type": "tuple"
+          },
+          {
+            "internalType": "uint256",
+            "name": "ultimoDeposito",
+            "type": "uint256"
           }
         ],
         "internalType": "struct SavingAccount.Banderas",
@@ -457,6 +462,11 @@
                 "internalType": "struct SavingAccount.VisualizarAhorro",
                 "name": "visualizarAhorro",
                 "type": "tuple"
+              },
+              {
+                "internalType": "uint256",
+                "name": "ultimoDeposito",
+                "type": "uint256"
               }
             ],
             "internalType": "struct SavingAccount.Banderas",
@@ -666,6 +676,11 @@
         "internalType": "bool",
         "name": "gestorVeAhorroActual",
         "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "recargo",
+        "type": "uint256"
       }
     ],
     "name": "init",
@@ -684,6 +699,13 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pagarRecargo",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
