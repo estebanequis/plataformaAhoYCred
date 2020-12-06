@@ -10,6 +10,25 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "ahorristaAdrs",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "monto",
+        "type": "uint256"
+      }
+    ],
+    "name": "PrestamoEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "gestorAdrs",
         "type": "address"
       },
@@ -34,6 +53,19 @@
     ],
     "name": "SubObjetivoEvent",
     "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "conRetiro",
+        "type": "bool"
+      }
+    ],
+    "name": "abandonarContrato",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "inputs": [],
@@ -61,6 +93,19 @@
       }
     ],
     "name": "addSubObjetivo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ahorristaAdrs",
+        "type": "address"
+      }
+    ],
+    "name": "adjudicarPrestamo",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -104,12 +149,12 @@
         "type": "uint256"
       },
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "cuentaEth",
         "type": "address"
       },
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "cuentaBeneficenciaEth",
         "type": "address"
       },
@@ -119,31 +164,60 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "montoAdeudado",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "solicitoPrestamo",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "montoSolicitado",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "montoAdeudado",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct SavingAccount.Prestamos",
+        "name": "prestamos",
+        "type": "tuple"
       },
       {
         "components": [
           {
-            "internalType": "bool",
-            "name": "isGestor",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "isAuditor",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "isActive",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "isAproved",
-            "type": "bool"
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "isGestor",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isAuditor",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isActive",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isAproved",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isAlive",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct SavingAccount.EstadoAhorrista",
+            "name": "estadoAhorrista",
+            "type": "tuple"
           },
           {
             "components": [
@@ -281,6 +355,24 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ahorristaAdrs",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "monto",
+        "type": "uint256"
+      }
+    ],
+    "name": "ejecutarPrestamoEvent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "ejecutarProxSubObjetivo",
     "outputs": [
@@ -346,12 +438,12 @@
             "type": "uint256"
           },
           {
-            "internalType": "address",
+            "internalType": "address payable",
             "name": "cuentaEth",
             "type": "address"
           },
           {
-            "internalType": "address",
+            "internalType": "address payable",
             "name": "cuentaBeneficenciaEth",
             "type": "address"
           },
@@ -361,31 +453,60 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
-            "name": "montoAdeudado",
-            "type": "uint256"
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "solicitoPrestamo",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "montoSolicitado",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "montoAdeudado",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct SavingAccount.Prestamos",
+            "name": "prestamos",
+            "type": "tuple"
           },
           {
             "components": [
               {
-                "internalType": "bool",
-                "name": "isGestor",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isAuditor",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isActive",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isAproved",
-                "type": "bool"
+                "components": [
+                  {
+                    "internalType": "bool",
+                    "name": "isGestor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "isAuditor",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "isActive",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "isAproved",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "isAlive",
+                    "type": "bool"
+                  }
+                ],
+                "internalType": "struct SavingAccount.EstadoAhorrista",
+                "name": "estadoAhorrista",
+                "type": "tuple"
               },
               {
                 "components": [
@@ -484,19 +605,6 @@
   },
   {
     "inputs": [],
-    "name": "getAhorristasToAprove",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "getAhorroActual",
     "outputs": [
       {
@@ -516,98 +624,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getSubObjetivos",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "string",
-            "name": "descripcion",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "monto",
-            "type": "uint256"
-          },
-          {
-            "internalType": "enum SavingAccount.Estado",
-            "name": "estado",
-            "type": "uint8"
-          },
-          {
-            "internalType": "address payable",
-            "name": "ctaDestino",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "cantVotos",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct SavingAccount.SubObjetivo[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getSubObjetivosEnProcesoDeVotacion",
-    "outputs": [
-      {
-        "internalType": "string[]",
-        "name": "",
-        "type": "string[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getSubObjetivosPendienteEjecucion",
-    "outputs": [
-      {
-        "internalType": "string[]",
-        "name": "",
-        "type": "string[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getVotacionActiva",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getVotacionRolesState",
-    "outputs": [
-      {
-        "internalType": "enum SavingAccount.EstadoVotacionRoles",
-        "name": "",
-        "type": "uint8"
       }
     ],
     "stateMutability": "view",
@@ -681,6 +697,21 @@
         "internalType": "uint256",
         "name": "recargo",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pMaxPrestamo",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pDtoAporteAudGest",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pAlAbandonar",
+        "type": "uint256"
       }
     ],
     "name": "init",
@@ -699,6 +730,13 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pagarPrestamo",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -864,7 +902,7 @@
         "type": "string"
       },
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "addressBeneficiario",
         "type": "address"
       }
@@ -897,6 +935,19 @@
   {
     "inputs": [],
     "name": "setGestorTrue",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "montoSolicitado",
+        "type": "uint256"
+      }
+    ],
+    "name": "solicitarPrestamo",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

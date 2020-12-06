@@ -55,7 +55,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"maxAhorristas\": 12,\n    \"ahorroObj\": 7000000000000000,\n    \"elObjetivo\": \"comprar una casa\",\n    \"minAporteDep\": 10,\n    \"minAporteActivar\": 20,   \n    \"ahorristaVeAhorroActual\": true,\n    \"gestorVeAhorroActual\": true,\n    \"recargo\": 1000000\n}",
+							"raw": "{\n\t\"maxAhorristas\": 12,\n    \"ahorroObj\": 7000000000000000,\n    \"elObjetivo\": \"comprar una casa\",\n    \"minAporteDep\": 100000,\n    \"minAporteActivar\": 20,   \n    \"ahorristaVeAhorroActual\": true,\n    \"gestorVeAhorroActual\": true,\n    \"recargo\": 1000000,\n    \"pMaxPrestamo\": 10,\n    \"pDtoAporteAudGest\": 20,\n    \"pAlAbandonar\": 80\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -609,340 +609,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "sendDeposit",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\t\n    \"amount\": 10000000\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/sendDeposit?cta=1",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"sendDeposit"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAhorristasToAprove",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getAhorristasToAprove?cta=8",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getAhorristasToAprove"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "8"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Plazo de deposito",
-			"item": [
-				{
-					"name": "pagarRecargo",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\t\n    \"montoRecargo\": 1000000\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/pagarRecargo?cta=1",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"pagarRecargo"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Monto de ahorro",
-			"item": [
-				{
-					"name": "getAhorroActual (Admin)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getAhorroActual?cta=0",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getAhorroActual"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAhorroActual (Auditor 9)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getAhorroActual?cta=9",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getAhorroActual"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "9"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAhorroActual (Gestor 7) 1 (falla)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getAhorroActual?cta=7",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getAhorroActual"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "7"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "solicitarVerMontoAhorro",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/solicitarVerMontoAhorro?cta=7",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"solicitarVerMontoAhorro"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "7"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "permitirVerMontoAhorro",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"ahorristaAdrs\": \"{{address7}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/permitirVerMontoAhorro?cta=0",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"permitirVerMontoAhorro"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAhorroActual (Gestor 7) 2 (funciona)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getAhorroActual?cta=7",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getAhorroActual"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "7"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "revocarVerMontoAhorro",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"ahorristaAdrs\": \"{{address7}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/revocarVerMontoAhorro?cta=0",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"revocarVerMontoAhorro"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAhorroActual (Gestor 7) 3 (falla)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getAhorroActual?cta=7",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getAhorroActual"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "7"
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -1189,6 +855,486 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristasToAprove",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristasToAprove?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristasToAprove"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getSubObjetivosEnProcesoDeVotacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getSubObjetivosEnProcesoDeVotacion?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivosEnProcesoDeVotacion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getSubObjetivosPendienteEjecucion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getSubObjetivosPendienteEjecucion?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getSubObjetivosPendienteEjecucion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Deposito",
+			"item": [
+				{
+					"name": "sendDeposit (ahorrista 1) (falla)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"amount\": 10000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDeposit?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDeposit"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getRealBalance Copy 1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ads\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/getRealBalance?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getRealBalance"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDeposit (ahorrista 1) (min)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"amount\": 100000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDeposit?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDeposit"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getRealBalance Copy 2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ads\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/getRealBalance?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getRealBalance"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDeposit (auditor 9) (falla)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"amount\": 70000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDeposit?cta=9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDeposit"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 3",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getRealBalance Copy 3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ads\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/getRealBalance?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getRealBalance"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendDeposit (auditor 9) (min)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"amount\": 80000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/sendDeposit?cta=9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"sendDeposit"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 4",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getRealBalance Copy 4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ads\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/getRealBalance?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getRealBalance"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -1286,32 +1432,6 @@
 								{
 									"key": "cta",
 									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getSubObjetivosEnProcesoDeVotacion",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getSubObjetivosEnProcesoDeVotacion?cta=1",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getSubObjetivosEnProcesoDeVotacion"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "1"
 								}
 							]
 						}
@@ -1455,32 +1575,6 @@
 								"api",
 								"contract",
 								"ejecutarProxSubObjetivo"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "7"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getSubObjetivosPendienteEjecucion",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getSubObjetivosPendienteEjecucion?cta=7",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getSubObjetivosPendienteEjecucion"
 							],
 							"query": [
 								{
@@ -1910,6 +2004,536 @@
 								{
 									"key": "cta",
 									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Monto de ahorro",
+			"item": [
+				{
+					"name": "getAhorroActual (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorroActual?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorroActual"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAhorroActual (Auditor 9)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorroActual?cta=9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorroActual"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAhorroActual (Gestor 7) 1 (falla)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorroActual?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorroActual"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "solicitarVerMontoAhorro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/solicitarVerMontoAhorro?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"solicitarVerMontoAhorro"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "permitirVerMontoAhorro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ahorristaAdrs\": \"{{address7}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/permitirVerMontoAhorro?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"permitirVerMontoAhorro"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAhorroActual (Gestor 7) 2 (funciona)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorroActual?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorroActual"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revocarVerMontoAhorro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ahorristaAdrs\": \"{{address7}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/revocarVerMontoAhorro?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"revocarVerMontoAhorro"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAhorroActual (Gestor 7) 3 (falla)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorroActual?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorroActual"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Plazo de deposito",
+			"item": [
+				{
+					"name": "pagarRecargo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"montoRecargo\": 1000000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/pagarRecargo?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"pagarRecargo"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Prestamos",
+			"item": [
+				{
+					"name": "solicitarPrestamo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"montoSolicitado\": 10000000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/solicitarPrestamo?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"solicitarPrestamo"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adjudicarPrestamo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"ahorristaAdrs\": \"{{address1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/adjudicarPrestamo?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"adjudicarPrestamo"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pagarPrestamo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\t\n    \"montoPago\": 10000000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/pagarPrestamo?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"pagarPrestamo"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Abandonar",
+			"item": [
+				{
+					"name": "abandonarContrato (ahorrista 1) (Sin retiro)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"conRetiro\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/abandonarContrato?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"abandonarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "abandonarContrato (ahorrista 1) (Con retiro)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"conRetiro\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/abandonarContrato?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"abandonarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "abandonarContrato (gestor 6)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"conRetiro\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/abandonarContrato?cta=6",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"abandonarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "abandonarContrato (auditor 9)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"conRetiro\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/abandonarContrato?cta=9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"abandonarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "9"
 								}
 							]
 						}

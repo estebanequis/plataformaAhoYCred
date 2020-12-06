@@ -39,5 +39,14 @@ contract GeneralConfiguration {
     function validateRestrictions(uint cantAho, uint cantGest, uint cantAud) public validateRelationBetweenRoles(cantAho, cantGest, cantAud) view returns (bool) {
         return cantAho >= minCantAhorristas && cantGest >= minCantGestores && cantAud >= minCantAuditores;
     }
+
+    function isValid(uint cantAho, uint cantGest, uint cantAud) public pure returns(bool) {
+        bool valid = true;
+        valid = valid && cantAho >= 6;
+        valid = valid && cantAho >= cantGest && cantAho >= cantAud;
+        valid = valid && cantGest * 3 >= cantAud;
+        valid = valid && cantAud * 2 >= cantGest;
+        return valid;
+    }
     
 }

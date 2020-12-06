@@ -73,7 +73,10 @@ router.post('/init', async function (req, res) {
             req.body.minAporteActivar,          // uint    
             req.body.ahorristaVeAhorroActual,   // bool
             req.body.gestorVeAhorroActual,      // bool
-            req.body.recargo                    // uint
+            req.body.recargo,                   // uint
+            req.body.pMaxPrestamo,              // uint
+            req.body.pDtoAporteAudGest,         // uint
+            req.body.pAlAbandonar               // uint
         ).send({
             from: accounts[req.query.cta],
             gas: 300000
@@ -538,6 +541,64 @@ router.post('/revocarVerMontoAhorro', async function (req, res) {
 });
 
 //////////////////////////////////////////
+///////////// Items 24 al 26 /////////////
+//////////////// Prestamos ///////////////
+//////////////////////////////////////////
+
+router.post('/solicitarPrestamo', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.solicitarPrestamo(
+            req.body.montoSolicitado    // uint
+        )
+        .send({
+            from: accounts[req.query.cta],
+            gas: 300000
+        });
+        res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/adjudicarPrestamo', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.adjudicarPrestamo(
+            req.body.ahorristaAdrs      // string
+        )
+        .send({
+            from: accounts[req.query.cta],
+            gas: 300000
+        });
+        res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/pagarPrestamo', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.pagarPrestamo()
+        .send({
+            from: accounts[req.query.cta],
+            gas: 300000,
+            value: req.body.montoPago
+        });
+        res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+//////////////////////////////////////////
 //////////////// Item 27 /////////////////
 /////////// Plazo de deposito ////////////
 //////////////////////////////////////////
@@ -551,6 +612,29 @@ router.post('/pagarRecargo', async function (req, res) {
             from: accounts[req.query.cta],
             gas: 300000,
             value: req.body.montoRecargo
+        });
+        res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+//////////////////////////////////////////
+///////////// Items 28 al 29 /////////////
+//////////////// Abandonar ///////////////
+//////////////////////////////////////////
+
+router.post('/abandonarContrato', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.abandonarContrato(
+            req.body.conRetiro      // bool
+        )
+        .send({
+            from: accounts[req.query.cta],
+            gas: 300000
         });
         res.status(200).send(result);
     } catch (error) {
@@ -622,23 +706,32 @@ router.get('/getAhorristas', async function (req, res) {
             'cuentaEth: ' + result[i][3] + '\n' +
             'cuentaBeneficenciaEth: ' + result[i][4] + '\n' +
             'montoAhorro: ' + result[i][5] + '\n' +
-            'montoAdeudado: ' + result[i][6] + '\n' +
-            'isGestor: ' + result[i][7][0] + '\n' +
-            'isAuditor: ' + result[i][7][1] + '\n' +
-            'isActive: ' + result[i][7][2] + '\n' +
-            'isAproved: ' + result[i][7][3] + '\n' +
-            'ahorristaVotaSubObjetivo: ' + result[i][7][4][0] + '\n' +
-            'auditorCierraVotacion: ' + result[i][7][4][1] + '\n' +
-            'gestorVotaEjecucion: ' + result[i][7][4][2] + '\n' +
-            'votoAGestor: ' + result[i][7][5][0] + '\n' +
-            'votoAAuditor: ' + result[i][7][5][1] + '\n' +
-            'postuladoComoGestor: ' + result[i][7][5][2] + '\n' +
-            'postuladoComoAuditor: ' + result[i][7][5][3] + '\n' +
-            'votosRecibidoComoGestor: ' + result[i][7][5][4] + '\n' +
-            'votosRecibidoComoAuditor: ' + result[i][7][5][5] + '\n' +
-            'solicitoVerAhorro: ' + result[i][7][6][0] + '\n' +
-            'tienePermiso: ' + result[i][7][6][1] + '\n' +
-            'ultimoDeposito: ' + result[i][7][7] + '\n\n';
+            'Prestamos: \n' +
+            '   solicitoPrestamo: ' + result[i][6][0] + '\n' +
+            '   montoSolicitado: ' + result[i][6][1] + '\n' +
+            '   montoAdeudado: ' + result[i][6][2] + '\n' +
+            'Banderas: \n' +
+            '   EstadoAhorrista: \n' +
+            '       isGestor: ' + result[i][7][0][0] + '\n' +
+            '       isAuditor: ' + result[i][7][0][1] + '\n' +
+            '       isActive: ' + result[i][7][0][2] + '\n' +
+            '       isAproved: ' + result[i][7][0][3] + '\n' +
+            '       isAlive: ' + result[i][7][0][4] + '\n' +
+            '   VotoSubObjetivos: \n' +
+            '       ahorristaVotaSubObjetivo: ' + result[i][7][1][0] + '\n' +
+            '       auditorCierraVotacion: ' + result[i][7][1][1] + '\n' +
+            '       gestorVotaEjecucion: ' + result[i][7][1][2] + '\n' +
+            '   VotoRoles: \n' +
+            '       votoAGestor: ' + result[i][7][2][0] + '\n' +
+            '       votoAAuditor: ' + result[i][7][2][1] + '\n' +
+            '       postuladoComoGestor: ' + result[i][7][2][2] + '\n' +
+            '       postuladoComoAuditor: ' + result[i][7][2][3] + '\n' +
+            '       votosRecibidoComoGestor: ' + result[i][7][2][4] + '\n' +
+            '       votosRecibidoComoAuditor: ' + result[i][7][2][5] + '\n' +
+            '   VisualizarAhorro: \n' +
+            '       solicitoVerAhorro: ' + result[i][7][3][0] + '\n' +
+            '       tienePermiso: ' + result[i][7][3][1] + '\n' +
+            '   ultimoDeposito: ' + result[i][7][4] + '\n\n';
         }
         res.status(200).send(retorno);
     } catch (error) {
