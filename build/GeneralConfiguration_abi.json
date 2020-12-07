@@ -5,6 +5,51 @@
     "type": "constructor"
   },
   {
+    "inputs": [],
+    "name": "getAddressToPay",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getComisionApertura",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "montoAhorro",
+        "type": "uint256"
+      }
+    ],
+    "name": "getPctComisionLiquidacion",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -44,6 +89,45 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "cotDolar",
+        "type": "uint256"
+      }
+    ],
+    "name": "setCotizacionDolar",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "dlsComisionApertura",
+        "type": "uint256"
+      }
+    ],
+    "name": "setDolaresComisionApertura",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "pComisionLiquidacion",
+        "type": "uint256"
+      }
+    ],
+    "name": "setPctComisionLiquidacion",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

@@ -707,6 +707,92 @@ router.post('/liquidarCuentaAhorro', async function (req, res) {
 /////////// Liquidar Contrato ////////////
 //////////////////////////////////////////
 
+router.get('/liquidarContrato', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.liquidarContrato()
+        .send({
+            from: accounts[req.query.cta],
+            gas: 3000000
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.get('/votarLiquidarContrato', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.votarLiquidarContrato()
+        .send({
+            from: accounts[req.query.cta],
+            gas: 3000000
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+//////////////////////////////////////////
+//////// GeneralConfiguration ////////////
+//////////////////////////////////////////
+
+router.post('/setPctComisionLiquidacion', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.setPctComisionLiquidacion(
+            req.body.pComisionLiquidacion       // string
+        ).send({
+            from: accounts[req.query.cta],
+            gas: 3000000
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/setDolaresComisionApertura', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.setDolaresComisionApertura(
+            req.body.dlsComisionApertura       // string
+        ).send({
+            from: accounts[req.query.cta],
+            gas: 3000000
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
+
+router.post('/setCotizacionDolar', async function (req, res) {
+    try {
+        const contract = contractService.getContract();
+        const accounts = await web3.eth.getAccounts();
+        let result = await contract.methods.setCotizacionDolar(
+            req.body.cotDolar       // string
+        ).send({
+            from: accounts[req.query.cta],
+            gas: 3000000
+        });
+        res.status(200).send('Resultado:' + result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.data);
+    }
+});
 
 
 //////////////////////////////////////////
@@ -802,7 +888,8 @@ router.get('/getAhorristas', async function (req, res) {
             '       yaVoto: ' + result[i][7][4][1] + '\n' +
             '       cantVotos: ' + result[i][7][4][2] + '\n' +
             '       fechaFallecimiento: ' + result[i][7][4][3] + '\n' +
-            '   ultimoDeposito: ' + result[i][7][5] + '\n\n';
+            '   ultimoDeposito: ' + result[i][7][5] + '\n' +
+            '   liquidarContrato: ' + result[i][7][6] + '\n\n';
         }
         res.status(200).send(retorno);
     } catch (error) {
@@ -926,5 +1013,7 @@ router.get('/getVotacionRolesState', async function (req, res) {
         res.status(500).send(error.data);
     }
 });
+
+
 
 module.exports = router;

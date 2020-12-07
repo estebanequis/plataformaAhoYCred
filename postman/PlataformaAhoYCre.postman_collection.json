@@ -6,6 +6,157 @@
 	},
 	"item": [
 		{
+			"name": "General",
+			"item": [
+				{
+					"name": "Compile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/compile",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"compile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deploy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/deploy",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"deploy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setPctComisionLiquidacion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"pComisionLiquidacion\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/setPctComisionLiquidacion?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setPctComisionLiquidacion"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setDolaresComisionApertura",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"dlsComisionApertura\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/setDolaresComisionApertura?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setDolaresComisionApertura"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setCotizacionDolar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"cotDolar\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/setCotizacionDolar?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"setCotizacionDolar"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Base",
 			"item": [
 				{
@@ -55,7 +206,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"maxAhorristas\": 12,\n    \"ahorroObj\": 7000000000000000,\n    \"elObjetivo\": \"comprar una casa\",\n    \"minAporteDep\": 100000,\n    \"minAporteActivar\": 20,   \n    \"ahorristaVeAhorroActual\": true,\n    \"gestorVeAhorroActual\": true,\n    \"recargo\": 1000000,\n    \"pMaxPrestamo\": 10,\n    \"pDtoAporteAudGest\": 20,\n    \"pAlAbandonar\": 80,\n    \"pzoRevocarFallecimiento\": 60\n}",
+							"raw": "{\n\t\"maxAhorristas\": 12,\n    \"ahorroObj\": 5000000000000000,\n    \"elObjetivo\": \"comprar una casa\",\n    \"minAporteDep\": 100000,\n    \"minAporteActivar\": 20,   \n    \"ahorristaVeAhorroActual\": true,\n    \"gestorVeAhorroActual\": true,\n    \"recargo\": 1000000,\n    \"pMaxPrestamo\": 10,\n    \"pDtoAporteAudGest\": 20,\n    \"pAlAbandonar\": 80,\n    \"pzoRevocarFallecimiento\": 60\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -614,6 +765,426 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Liquidar contrato",
+			"item": [
+				{
+					"name": "votarLiquidarContrato (admin 0)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/votarLiquidarContrato?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarLiquidarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarLiquidarContrato (ahorrista 1)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/votarLiquidarContrato?cta=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarLiquidarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarLiquidarContrato (gestor 6)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/votarLiquidarContrato?cta=6",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarLiquidarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 3",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarLiquidarContrato (gestor 7)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/votarLiquidarContrato?cta=7",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarLiquidarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 4",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarLiquidarContrato (auditor 8)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/votarLiquidarContrato?cta=8",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarLiquidarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 5",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "votarLiquidarContrato (auditor 9)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/votarLiquidarContrato?cta=9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"votarLiquidarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getAhorristas Copy 6",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getAhorristas"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getRealBalance Copy 1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ads\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/getRealBalance?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getRealBalance"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "liquidarContrato",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/contract/liquidarContrato?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"liquidarContrato"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getRealBalance Copy 2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ads\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/getRealBalance?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getRealBalance"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Test",
 			"item": [
 				{
@@ -689,97 +1260,7 @@
 					"response": []
 				},
 				{
-					"name": "[TEST] getRealBalance",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"ads\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/api/contract/getRealBalance?cta=0",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getRealBalance"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "[TEST] getAhorristas",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getAhorristas"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "[TEST] getAhorristas Copy 1",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3000/api/contract/getAhorristas?cta=0",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"contract",
-								"getAhorristas"
-							],
-							"query": [
-								{
-									"key": "cta",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "[TEST] getAhorristas Copy 2",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -845,6 +1326,44 @@
 								"api",
 								"contract",
 								"savingAccountState"
+							],
+							"query": [
+								{
+									"key": "cta",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[TEST] getRealBalance",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ads\": \"0x94EFaCF252b63Ab19065e1cCd772C69717FD2C47\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/contract/getRealBalance?cta=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"contract",
+								"getRealBalance"
 							],
 							"query": [
 								{

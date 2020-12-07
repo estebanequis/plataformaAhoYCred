@@ -2,11 +2,15 @@
 pragma solidity ^0.6.1;
 
 contract GeneralConfiguration {
+
     address payable public owner;
     uint minCantAhorristas;
     uint minCantGestores;
     uint minCantAuditores;
-    
+    uint pctComisionLiquidacion;
+    uint dolaresComisionApertura;
+    uint cotizacionDolar;
+
     modifier onlyOwner() {
         require(msg.sender == owner, 'Not the owner');
         _;
@@ -20,15 +24,16 @@ contract GeneralConfiguration {
         _;
     }
     
-    constructor() public
-    {
+    constructor() public {
         owner = msg.sender;
-        //valores por defecto
         minCantAhorristas = 6;
         minCantGestores = 2;
         minCantAuditores = 1;
+        pctComisionLiquidacion = 10;
+        dolaresComisionApertura = 10;
+        cotizacionDolar = 5;
     }
-    
+
     function setRestrictions(uint minAhorristas, uint minGestores, uint minAuditores) public onlyOwner validateRelationBetweenRoles(minAhorristas, minGestores, minAuditores){
         minCantAhorristas = minAhorristas;
         minCantGestores = minGestores;
@@ -48,5 +53,29 @@ contract GeneralConfiguration {
         valid = valid && cantAud * 2 >= cantGest;
         return valid;
     }
+
+    function setPctComisionLiquidacion(uint pComisionLiquidacion) public onlyOwner {
+        pctComisionLiquidacion = pComisionLiquidacion;
+    }
+
+    function setDolaresComisionApertura(uint dlsComisionApertura) public onlyOwner {
+        dolaresComisionApertura = dlsComisionApertura;
+    }
+
+    function setCotizacionDolar(uint cotDolar) public onlyOwner {
+        cotizacionDolar = cotDolar;
+    }
+
+    function getPctComisionLiquidacion(uint montoAhorro) public view returns(uint) {
+        return uint((montoAhorro*pctComisionLiquidacion)/100);
+    }
     
+    function getComisionApertura() public view returns(uint) {
+        return dolaresComisionApertura*cotizacionDolar;
+    }
+
+    function getAddressToPay() public view returns(address payable) {
+        return owner;
+    }
+
 }

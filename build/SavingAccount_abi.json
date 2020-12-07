@@ -367,6 +367,11 @@
                 "internalType": "uint256",
                 "name": "ultimoDeposito",
                 "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "liquidarContrato",
+                "type": "bool"
               }
             ],
             "internalType": "struct SavingAccount.Banderas",
@@ -377,19 +382,6 @@
         "internalType": "struct SavingAccount.Ahorrista[]",
         "name": "",
         "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getAhorristasToAprove",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -456,58 +448,6 @@
         "internalType": "struct SavingAccount.SubObjetivo[]",
         "name": "",
         "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getSubObjetivosEnProcesoDeVotacion",
-    "outputs": [
-      {
-        "internalType": "string[]",
-        "name": "",
-        "type": "string[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getSubObjetivosPendienteEjecucion",
-    "outputs": [
-      {
-        "internalType": "string[]",
-        "name": "",
-        "type": "string[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getVotacionActiva",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getVotacionRolesState",
-    "outputs": [
-      {
-        "internalType": "enum SavingAccount.EstadoVotacionRoles",
-        "name": "",
-        "type": "uint8"
       }
     ],
     "stateMutability": "view",
@@ -598,6 +538,13 @@
       }
     ],
     "name": "init",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "liquidarContrato",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -930,6 +877,13 @@
       }
     ],
     "name": "votarGestor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "votarLiquidarContrato",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

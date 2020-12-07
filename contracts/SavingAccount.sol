@@ -46,6 +46,7 @@ contract SavingAccount {
         VisualizarAhorro visualizarAhorro;
         Fallecimiento fallecimiento;
         uint ultimoDeposito;
+        bool liquidarContrato;
     }
 
     uint plazoRevocarFallecimiento;     // Plazo en el cual una persona puede revocar su fallecimiento
@@ -155,9 +156,12 @@ contract SavingAccount {
 
     // item 3
     function activarSavingAccount() public onlyAdmin {
-        if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, cantAuditores)){
+        if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, cantAuditores)) {
+            uint comision = generalConf.getComisionApertura();
+            require(address(this).balance >= comision, 'No se puede cobrar comision');
+            generalConf.getAddressToPay().transfer(comision);
             isActive = true;
-        }  
+        }
     }
 
     //////////////////////////////////////////
@@ -188,23 +192,22 @@ contract SavingAccount {
     // Item 8 y 10
     function sendDepositWithRegistration(string memory cedula, string memory fullName, address payable addressBeneficiario) public payable {
         require(msg.value >= minAporteDeposito, 'Monto insuficiente');
+        require(isInAhorristasMapping(msg.sender) == false, 'Existe ahorrista');
         address payable addressUser = msg.sender;
-        if (!isInAhorristasMapping(addressUser)) {
-            ahorristas[addressUser].cedula = cedula;
-            ahorristas[addressUser].nombreCompleto = fullName;
-            ahorristas[addressUser].fechaIngreso = block.timestamp;
-            ahorristas[addressUser].cuentaEth = addressUser;
-            ahorristas[addressUser].cuentaBeneficenciaEth = addressBeneficiario;
-            ahorristas[addressUser].montoAhorro = msg.value;
-            ahorristas[addressUser].prestamos = Prestamos(false,0,0);
-            ahorristas[addressUser].banderas = Banderas(EstadoAhorrista(false,false,false,false),VotoSubObjetivos(false,false,false),VotoRoles(false,false,false,false,0,0),VisualizarAhorro(false,false),Fallecimiento(true,false,0,0),0);
-            ahorristasIndex[cantAhorristas] = addressUser;
-            cantAhorristas++;
-            if(msg.value >= minAporteActivarCta) {
-                ahorristas[addressUser].banderas.estadoAhorrista.isActive = true;
-                ahorristas[addressUser].banderas.ultimoDeposito = block.timestamp;
-                cantAhorristasActivos++;
-            }
+        ahorristas[addressUser].cedula = cedula;
+        ahorristas[addressUser].nombreCompleto = fullName;
+        ahorristas[addressUser].fechaIngreso = block.timestamp;
+        ahorristas[addressUser].cuentaEth = addressUser;
+        ahorristas[addressUser].cuentaBeneficenciaEth = addressBeneficiario;
+        ahorristas[addressUser].montoAhorro = msg.value;
+        ahorristas[addressUser].prestamos = Prestamos(false,0,0);
+        ahorristas[addressUser].banderas = Banderas(EstadoAhorrista(false,false,false,false),VotoSubObjetivos(false,false,false),VotoRoles(false,false,false,false,0,0),VisualizarAhorro(false,false),Fallecimiento(true,false,0,0),0,false);
+        ahorristasIndex[cantAhorristas] = addressUser;
+        cantAhorristas++;
+        if(msg.value >= minAporteActivarCta) {
+            ahorristas[addressUser].banderas.estadoAhorrista.isActive = true;
+            ahorristas[addressUser].banderas.ultimoDeposito = block.timestamp;
+            cantAhorristasActivos++;
         }
     }
     
@@ -227,18 +230,18 @@ contract SavingAccount {
     
     // Item 10
     function aproveAhorrista(address unAddress) public onlyAuditor {
-        if (isInAhorristasMapping(unAddress) && ahorristas[unAddress].banderas.estadoAhorrista.isActive == true) {
-            if (isActive == false) {
-                ahorristas[unAddress].banderas.estadoAhorrista.isAproved = true;
-                cantAhorristasAproved++;
-                ahorroActual += ahorristas[unAddress].montoAhorro;
-            }
-            else if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, cantAuditores)) {
-                ahorristas[unAddress].banderas.estadoAhorrista.isAproved = true;
-                cantAhorristasAproved++;
-                ahorroActual += ahorristas[unAddress].montoAhorro;
-            }  
+        require(isInAhorristasMapping(unAddress), 'No existe ahorrista');
+        require(tieneCtaActiva(unAddress), 'Cuenta inactiva');
+        if (isActive == false) {
+            ahorristas[unAddress].banderas.estadoAhorrista.isAproved = true;
+            cantAhorristasAproved++;
+            ahorroActual += ahorristas[unAddress].montoAhorro;
         }
+        else if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, cantAuditores)) {
+            ahorristas[unAddress].banderas.estadoAhorrista.isAproved = true;
+            cantAhorristasAproved++;
+            ahorroActual += ahorristas[unAddress].montoAhorro;
+        }  
     }
     
     //////////////////////////////////////////
@@ -718,7 +721,61 @@ contract SavingAccount {
     /////////// Liquidar Contrato ////////////
     //////////////////////////////////////////
 
+    function liquidarContrato() public onlyAdmin {
+        require(ahorroActual >= ahorroObjetivo, 'Ahorro insuficiente');
+        require(existenObjPendientesEjecucion() == false, 'Objetivos pendientes');
+        require(existenAhoSinVotarLiquidarContrato() == false, 'Faltan votar');
+        require(existenAhorristasInactivos() == false, 'Ahorristas inactivos');
+        repartirAhorros();
+        generalConf.getAddressToPay().transfer(address(this).balance);
+    }
 
+    function votarLiquidarContrato() public onlyAhorrista {
+        ahorristas[msg.sender].banderas.liquidarContrato = true;
+    }
+
+    function existenObjPendientesEjecucion() private view returns(bool) {
+        for(uint i=0; i<subObjetivos.length; i++) { 
+            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
+                return true;  
+            }
+        }
+        return false;
+    }
+
+    function existenAhoSinVotarLiquidarContrato() private view returns(bool) {
+        for(uint i=0; i<cantAhorristas; i++) {
+            if (ahorristas[ahorristasIndex[i]].banderas.liquidarContrato == false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function existenAhorristasInactivos() private view returns(bool) {
+        for(uint i=0; i<cantAhorristas; i++) {
+            if (ahorristas[ahorristasIndex[i]].banderas.estadoAhorrista.isActive == false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function repartirAhorros() private {
+        uint comision = generalConf.getPctComisionLiquidacion(ahorroActual);
+        for(uint i=0; i<cantAhorristas; i++) {
+            uint montoAhorroAhorrista = ahorristas[ahorristasIndex[i]].montoAhorro;
+            uint montoAdeudadoAhorrista = ahorristas[ahorristasIndex[i]].prestamos.montoAdeudado;
+            if (montoAdeudadoAhorrista < montoAhorroAhorrista) {
+                montoAhorroAhorrista -= montoAdeudadoAhorrista;
+                uint pctDelAhorro = uint((montoAhorroAhorrista*100)/ahorroActual);
+                uint pagaDeComision = uint((comision*pctDelAhorro)/100);
+                uint cobraDelAhorro = uint((ahorroActual*pctDelAhorro)/100);
+                uint aTransferir = uint(cobraDelAhorro-pagaDeComision);
+                ahorristas[ahorristasIndex[i]].cuentaEth.transfer(aTransferir);
+            }
+        }
+    }
 
     //////////////////////////////////////////
     ///////// Funciones Auxiliares ///////////
@@ -771,6 +828,10 @@ contract SavingAccount {
         return address(this).balance;
     }
 
+    function getSubObjetivos() public view returns(SubObjetivo[] memory){
+        return subObjetivos;
+    }
+
     function savingAccountStatePart1() public view returns(uint, uint, string memory, uint, uint, bool, bool, uint) {
         return (cantMaxAhorristas, ahorroObjetivo, objetivo, minAporteDeposito, minAporteActivarCta, ahorroActualVisiblePorAhorristas, ahorroActualVisiblePorGestores, cantAhorristas);
     }
@@ -779,18 +840,17 @@ contract SavingAccount {
         return (cantAhorristasActivos, cantAhorristasAproved, cantGestores, cantAuditores, administrador, isActive, ahorroActual, totalRecibidoDeposito);
     }
 
+/*
     function getVotacionActiva() public view returns(bool) {
         return votacionSubObjetivosActiva;
-    }
-
-    function getSubObjetivos() public view returns(SubObjetivo[] memory){
-        return subObjetivos;
     }
 
     function getVotacionRolesState() public view returns(EstadoVotacionRoles) {
         return estadoVotacionRoles;
     }
+*/
 
+/*
     // Los gestores pueden obtener un listado de los SubObjetivos pendientes de ejecucion
     function getSubObjetivosPendienteEjecucion() public onlyGestor view returns(string[] memory) { 
         // Se obtiene la cantidad de SubObjetivos que se encuentran pendientes de ejecucion
@@ -848,5 +908,6 @@ contract SavingAccount {
         }
         return losActivosSinAprobar;
     }
+    */
 
 }
