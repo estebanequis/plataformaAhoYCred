@@ -34,7 +34,7 @@ contract SavingAccount {
         uint fechaIngreso;
         address payable cuentaEth;
         address payable cuentaBeneficenciaEth;
-        uint montoAhorro;               //si isActive == false -> seria el dinero que no se suma al ahorro total del contrato
+        uint montoAhorro;               // Si isActive == false -> seria el dinero que no se suma al ahorro total del contrato
         Prestamos prestamos;
         Banderas banderas;
     }
@@ -64,7 +64,7 @@ contract SavingAccount {
         bool isAproved;
     }
 
-    bool votacionSubObjetivosActiva;    //bandera para indicar periodo de votacion activo
+    bool votacionSubObjetivosActiva;    // Bandera para indicar periodo de votacion activo
     struct VotoSubObjetivos {
         bool ahorristaVotaSubObjetivo;
         bool auditorCierraVotacion;
@@ -190,6 +190,7 @@ contract SavingAccount {
     function sendDepositWithRegistration(string memory cedula, string memory fullName, address payable addressBeneficiario) public payable {
         require(msg.value >= minAporteDeposito, 'Monto insuficiente');
         require(isInAhorristasMapping(msg.sender) == false, 'Existe ahorrista');
+        require(cantAhorristas < cantMaxAhorristas, 'Excede cantidad ahorristas');
 
         address payable addressUser = msg.sender;
         ahorristas[addressUser].cedula = cedula;
@@ -548,7 +549,9 @@ contract SavingAccount {
     function getAhorroActual() public view returns (uint) {
         require(msg.sender == administrador 
             || ahorristas[msg.sender].banderas.estadoAhorrista.isAuditor == true
-            || ahorristas[msg.sender].banderas.visualizarAhorro.tienePermiso == true,
+            || ahorristas[msg.sender].banderas.visualizarAhorro.tienePermiso == true
+            || (ahorristas[msg.sender].banderas.estadoAhorrista.isGestor && ahorroActualVisiblePorGestores == true)
+            || (isInAhorristasMapping(msg.sender) && ahorroActualVisiblePorAhorristas == true),
             "No permitido");
         return ahorroActual;
     }
@@ -556,6 +559,8 @@ contract SavingAccount {
     function solicitarVerMontoAhorro() public onlyAhorrista {
         require(msg.sender != administrador, 'Permitido');
         require(ahorristas[msg.sender].banderas.estadoAhorrista.isAuditor == false, 'Permitido');
+        require(ahorristas[msg.sender].banderas.estadoAhorrista.isGestor && ahorroActualVisiblePorGestores == true, 'Permitido');
+        require(isInAhorristasMapping(msg.sender) && ahorroActualVisiblePorAhorristas == true, 'Permitido');
         ahorristas[msg.sender].banderas.visualizarAhorro.solicitoVerAhorro = true;
     }
 
