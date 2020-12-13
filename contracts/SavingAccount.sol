@@ -632,7 +632,6 @@ contract SavingAccount {
     //////////////// Abandonar ///////////////
     //////////////////////////////////////////
 
-    // TODO: No se transfieren realmente los weis hacia afuera
     function abandonarContrato(bool conRetiro) public onlyAhorrista {
         require(msg.sender != administrador, "No se puede retirar");
         if (conRetiro == true) {
