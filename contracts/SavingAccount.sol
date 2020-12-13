@@ -108,6 +108,10 @@ contract SavingAccount {
         uint cantVotos;
     }
 
+    //////////////////////////////////////////
+    /////////////// Modifiers ////////////////
+    //////////////////////////////////////////
+
     modifier onlyAdmin() {
         require(msg.sender == administrador, 'No es admin');
         _;
@@ -145,6 +149,11 @@ contract SavingAccount {
         require(isActive == true, 'Contracto inactivo');
         _;
     }
+
+    //////////////////////////////////////////
+    ///////////// Items 1 al 5 ///////////////
+    ///////////////// Base ///////////////////
+    //////////////////////////////////////////
     
     constructor() public {   
         administrador = msg.sender;
@@ -634,9 +643,9 @@ contract SavingAccount {
 
     function abandonarContrato(bool conRetiro) public onlyAhorrista {
         require(msg.sender != administrador, "No se puede retirar");
+        require(ahorristas[msg.sender].prestamos.montoAdeudado == 0, "Mantiene deudas");
         if (conRetiro == true) {
             require(tieneCtaActiva(msg.sender), "Cuenta inactiva");
-            require(ahorristas[msg.sender].prestamos.montoAdeudado == 0, "Mantiene deudas");
             uint montoRetiro = (ahorristas[msg.sender].montoAhorro*pctAlAbandonar)/100;
             ahorristas[msg.sender].cuentaEth.transfer(montoRetiro);
             ahorroActual -= montoRetiro;
@@ -789,10 +798,13 @@ contract SavingAccount {
     }
     
     //////////////////////////////////////////
-    ////////// METODOS DE PRUEBA /////////////
+    ////////// Metodos de prueba /////////////
     //////////////////////////////////////////
     
-    /*
+    /*  Descomentar solo los metodos necesarios para probar      */
+    /*  Ya que los metodos descomentados forman parte del tamano */
+    /*  total del contrato, el cual es limitado                  */
+
     function setGestorTrue() public {
         bool currentState = ahorristas[msg.sender].banderas.estadoAhorrista.isGestor;
         if(!currentState){
@@ -839,77 +851,70 @@ contract SavingAccount {
         return (cantAhorristasActivos, cantAhorristasAproved, cantGestores, cantAuditores, administrador, isActive, ahorroActual, totalRecibidoDeposito);
     }
 
-    function getVotacionActiva() public view returns(bool) {
-        return votacionSubObjetivosActiva;
-    }
+    // function getVotacionActiva() public view returns(bool) {
+    //     return votacionSubObjetivosActiva;
+    // }
 
-    function getVotacionRolesState() public view returns(EstadoVotacionRoles) {
-        return estadoVotacionRoles;
-    }
-    */
+    // function getVotacionRolesState() public view returns(EstadoVotacionRoles) {
+    //     return estadoVotacionRoles;
+    // }
 
-    /*
-    // Los gestores pueden obtener un listado de los SubObjetivos pendientes de ejecucion
-    function getSubObjetivosPendienteEjecucion() public onlyGestor view returns(string[] memory) { 
-        // Se obtiene la cantidad de SubObjetivos que se encuentran pendientes de ejecucion
-        uint cantSubObj=0;
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.PendienteEjecucion){
-                cantSubObj++;     
-            }
-        }
-        string[] memory losSubObjetivos = new string[](cantSubObj);
-        // Se agrega a la lista de retorno los SubObjetivos pendientes de ejecucion
-        uint j = 0;
-        for(uint i=0; i<subObjetivos.length; i++) {
-            if(subObjetivos[i].estado == Estado.PendienteEjecucion) {
-                losSubObjetivos[j] = subObjetivos[i].descripcion;    
-                j++;
-            }
-        }
-        return losSubObjetivos;
-    }
-    */
+    // // Los gestores pueden obtener un listado de los SubObjetivos pendientes de ejecucion
+    // function getSubObjetivosPendienteEjecucion() public onlyGestor view returns(string[] memory) { 
+    //     // Se obtiene la cantidad de SubObjetivos que se encuentran pendientes de ejecucion
+    //     uint cantSubObj=0;
+    //     for(uint i=0; i<subObjetivos.length; i++) { 
+    //         if(subObjetivos[i].estado == Estado.PendienteEjecucion){
+    //             cantSubObj++;     
+    //         }
+    //     }
+    //     string[] memory losSubObjetivos = new string[](cantSubObj);
+    //     // Se agrega a la lista de retorno los SubObjetivos pendientes de ejecucion
+    //     uint j = 0;
+    //     for(uint i=0; i<subObjetivos.length; i++) {
+    //         if(subObjetivos[i].estado == Estado.PendienteEjecucion) {
+    //             losSubObjetivos[j] = subObjetivos[i].descripcion;    
+    //             j++;
+    //         }
+    //     }
+    //     return losSubObjetivos;
+    // }
 
-    /*
-    // Los ahorristas pueden obtener un listado de los SubObjetivos disponibles
-    function getSubObjetivosEnProcesoDeVotacion() public onlyAhorrista view returns(string[] memory) {
-        require(votacionSubObjetivosActiva == true, 'Votacion inactiva');
-        require(tieneCtaActiva(msg.sender) == true, 'Cuenta inactiva');
-        // Se obtiene la cantidad de SubObjetivos que se encuentran EnProcesoDeVotacion
-        uint cantSubObj=0;
-        for(uint i=0; i<subObjetivos.length; i++) { 
-            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
-                cantSubObj++;     
-            }
-        }
-        string[] memory losSubObjetivos = new string[](cantSubObj);
-        // Se agrega a la lista a retornar, las descripciones de cada uno de los SubObjetivos en proceso de votacion
-        uint j = 0;
-        for(uint i=0; i<subObjetivos.length; i++) {
-            if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion) {
-                losSubObjetivos[j] = subObjetivos[i].descripcion;
-                j++;
-            }
-        }
-        return losSubObjetivos;
-    }
-    */
+    // // Los ahorristas pueden obtener un listado de los SubObjetivos disponibles
+    // function getSubObjetivosEnProcesoDeVotacion() public onlyAhorrista view returns(string[] memory) {
+    //     require(votacionSubObjetivosActiva == true, 'Votacion inactiva');
+    //     require(tieneCtaActiva(msg.sender) == true, 'Cuenta inactiva');
+    //     // Se obtiene la cantidad de SubObjetivos que se encuentran EnProcesoDeVotacion
+    //     uint cantSubObj=0;
+    //     for(uint i=0; i<subObjetivos.length; i++) { 
+    //         if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion){
+    //             cantSubObj++;     
+    //         }
+    //     }
+    //     string[] memory losSubObjetivos = new string[](cantSubObj);
+    //     // Se agrega a la lista a retornar, las descripciones de cada uno de los SubObjetivos en proceso de votacion
+    //     uint j = 0;
+    //     for(uint i=0; i<subObjetivos.length; i++) {
+    //         if(subObjetivos[i].estado == Estado.EnProcesoDeVotacion) {
+    //             losSubObjetivos[j] = subObjetivos[i].descripcion;
+    //             j++;
+    //         }
+    //     }
+    //     return losSubObjetivos;
+    // }
 
-    /*
-    function getAhorristasToAprove() public onlyAuditor view returns(address[] memory) {
-        address[] memory losActivosSinAprobar = new address[](cantAhorristasActivos - cantAhorristasAproved);
-        uint j = 0;
-        if (cantAhorristasActivos - cantAhorristasAproved > 0) {
-            for(uint i=0; i<cantAhorristas; i++) {
-                if(ahorristas[ahorristasIndex[i]].banderas.estadoAhorrista.isActive && !ahorristas[ahorristasIndex[i]].banderas.estadoAhorrista.isAproved) {
-                    losActivosSinAprobar[j] = ahorristas[ahorristasIndex[i]].cuentaEth;    
-                    j++;
-                }
-            }
-        }
-        return losActivosSinAprobar;
-    }
-    */
+    // function getAhorristasToAprove() public onlyAuditor view returns(address[] memory) {
+    //     address[] memory losActivosSinAprobar = new address[](cantAhorristasActivos - cantAhorristasAproved);
+    //     uint j = 0;
+    //     if (cantAhorristasActivos - cantAhorristasAproved > 0) {
+    //         for(uint i=0; i<cantAhorristas; i++) {
+    //             if(ahorristas[ahorristasIndex[i]].banderas.estadoAhorrista.isActive && !ahorristas[ahorristasIndex[i]].banderas.estadoAhorrista.isAproved) {
+    //                 losActivosSinAprobar[j] = ahorristas[ahorristasIndex[i]].cuentaEth;    
+    //                 j++;
+    //             }
+    //         }
+    //     }
+    //     return losActivosSinAprobar;
+    // }
 
 }

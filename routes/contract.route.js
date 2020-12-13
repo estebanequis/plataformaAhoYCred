@@ -22,6 +22,11 @@ router.get('/deploy', function (req, res) {
     }
 });
 
+//////////////////////////////////////////
+///////////// Items 1 al 5 ///////////////
+///////////////// Base ///////////////////
+//////////////////////////////////////////
+
 router.post('/setConfigAddress', async function (req, res) {
     try {
         const contract = contractService.getContract();
