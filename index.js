@@ -22,11 +22,11 @@ const credentials = JSON.parse(fs.readFileSync(credentialPath, 'utf8'));
 const seedPhrase_MNEMONIC = credentials.seedPhrase;
 const infuraAccessPoint = credentials.accessPoint;
 
-//const ganacheProvider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
-const infuraProvider = new HDWalletProvider(seedPhrase_MNEMONIC, infuraAccessPoint, 0, 3);
+const ganacheProvider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
+//const infuraProvider = new HDWalletProvider(seedPhrase_MNEMONIC, infuraAccessPoint, 0, 3);
 
-web3 = new Web3(infuraProvider);
-//web3 = new Web3(ganacheProvider);
+//web3 = new Web3(infuraProvider);
+web3 = new Web3(ganacheProvider);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
