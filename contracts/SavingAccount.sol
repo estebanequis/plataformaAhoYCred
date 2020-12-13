@@ -15,7 +15,7 @@ contract SavingAccount {
     uint minAporteDeposito;
     uint pctDtoAporteAudGest;
     uint minAporteActivarCta;
-    uint totalRecibidoDeposito;         //no me queda claro para que sirve
+    uint totalRecibidoDeposito;         
     uint plazoSinRecargo = 40;          // Se debe indicar los segundos necesarios para que no se cobren recargos entre depositos, (5184000 son 60 dias)
     uint montoRecargo;
     uint pctAlAbandonar;                // Porcentaje de retiro al abandonar el contrato
