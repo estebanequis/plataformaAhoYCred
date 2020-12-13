@@ -4,7 +4,7 @@ const solc = require('solc');
 const { default: Web3 } = require('web3');
 
 const configPath = path.resolve(process.cwd(), 'config.json');
-// const contractFileName = 'GeneralConfiguration.sol';
+//const contractFileName = 'GeneralConfiguration.sol';
 const contractFileName = 'SavingAccount.sol';
 const contractName = contractFileName.replace('.sol','');
 const contractPath = path.resolve(process.cwd(), 'contracts', contractFileName);
@@ -57,8 +57,8 @@ const methods = {
                 data: '0x' + bytecode.object
             })
             .send({
-                gas: 12500000,
-                gasLimit: 12500000,
+                gas: 8000000,
+                gasLimit: 8000000,
                 from: accounts[0],
                 value: 0
             });

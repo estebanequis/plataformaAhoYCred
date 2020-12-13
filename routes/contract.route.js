@@ -314,13 +314,13 @@ router.get('/ejecutarProxSubObjetivo', async function (req, res) {
 router.post('/getPublishedEventByGestor', async function (req, res) {
     try {
         const contract = contractService.getContract();
-        let eventMethodName = 'SubObjetivoEvent(address,string,uint,address)';
+        let eventMethodName = 'SubObjetivoEvent(address,string,string,uint,address)';
         let filterEventMethod = web3.utils.sha3(eventMethodName);
         let filters = {
             address: contract._address,
             fromBlock: "0x1",
             toBlock: "latest",
-            topics: [filterEventMethod, req.body.gestorAddress, null]
+            topics: [filterEventMethod, web3.utils.sha3(req.body.gestorAddress), null]
         }
         let result = await web3.eth.getPastLogs(filters);
         res.status(200).send('SubObjetivoEvent message: ' + web3.eth.util.hexToUtf8(result[0].data));
@@ -333,7 +333,7 @@ router.post('/getPublishedEventByGestor', async function (req, res) {
 router.post('/getPublishedEventByObjetivo', async function (req, res) {
     try {
         const contract = contractService.getContract();
-        let eventMethodName = 'SubObjetivoEvent(address,string,uint,address)';
+        let eventMethodName = 'SubObjetivoEvent(address,string,string,uint,address)';
         let filterEventMethod = web3.utils.sha3(eventMethodName);
         let filters = {
             address: contract._address,

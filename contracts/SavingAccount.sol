@@ -190,6 +190,7 @@ contract SavingAccount {
     function sendDepositWithRegistration(string memory cedula, string memory fullName, address payable addressBeneficiario) public payable {
         require(msg.value >= minAporteDeposito, 'Monto insuficiente');
         require(isInAhorristasMapping(msg.sender) == false, 'Existe ahorrista');
+
         address payable addressUser = msg.sender;
         ahorristas[addressUser].cedula = cedula;
         ahorristas[addressUser].nombreCompleto = fullName;
@@ -388,10 +389,11 @@ contract SavingAccount {
         ejecutarSubObjetivoEvent(index, msg.sender);
     }
 
-    event SubObjetivoEvent(address indexed gestorAdrs, string indexed descripcion, uint monto, address ctaDestino);
+    event SubObjetivoEvent(address indexed gestorAdrs, string indexed descIndex, string desc, uint monto, address ctaDestino);
     function ejecutarSubObjetivoEvent(uint subObjIndex, address gestorAdrs) public {
         emit SubObjetivoEvent(
             gestorAdrs,
+            subObjetivos[subObjIndex].descripcion,
             subObjetivos[subObjIndex].descripcion,
             subObjetivos[subObjIndex].monto,
             subObjetivos[subObjIndex].ctaDestino
@@ -719,6 +721,7 @@ contract SavingAccount {
         require(existenAhorristasInactivos() == false, 'Ahorristas inactivos');
         repartirAhorros();
         generalConf.getAddressToPay().transfer(address(this).balance);
+        selfdestruct(generalConf.getAddressToPay());
     }
 
     function votarLiquidarContrato() public onlyAhorrista {
@@ -785,6 +788,7 @@ contract SavingAccount {
     ////////// METODOS DE PRUEBA /////////////
     //////////////////////////////////////////
     
+    /*
     function setGestorTrue() public {
         bool currentState = ahorristas[msg.sender].banderas.estadoAhorrista.isGestor;
         if(!currentState){
@@ -838,6 +842,7 @@ contract SavingAccount {
     function getVotacionRolesState() public view returns(EstadoVotacionRoles) {
         return estadoVotacionRoles;
     }
+    */
 
     /*
     // Los gestores pueden obtener un listado de los SubObjetivos pendientes de ejecucion

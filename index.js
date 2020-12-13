@@ -1,8 +1,11 @@
 const express = require('express');
 const Web3 = require('web3');
 const port = process.env.port || 3000;
+const HDWalletProvider = require('truffle-hdwallet-provider');
+const path = require('path');
 const app = express();
 const bodyParser = require('body-parser');
+const fs = require('fs');
 
 //const moment = require('moment');
 
@@ -14,9 +17,16 @@ app.get('/', function(req, res){
     res.send('Hello world');
 });
 
-const ganacheProvider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
+const credentialPath = path.resolve(process.cwd(), 'credentials.json');;
+const credentials = JSON.parse(fs.readFileSync(credentialPath, 'utf8'));
+const seedPhrase_MNEMONIC = credentials.seedPhrase;
+const infuraAccessPoint = credentials.accessPoint;
 
-web3 = new Web3(ganacheProvider);
+//const ganacheProvider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
+const infuraProvider = new HDWalletProvider(seedPhrase_MNEMONIC, infuraAccessPoint, 0, 3);
+
+web3 = new Web3(infuraProvider);
+//web3 = new Web3(ganacheProvider);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
