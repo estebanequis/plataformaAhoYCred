@@ -455,6 +455,32 @@
   },
   {
     "inputs": [],
+    "name": "getVotacionActiva",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getVotacionRolesState",
+    "outputs": [
+      {
+        "internalType": "enum SavingAccount.EstadoVotacionRoles",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "habilitarPeriodoDeVotacion",
     "outputs": [],
     "stateMutability": "nonpayable",

@@ -64,7 +64,7 @@ contract SavingAccount {
         bool isAproved;
     }
 
-    bool votacionSubObjetivosActiva;   //bandera para indicar periodo de votacion activo
+    bool votacionSubObjetivosActiva;    //bandera para indicar periodo de votacion activo
     struct VotoSubObjetivos {
         bool ahorristaVotaSubObjetivo;
         bool auditorCierraVotacion;
@@ -154,7 +154,6 @@ contract SavingAccount {
         generalConf = _address;
     }
 
-    // item 3
     function activarSavingAccount() public onlyAdmin {
         if (generalConf.validateRestrictions(cantAhorristasAproved, cantGestores, cantAuditores)) {
             uint comision = generalConf.getComisionApertura();
@@ -166,10 +165,9 @@ contract SavingAccount {
 
     //////////////////////////////////////////
     ///////////// Items 6 al 10 //////////////
-    /////// Init, Registro y Deposito //////// (0.8m)
+    /////// Init, Registro y Deposito ////////
     //////////////////////////////////////////
 
-    // Item 7 y 9
     function init(uint maxAhorristas, uint ahorroObj, string memory elObjetivo, uint minAporteDep, uint minAporteActivar, bool ahorristaVeAhorroActual, bool gestorVeAhorroActual, uint recargo, uint pMaxPrestamo, uint pDtoAporteAudGest, uint pAlAbandonar, uint pzoRevocarFallecimiento) public onlyAdmin {
         require(maxAhorristas >= 6, "maxAhorristas menor a 6");
         require(bytes(elObjetivo).length != 0, "elObjetivo no ingresado");
@@ -189,7 +187,6 @@ contract SavingAccount {
         plazoRevocarFallecimiento = pzoRevocarFallecimiento;
     }
 
-    // Item 8 y 10
     function sendDepositWithRegistration(string memory cedula, string memory fullName, address payable addressBeneficiario) public payable {
         require(msg.value >= minAporteDeposito, 'Monto insuficiente');
         require(isInAhorristasMapping(msg.sender) == false, 'Existe ahorrista');
@@ -211,7 +208,6 @@ contract SavingAccount {
         }
     }
     
-    // Item 6, 8 
     function sendDeposit() public payable savingContractIsActive {
         require(isInAhorristasMapping(msg.sender), "No existe ahorrista");
         require((block.timestamp - ahorristas[msg.sender].banderas.ultimoDeposito) <= plazoSinRecargo, "Debe pagar recargo");
@@ -228,7 +224,6 @@ contract SavingAccount {
         }
     }
     
-    // Item 10
     function aproveAhorrista(address unAddress) public onlyAuditor {
         require(isInAhorristasMapping(unAddress), 'No existe ahorrista');
         require(tieneCtaActiva(unAddress), 'Cuenta inactiva');
@@ -246,7 +241,7 @@ contract SavingAccount {
     
     //////////////////////////////////////////
     ////////// Items 11 al 17 ////////////////
-    /////// Votacion de Subobjetivos ///////// (1.1m)
+    /////// Votacion de Subobjetivos /////////
     //////////////////////////////////////////
     
     /* El Admin puede agregar un SubObjetivo */
@@ -385,7 +380,6 @@ contract SavingAccount {
         }
     }
 
-    // TODO: No se transfieren realmente los weis hacia afuera
     /* Ejecuta un SubObjetivo segun su index en la lista de SubObjetivos */
     function ejecutarSubObjetivo(uint index) private {
         subObjetivos[index].estado = Estado.Ejecutado;
@@ -394,7 +388,6 @@ contract SavingAccount {
         ejecutarSubObjetivoEvent(index, msg.sender);
     }
 
-    // Probar
     event SubObjetivoEvent(address indexed gestorAdrs, string indexed descripcion, uint monto, address ctaDestino);
     function ejecutarSubObjetivoEvent(uint subObjIndex, address gestorAdrs) public {
         emit SubObjetivoEvent(
@@ -407,7 +400,7 @@ contract SavingAccount {
 
     //////////////////////////////////////////
     ///////////// Items 19 al 21 /////////////
-    /////////// Votacion de Roles //////////// 1.1m
+    /////////// Votacion de Roles ////////////
     //////////////////////////////////////////
 
     function habilitarPostulacionDeCandidatos() public onlyAdmin {
@@ -547,7 +540,7 @@ contract SavingAccount {
 
     //////////////////////////////////////////
     ///////////// Items 22 al 23 /////////////
-    //////////// Monto de ahorro ///////////// (0.3m)
+    //////////// Monto de ahorro /////////////
     //////////////////////////////////////////
 
     function getAhorroActual() public view returns (uint) {
@@ -577,7 +570,7 @@ contract SavingAccount {
 
     //////////////////////////////////////////
     ///////////// Items 24 al 26 /////////////
-    //////////////// Prestamos /////////////// (0.3m)
+    //////////////// Prestamos ///////////////
     //////////////////////////////////////////
 
     function solicitarPrestamo(uint montoSolicitado) public onlyAhorrista {
@@ -587,7 +580,6 @@ contract SavingAccount {
         ahorristas[msg.sender].prestamos.montoSolicitado = montoSolicitado;
     }
 
-    // TODO: No se transfieren realmente los weis hacia afuera
     function adjudicarPrestamo(address ahorristaAdrs) public onlyAuditor {
         require(ahorristas[ahorristaAdrs].prestamos.solicitoPrestamo == true, "Prestamo sin solicitud");
         ahorristas[ahorristaAdrs].banderas.estadoAhorrista.isActive = false;
@@ -608,7 +600,6 @@ contract SavingAccount {
         }
     }
 
-    // Probar
     event PrestamoEvent(address indexed ahorristaAdrs, uint monto);
     function ejecutarPrestamoEvent(address ahorristaAdrs, uint monto) public {
         emit PrestamoEvent(
@@ -619,7 +610,7 @@ contract SavingAccount {
 
     //////////////////////////////////////////
     //////////////// Item 27 /////////////////
-    /////////// Plazo de deposito //////////// (0.18m)
+    /////////// Plazo de deposito ////////////
     //////////////////////////////////////////
 
     function pagarRecargo() payable public onlyAhorrista savingContractIsActive {
@@ -631,7 +622,7 @@ contract SavingAccount {
 
     //////////////////////////////////////////
     ///////////// Items 28 al 29 /////////////
-    //////////////// Abandonar /////////////// (0.7m)
+    //////////////// Abandonar ///////////////
     //////////////////////////////////////////
 
     // TODO: No se transfieren realmente los weis hacia afuera
@@ -840,7 +831,6 @@ contract SavingAccount {
         return (cantAhorristasActivos, cantAhorristasAproved, cantGestores, cantAuditores, administrador, isActive, ahorroActual, totalRecibidoDeposito);
     }
 
-/*
     function getVotacionActiva() public view returns(bool) {
         return votacionSubObjetivosActiva;
     }
@@ -848,9 +838,8 @@ contract SavingAccount {
     function getVotacionRolesState() public view returns(EstadoVotacionRoles) {
         return estadoVotacionRoles;
     }
-*/
 
-/*
+    /*
     // Los gestores pueden obtener un listado de los SubObjetivos pendientes de ejecucion
     function getSubObjetivosPendienteEjecucion() public onlyGestor view returns(string[] memory) { 
         // Se obtiene la cantidad de SubObjetivos que se encuentran pendientes de ejecucion
@@ -871,7 +860,9 @@ contract SavingAccount {
         }
         return losSubObjetivos;
     }
+    */
 
+    /*
     // Los ahorristas pueden obtener un listado de los SubObjetivos disponibles
     function getSubObjetivosEnProcesoDeVotacion() public onlyAhorrista view returns(string[] memory) {
         require(votacionSubObjetivosActiva == true, 'Votacion inactiva');
@@ -894,7 +885,9 @@ contract SavingAccount {
         }
         return losSubObjetivos;
     }
+    */
 
+    /*
     function getAhorristasToAprove() public onlyAuditor view returns(address[] memory) {
         address[] memory losActivosSinAprobar = new address[](cantAhorristasActivos - cantAhorristasAproved);
         uint j = 0;

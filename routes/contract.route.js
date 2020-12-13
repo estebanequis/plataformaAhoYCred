@@ -192,8 +192,8 @@ router.get('/habilitarPeriodoDeVotacion', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        contract.methods.habilitarPeriodoDeVotacion(
-        ).send({
+        contract.methods.habilitarPeriodoDeVotacion()
+        .send({
             from: accounts[req.query.cta],
             gas: 300000
         })
@@ -248,8 +248,8 @@ router.get('/votarCerrarPeriodoDeVotacion', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.votarCerrarPeriodoDeVotacion(
-        ).send({
+        let result = await contract.methods.votarCerrarPeriodoDeVotacion()
+        .send({
             from: accounts[req.query.cta],
             gas: 300000
         });
@@ -298,8 +298,8 @@ router.get('/ejecutarProxSubObjetivo', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.ejecutarProxSubObjetivo(
-        ).send({
+        let result = await contract.methods.ejecutarProxSubObjetivo()
+        .send({
             from: accounts[req.query.cta],
             gas: 300000
         });
@@ -311,7 +311,6 @@ router.get('/ejecutarProxSubObjetivo', async function (req, res) {
     }
 });
 
-// Probar
 router.post('/getPublishedEventByGestor', async function (req, res) {
     try {
         const contract = contractService.getContract();
@@ -331,7 +330,6 @@ router.post('/getPublishedEventByGestor', async function (req, res) {
     }
 });
 
-// Probar
 router.post('/getPublishedEventByObjetivo', async function (req, res) {
     try {
         const contract = contractService.getContract();
@@ -555,8 +553,7 @@ router.post('/solicitarPrestamo', async function (req, res) {
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.solicitarPrestamo(
             req.body.montoSolicitado    // uint
-        )
-        .send({
+        ).send({
             from: accounts[req.query.cta],
             gas: 300000
         });
@@ -573,8 +570,7 @@ router.post('/adjudicarPrestamo', async function (req, res) {
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.adjudicarPrestamo(
             req.body.ahorristaAdrs      // string
-        )
-        .send({
+        ).send({
             from: accounts[req.query.cta],
             gas: 300000
         });
@@ -635,8 +631,7 @@ router.post('/abandonarContrato', async function (req, res) {
         const accounts = await web3.eth.getAccounts();
         let result = await contract.methods.abandonarContrato(
             req.body.conRetiro      // bool
-        )
-        .send({
+        ).send({
             from: accounts[req.query.cta],
             gas: 300000
         });
@@ -902,12 +897,12 @@ router.get('/savingAccountState', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result1 = await contract.methods.savingAccountStatePart1(
-        ).call({
+        let result1 = await contract.methods.savingAccountStatePart1()
+        .call({
             from: accounts[req.query.cta]
         });
-        let result2 = await contract.methods.savingAccountStatePart2(
-        ).call({
+        let result2 = await contract.methods.savingAccountStatePart2()
+        .call({
             from: accounts[req.query.cta]
         });
         res.status(200).send('Estados de SavingAccount: \n\n' +
@@ -975,7 +970,8 @@ router.get('/getRealBalance', async function (req, res) {
     try {
         const contract = contractService.getContract();
         const accounts = await web3.eth.getAccounts();
-        let result = await contract.methods.getRealBalance().call({
+        let result = await contract.methods.getRealBalance()
+        .call({
             from: accounts[req.query.cta]
         });
         res.status(200).send(result);
@@ -1013,7 +1009,5 @@ router.get('/getVotacionRolesState', async function (req, res) {
         res.status(500).send(error.data);
     }
 });
-
-
 
 module.exports = router;
